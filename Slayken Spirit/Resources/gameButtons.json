@@ -1,0 +1,9 @@
+[
+    {
+        "id": "autobattle",
+        "title": "Auto Battle",
+        "icon": "bolt.circle",
+        "type": "auto_battle",
+        "value": 1
+    }
+]

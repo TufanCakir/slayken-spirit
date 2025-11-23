@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "title": "Home",
+    "icon": "house.fill",
+    "color": "#FFFFFF",
+    "destination": "HomeView"
+  },
+  {
+    "id": "2",
+    "title": "Summon",
+    "icon": "sparkles",
+    "color": "#FFFFFF",
+    "destination": "SummonView"
+  }
+  {
+    "id": "3",
+    "title": "Exchange",
+    "icon": "arrow.trianglehead.2.counterclockwise",
+    "color": "#FFFFFF",
+    "destination": "ExchangeView"
+  },
+  {
+    "id": "4",
+    "title": "Settings",
+    "icon": "gear",
+    "color": "#FFFFFF",
+    "destination": "SettingsView"
+  },
+]

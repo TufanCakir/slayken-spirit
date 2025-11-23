@@ -1,0 +1,16 @@
+[
+  {
+    "id": "single",
+    "title": "Single Summon",
+    "priceCoins": 10,
+    "priceCrystals": 1,
+    "amount": 1
+  },
+  {
+    "id": "multi10",
+    "title": "10x Summon",
+    "priceCoins": 90,
+    "priceCrystals": 8,
+    "amount": 10
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "event_fire",
+    "name": "Fire Trial",
+    "spirit": "spirit_fire",
+    "desc": "Besiege den brennenden Feuergeist.",
+    "rarity": "rare",
+    "icon": "flame.fill"
+  },
+  {
+    "id": "event_ice",
+    "name": "Ice Temple",
+    "spirit": "spirit_ice",
+    "desc": "Kalter frostiger Kampf im Eistempel.",
+    "rarity": "epic",
+    "icon": "snowflake"
+  },
+  {
+    "id": "event_void",
+    "name": "Void Collapse",
+    "spirit": "spirit_void",
+    "desc": "Die Leere verschlingt alles.",
+    "rarity": "legendary",
+    "icon": "sparkles"
+  }
+]

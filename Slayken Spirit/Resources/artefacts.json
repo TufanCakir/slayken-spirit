@@ -1,0 +1,114 @@
+[
+  {
+    "id": "artifact_fire_core",
+    "name": "Fire Core",
+    "rarity": "rare",
+    "dropChance": 0.25,
+    "types": ["tap_damage", "coin_gain"],
+    "power": 10,
+    "desc": "Ein heißer Kern voller Feuermagie.",
+    "icon": "flame.fill",
+    "level": 1
+  },
+  {
+    "id": "artifact_ice_crystal",
+    "name": "Ice Crystal",
+    "rarity": "epic",
+    "dropChance": 0.15,
+    "types": ["hp_bonus", "coin_gain"],
+    "power": 15,
+    "desc": "Ein Kristall voller frostiger Energie.",
+    "icon": "snowflake",
+    "level": 1
+  },
+  {
+    "id": "artifact_void_fragment",
+    "name": "Void Fragment",
+    "rarity": "legendary",
+    "dropChance": 0.05,
+    "types": ["exp_bonus", "coin_gain"],
+    "power": 20,
+    "desc": "Ein Fragment der Leere.",
+    "icon": "sparkles",
+    "level": 1
+  },
+
+  {
+    "id": "artifact_blazing_shard",
+    "name": "Blazing Shard",
+    "rarity": "rare",
+    "dropChance": 0.22,
+    "types": ["tap_damage", "crit_chance"],
+    "power": 5,
+    "desc": "Ein funkelndes Feuersplitterstück. Erhöht Schaden & Crit Chance.",
+    "icon": "flame",
+    "level": 1
+  },
+  {
+    "id": "artifact_frost_heart",
+    "name": "Frost Heart",
+    "rarity": "epic",
+    "dropChance": 0.13,
+    "types": ["hp_bonus", "crit_damage"],
+    "power": 10,
+    "desc": "Ein uralter Frostkern. Stärkt HP und deinen kritischen Schaden.",
+    "icon": "snowflake.circle.fill",
+    "level": 1
+  },
+  {
+    "id": "artifact_void_eye",
+    "name": "Void Eye",
+    "rarity": "legendary",
+    "dropChance": 0.04,
+    "types": ["loot_boost", "attack_speed"],
+    "power": 5,
+    "desc": "Ein Auge aus purer Leerernergie. Erhöht Loot & Attack Speed.",
+    "icon": "eye.circle.fill",
+    "level": 1
+  },
+
+  {
+    "id": "artifact_dragon_scale",
+    "name": "Dragon Scale",
+    "rarity": "epic",
+    "dropChance": 0.12,
+    "types": ["hp_bonus", "tap_damage"],
+    "power": 12,
+    "desc": "Eine magische Drachenschuppe. Mehr HP + mehr Schaden.",
+    "icon": "shield.fill",
+    "level": 1
+  },
+  {
+    "id": "artifact_celestial_feather",
+    "name": "Celestial Feather",
+    "rarity": "legendary",
+    "dropChance": 0.03,
+    "types": ["attack_speed", "crit_chance"],
+    "power": 7,
+    "desc": "Eine Feder eines himmlischen Wesens. Erhöht Attack Speed + Crit Chance.",
+    "icon": "wind",
+    "level": 1
+  },
+  {
+    "id": "artifact_shadow_core",
+    "name": "Shadow Core",
+    "rarity": "rare",
+    "dropChance": 0.24,
+    "types": ["exp_bonus", "tap_damage"],
+    "power": 8,
+    "desc": "Ein dunkler Kern, erfüllt von Schattenenergie.",
+    "icon": "moon.stars.fill",
+    "level": 1
+  },
+  {
+    "id": "artifact_golden_fang",
+    "name": "Golden Fang",
+    "rarity": "epic",
+    "dropChance": 0.10,
+    "types": ["crit_damage", "coin_gain"],
+    "power": 12,
+    "desc": "Ein goldener Reißzahn eines uralten Tieres. Mehr Coins + Crit Damage.",
+    "icon": "bolt.circle.fill",
+    "level": 1
+  }
+]

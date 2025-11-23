@@ -1,0 +1,74 @@
+[
+  {
+    "id": "spirit_fire",
+    "modelName": "spirit1",
+    "background": "sky",
+    "facing": "right",
+    "scale": [1.0, 1.0, 1.0],
+    "position": [0.0, 0.2, 0.0],
+    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "hp": 40,
+    "next": "spirit_ice",
+    "reward": {
+      "coins": 5,
+      "crystals": 1,
+      "exp": 20
+    },
+    "camera": {
+      "position": [0.0, 1.2, 5.0],
+      "lookAt": [0.0, 1.0, 0.0]
+    },
+    "light": {
+      "intensity": 5000,
+      "position": [1.0, 2.0, 2.0]
+    }
+  },
+  {
+      "id": "spirit_ice",
+      "modelName": "spirit2",
+      "background": "sky",
+      "facing": "right",
+      "scale": [1.0, 1.0, 1.0],
+      "position": [0.0, 0.2, 0.0],
+      "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
+      "hp": 40,
+      "next": "spirit_void",
+      "reward": {
+        "coins": 5,
+        "crystals": 1,
+        "exp": 20
+      },
+      "camera": {
+          "position": [0.0, 1.2, 5.0],
+          "lookAt": [0.0, 1.0, 0.0]
+      },
+      "light": {
+        "intensity": 5000,
+        "position": [1.0, 2.0, 2.0]
+      }
+    },
+  {
+    "id": "spirit_void",
+    "modelName": "spirit3",
+    "background": "sky",
+    "facing": "right",
+    "scale": [1.0, 1.0, 1.0],
+    "position": [0.0, 0.2, 0.0],
+    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "hp": 40,
+    "next": "spirit_fire",
+    "reward": {
+      "coins": 5,
+      "crystals": 1,
+      "exp": 20
+    },
+    "camera": {
+        "position": [0.0, 1.2, 5.0],
+        "lookAt": [0.0, 1.0, 0.0]
+    },
+    "light": {
+      "intensity": 5000,
+      "position": [1.0, 2.0, 2.0]
+    }
+  }
+]
