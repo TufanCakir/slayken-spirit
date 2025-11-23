@@ -14,7 +14,7 @@ struct HeaderView: View {
     @State private var glow = false
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 20) {
             hudItem(
                 symbol: icons.level.symbol,
                 color: Color(hex: icons.level.color),
@@ -34,11 +34,12 @@ struct HeaderView: View {
                 value: crystalManager.crystals
             )
         }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 12)
+        .frame(width: 400)
+        .padding(.horizontal, 0)
+        .padding(.vertical, 30)
         .background(
             RoundedRectangle(cornerRadius: 18)
-                .fill(.ultraThinMaterial)
+                .fill(.black)
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
                         .stroke(.white, lineWidth: 1)
@@ -59,7 +60,7 @@ struct HeaderView: View {
 
             // Animated Glow Icon
             Image(systemName: symbol)
-                .font(.system(size: 20, weight: .bold))
+                .font(.system(size: 20))
                 .foregroundColor(color)
                 .shadow(color: color.opacity(glow ? 0.7 : 0.2), radius: glow ? 10 : 3)
                 .scaleEffect(glow ? 1.05 : 1.0)
@@ -67,25 +68,24 @@ struct HeaderView: View {
             // Label + Value
             if let label = label {
                 Text("\(label) \(value)")
-                    .font(.headline.weight(.heavy))
+                    .font(.system(size: 0))
                     .foregroundColor(.white.opacity(0.9))
             } else {
                 Text("\(value)")
-                    .font(.headline.weight(.heavy))
+                    .font(.system(size: 0))
                     .foregroundColor(.white.opacity(0.9))
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(Color.white.opacity(0.05))
+                .fill(Color.white.opacity(0.03))
                 .overlay(
                     Capsule()
-                        .stroke(color.opacity(0.3), lineWidth: 1)
+                        .stroke(color, lineWidth: 1)
                 )
         )
-        .shadow(color: color.opacity(0.4), radius: 3, y: 1)
     }
 }
 

@@ -1,9 +1,4 @@
-//
-//  SummonPortalView.swift
-//  Slayken Fighter of Fists
-//
-//  Created by Tufan Cakir on 2025-11-15.
-//
+
 
 import SwiftUI
 

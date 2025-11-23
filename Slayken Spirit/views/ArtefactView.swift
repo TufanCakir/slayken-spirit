@@ -4,21 +4,29 @@ struct ArtefactView: View {
 
     @ObservedObject private var inventory = ArtefactInventoryManager.shared
 
+    // Lade Hintergrundbild aus JSON
+    private let homeBG: String = {
+        let spirits = Bundle.main.loadSpiritArray("spirits")
+        return spirits.first?.background ?? "sky"
+    }()
+
     var body: some View {
         NavigationStack {
+            ZStack {
 
-            ScrollView {
-                LazyVStack(spacing: 18) {
+                HomeBackgroundView(imageName: homeBG)
+                    .ignoresSafeArea()
 
-                    ForEach(inventory.owned) { art in
-                        artefactCard(art)
+                ScrollView {
+                    LazyVStack(spacing: 18) {
+
+                        ForEach(inventory.owned) { art in
+                            artefactCard(art)
+                        }
                     }
-
                 }
                 .padding()
             }
-            .navigationTitle("Artefakte")
-            .navigationBarTitleDisplayMode(.large)
             .background(
                 LinearGradient(
                     colors: [.black, Color.white.opacity(0.3), .black],
@@ -40,9 +48,10 @@ extension ArtefactView {
             HStack(spacing: 12) {
 
                 // ICON (Emoji oder SF Symbol)
-                Text(art.displayIcon)
-                    .font(.system(size: 40))
-                    .shadow(color: art.rarityColor.opacity(0.8), radius: 6)
+                Image(systemName: art.displayIcon)
+                    .font(.system(size: 28))
+                    .foregroundColor(art.rarityColor)
+                    .shadow(color: art.rarityColor, radius: 6)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("\(art.name)  Lv.\(art.level)")
@@ -51,7 +60,7 @@ extension ArtefactView {
 
                     Text(art.desc)
                         .font(.caption)
-                        .foregroundColor(.white.opacity(0.7))
+                        .foregroundColor(.white)
                 }
 
                 Spacer()
@@ -71,7 +80,7 @@ extension ArtefactView {
             }
         }
         .padding(16)
-        .background(.ultraThinMaterial)
+        .background(.black)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(art.rarityColor.opacity(0.7), lineWidth: 1.4)

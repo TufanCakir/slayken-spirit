@@ -11,63 +11,46 @@ struct TutorialView: View {
 
     @State private var showWelcome = false
 
-    // ORB Animation
-    @State private var orbGlow = false
-    @State private var orbRotation = 0.0
+    // Hintergrund aus Spirits.json
+    private let homeBG: String = {
+        let spirits = Bundle.main.loadSpiritArray("spirits")
+        return spirits.first?.background ?? "sky"
+    }()
 
     var body: some View {
         ZStack {
-      backgroundLayer
+            HomeBackgroundView(imageName: homeBG)
                 .ignoresSafeArea()
+
             VStack {
                 Spacer()
 
-                // MARK: - STEP CONTENT
-                if currentIndex < steps.count {
-                    stepContent
-                } else {
-                    finishedContent
+                Group {
+                    if currentIndex < steps.count {
+                        stepContent
+                    } else {
+                        finishedContent
+                    }
                 }
+                .animation(.easeInOut(duration: 0.4), value: currentIndex)
 
                 Spacer()
 
-                // MARK: - Progress Dots
                 progressIndicator
                     .padding(.bottom, 40)
             }
             .padding(.horizontal, 20)
         }
+        .onAppear { startStepAnimations() }
         .fullScreenCover(isPresented: $showWelcome) {
             FooterTabView()
                 .transition(.opacity.combined(with: .scale))
         }
-        .onAppear {
-            startStepAnimations()
-            orbGlow = true
-            orbRotation = 360
-        }
     }
 }
 
-// MARK: - Background Layer
-private extension TutorialView {
-    var backgroundLayer: some View {
-        ZStack {
 
-            // 🌑 DARK → BLUE → DARK Gradient
-            LinearGradient(
-                colors: [
-                    .black,
-                    Color.white.opacity(0.3),
-                    .black
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
 
-        }
-    }
-}
 
 
 //
@@ -84,11 +67,7 @@ private extension TutorialView {
             if showTitle {
                 Text(step.title)
                     .font(.largeTitle.bold())
-                    .foregroundStyle(
-                        LinearGradient(colors: [.white, .white, .white],
-                                       startPoint: .top,
-                                       endPoint: .bottom)
-                    )
+                    .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }

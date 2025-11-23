@@ -17,7 +17,11 @@ struct ExchangeView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
 
-
+    // Lade Hintergrundbild aus JSON
+     private let homeBG: String = {
+         let spirits = Bundle.main.loadSpiritArray("spirits")
+         return spirits.first?.background ?? "sky"
+     }()
 
     // MARK: - Exchange Options
     private let options: [ExchangeOption] = [
@@ -29,9 +33,9 @@ struct ExchangeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // ⭐ BACKGROUND LAYER
-                backgroundLayer
-                    .ignoresSafeArea()
+                HomeBackgroundView(imageName: homeBG)
+                                  .ignoresSafeArea()
+
 
                 VStack(spacing: 28) {
 
@@ -59,28 +63,6 @@ struct ExchangeView: View {
         }
     }
 }
-
-// MARK: - Background Layer
-private extension ExchangeView {
-    var backgroundLayer: some View {
-        ZStack {
-
-            // 🌑 DARK → BLUE → DARK Gradient
-            LinearGradient(
-                colors: [
-                    .black,
-                    Color.white.opacity(0.3),
-                    .black
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-
-        }
-    }
-}
-
-
 
 //
 // MARK: - UI Components

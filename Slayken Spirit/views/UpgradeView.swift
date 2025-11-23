@@ -5,18 +5,19 @@ struct UpgradeView: View {
     @EnvironmentObject var coins: CoinManager
     @EnvironmentObject var upgrades: UpgradeManager
 
+    // Lade Hintergrundbild aus JSON
+    private let homeBG: String = {
+        let spirits = Bundle.main.loadSpiritArray("spirits")
+        return spirits.first?.background ?? "sky"
+    }()
+    
     var body: some View {
         NavigationStack {
             ZStack {
 
-                // BACKGROUND
-                LinearGradient(
-                    colors: [.black, Color.white.opacity(0.3), .black],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-
+                HomeBackgroundView(imageName: homeBG)
+                    .ignoresSafeArea()
+                
                 VStack(spacing: 22) {
 
                     // MARK: Tap Damage Upgrade

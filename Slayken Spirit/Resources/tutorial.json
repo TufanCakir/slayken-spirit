@@ -1,17 +1,22 @@
 [
   {
     "id": 1,
-    "title": "Welcome to Slayken Fighter of Fists",
-    "text": "Das Spiel ist kostenlos, kann sich in zukunft ändern mit echtgeld Shop."
+    "title": "Willkommen zu Slayken Spirit",
+    "text": "Das Spiel ist kostenlos. In Zukunft kann ein Echtgeld-Shop dazukommen."
   },
   {
     "id": 2,
-    "title": "Battle Controls",
-    "text": "Tippe um anzugreifen, und gewinne den Kampf."
+    "title": "Mein erstes 3D-Idle-RPG",
+    "text": "Slayken Spirit wird ständig weiterentwickelt – mit neuen Modellen, mehr Content und regelmäßigen Updates."
   },
   {
     "id": 3,
-    "title": "Good Luck!",
-    "text": "wer wird der nächste Slayken Fighter of Fists."
+    "title": "Battle Controls",
+    "text": "Tippe auf den Bildschirm, um anzugreifen und den Kampf zu gewinnen."
   },
+  {
+    "id": 4,
+    "title": "Good Luck!",
+    "text": "Wirst du der nächste Spirit Master?"
+  }
 ]

@@ -7,17 +7,19 @@ struct SummonView: View {
     @State private var showError = false
     @State private var errorMessage = ""
 
+    // Lade Hintergrundbild aus JSON
+    private let homeBG: String = {
+        let spirits = Bundle.main.loadSpiritArray("spirits")
+        return spirits.first?.background ?? "sky"
+    }()
+
     var body: some View {
         NavigationStack {
             ZStack {
 
-                LinearGradient(
-                    colors: [.black, .blue.opacity(0.3)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-
+       
+                HomeBackgroundView(imageName: homeBG)
+                    .ignoresSafeArea()
                 VStack(spacing: 25) {
 
                     Text("Summon")

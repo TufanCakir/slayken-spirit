@@ -7,10 +7,10 @@
     "amount": 1
   },
   {
-    "id": "multi10",
+    "id": "multi",
     "title": "10x Summon",
-    "priceCoins": 90,
-    "priceCrystals": 8,
+    "priceCoins": 0,
+    "priceCrystals": 0,
     "amount": 10
   }
 ]

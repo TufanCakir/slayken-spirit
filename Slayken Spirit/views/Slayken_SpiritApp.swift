@@ -25,8 +25,7 @@ struct Slayken_SpiritApp: App {
     var body: some Scene {
         WindowGroup {
 
-            FooterTabView()
-                .preferredColorScheme(.dark)
+            TutorialView()
 
                 // MARK: - Reihenfolge beachten!
                 // 1️⃣ Shop lädt equipment.json

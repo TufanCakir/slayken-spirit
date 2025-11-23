@@ -15,7 +15,9 @@ struct SpiritGameView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            SpiritBackgroundView(imageName: game.current.background ?? "sky")
+                   .ignoresSafeArea()
+
 
             // 3D Szene
             SpiritView(config: game.current)
@@ -42,6 +44,15 @@ struct SpiritGameView: View {
     }
 }
 
+struct SpiritBackgroundView: View {
+    let imageName: String
+    
+    var body: some View {
+        Image(imageName)
+            .resizable()
+            .scaledToFill()
+    }
+}
 
 
 
@@ -59,7 +70,7 @@ private extension SpiritGameView {
                             gameButton(btn)
                         }
                     }
-                    .padding(.trailing, 120)
+                    .padding(.trailing, 145)
                 }
 
                 // 👉 Stage Anzeige
@@ -82,7 +93,7 @@ private extension SpiritGameView {
             .foregroundColor(.white)
             .padding(.horizontal, 20)
             .padding(.vertical, 6)
-            .background(.ultraThinMaterial)
+            .background(.blue)
             .clipShape(Capsule())
             .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
     }
@@ -143,7 +154,7 @@ private extension SpiritGameView {
                     // Material layer behind for glow/depth when inactive
                     if !isActive {
                         Capsule()
-                            .fill(.ultraThinMaterial)
+                            .fill(.blue)
                     }
                     // Foreground capsule fill uses consistent ShapeStyle types
                     Capsule()
@@ -158,7 +169,8 @@ private extension SpiritGameView {
                 Capsule()
                     .stroke(isActive ? Color.cyan.opacity(0.8) : .white.opacity(0.3), lineWidth: 1.5)
             )
-            .shadow(color: isActive ? Color.cyan.opacity(0.7) : .clear, radius: 6)
+            .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
+
             .animation(.easeInOut(duration: 0.25), value: isActive)
         }
     }

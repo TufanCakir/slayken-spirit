@@ -23,10 +23,12 @@ struct GiftView: View {
     @State private var showPopup = false
     @State private var popupText = ""
 
-    // MARK: - Orb Animation
-    @State private var orbGlow = false
-    @State private var orbRotation = 0.0
-
+    // Lade Hintergrundbild aus JSON
+    private let homeBG: String = {
+        let spirits = Bundle.main.loadSpiritArray("spirits")
+        return spirits.first?.background ?? "sky"
+    }()
+    
     // MARK: - Unclaimed gifts
     private var unclaimedGifts: [GiftItem] {
         gifts.filter { !giftManager.isClaimed($0.id) }
@@ -35,7 +37,8 @@ struct GiftView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundLayer
+             
+                HomeBackgroundView(imageName: homeBG)
                     .ignoresSafeArea()
                 
                 ScrollView(showsIndicators: false) {
@@ -76,23 +79,6 @@ struct GiftView: View {
         }
     }
 
-    // MARK: - Background Layer
-        var backgroundLayer: some View {
-            ZStack {
-
-                // 🌑 DARK → BLUE → DARK Gradient
-                LinearGradient(
-                    colors: [
-                        .black,
-                        Color.white.opacity(0.3),
-                        .black
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-
-            }
-        }
 
 
     // MARK: - Collect ALL Button
@@ -113,16 +99,15 @@ struct GiftView: View {
         } label: {
             Text("Alle abholen")
                 .font(.headline.bold())
-                .foregroundColor(.black)
+                .foregroundColor(.white )
                 .padding(.vertical, 10)
                 .padding(.horizontal, 28)
                 .background(
-                    LinearGradient(colors: [.cyan, .blue],
+                    LinearGradient(colors: [.blue, .blue, .blue],
                                    startPoint: .topLeading,
                                    endPoint: .bottomTrailing)
                 )
                 .cornerRadius(12)
-                .shadow(color: .cyan.opacity(0.5), radius: 8, y: 3)
         }
         .opacity(unclaimedGifts.isEmpty ? 0.4 : 1)
         .disabled(unclaimedGifts.isEmpty)
@@ -139,7 +124,7 @@ struct GiftView: View {
                 .fill(Color.white.opacity(0.05))
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
-                        .stroke(.cyan.opacity(0.4), lineWidth: 1.5)
+                        .stroke(.blue, lineWidth: 3)
                 )
                 .shadow(color: .cyan.opacity(0.3), radius: 10, y: 4)
 
@@ -191,11 +176,11 @@ struct GiftView: View {
         } label: {
             Text("Abholen")
                 .font(.subheadline.bold())
-                .foregroundColor(.black)
+                .foregroundColor(.white)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 18)
                 .background(
-                    LinearGradient(colors: [.cyan, .blue],
+                    LinearGradient(colors: [.blue, .blue, .blue],
                                    startPoint: .topLeading,
                                    endPoint: .bottomTrailing)
                 )

@@ -9,30 +9,6 @@
   },
   {
     "id": "2",
-    "title": "Gifts",
-    "icon": "gift",
-    "color": "#000000",
-    "iconColor": "#00FF9C",
-    "destination": "GiftView"
-  },
-  {
-    "id": "3",
-    "title": "Daily Login Bonus",
-    "icon": "giftcard",
-    "color": "#000000",
-    "iconColor": "#FF66FF",
-    "destination": "DailyLoginView"
-  },
-  {
-    "id": "4",
-    "title": "Settings",
-    "icon": "gear",
-    "color": "#000000",
-    "iconColor": "#9B9B9B",
-    "destination": "SettingsView"
-  },
-  {
-    "id": "5",
     "title": "Upgrades",
     "icon": "arrow.up.circle.fill",
     "color": "#000000",
@@ -40,11 +16,35 @@
     "destination": "UpgradeView"
   },
   {
-    "id": "6",
+    "id": "3",
     "title": "Artefakte",
     "icon": "sparkles",
     "color": "#000000",
     "iconColor": "#FFD700",
     "destination": "ArtefactView"
-  }
+  },
+  {
+    "id": "4",
+    "title": "Gifts",
+    "icon": "gift",
+    "color": "#000000",
+    "iconColor": "#00FF9C",
+    "destination": "GiftView"
+  },
+  {
+    "id": "5",
+    "title": "Daily Login Bonus",
+    "icon": "giftcard",
+    "color": "#000000",
+    "iconColor": "#FF66FF",
+    "destination": "DailyLoginView"
+  },
+  {
+    "id": "6",
+    "title": "Settings",
+    "icon": "gear",
+    "color": "#000000",
+    "iconColor": "#9B9B9B",
+    "destination": "SettingsView"
+  },
 ]

@@ -20,17 +20,18 @@ struct SettingsView: View {
     @State private var showResetConfirmation = false
     @State private var resetAnimation = false
 
-    // Orb Animation
-    @State private var orbGlow = false
-    @State private var orbRotation = 0.0
+    // Lade Hintergrundbild aus JSON
+    private let homeBG: String = {
+        let spirits = Bundle.main.loadSpiritArray("spirits")
+        return spirits.first?.background ?? "sky"
+    }()
 
     // MARK: - Body
     var body: some View {
         NavigationStack {
             ZStack {
 
-                // MARK: - Hintergrund
-                backgroundLayer
+                HomeBackgroundView(imageName: homeBG)
                     .ignoresSafeArea()
 
                 // MARK: - Content
@@ -91,37 +92,9 @@ struct SettingsView: View {
                 Text("This will permanently delete your progress, characters, skins, and shop data.")
             }
             .overlay(resetConfirmationOverlay)
-            .onAppear {
-                orbGlow = true
-                orbRotation = 360
-            }
         }
     }
 }
-
-
-
-
-
-    // MARK: - Background Layer
-    extension SettingsView {
-            var backgroundLayer: some View {
-                ZStack {
-
-                    // 🌑 DARK → BLUE → DARK Gradient
-                    LinearGradient(
-                        colors: [
-                            .black,
-                            Color.white.opacity(0.3),
-                            .black
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-
-                }
-            }
-        }
 
 // MARK: - Reset Confirmation Overlay
 extension SettingsView {

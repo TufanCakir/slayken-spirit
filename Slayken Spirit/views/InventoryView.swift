@@ -4,9 +4,11 @@ struct InventoryView: View {
 
     @EnvironmentObject var inventory: InventoryManager
 
-    // ORB Animation
-    @State private var orbGlow = false
-    @State private var orbRotation = 0.0
+    // Lade Hintergrundbild aus JSON
+    private let homeBG: String = {
+        let spirits = Bundle.main.loadSpiritArray("spirits")
+        return spirits.first?.background ?? "sky"
+    }()
 
     private let columns = [
         GridItem(.adaptive(minimum: 120), spacing: 20)
@@ -14,8 +16,10 @@ struct InventoryView: View {
 
     var body: some View {
         ZStack {
-backgroundLayer
+
+            HomeBackgroundView(imageName: homeBG)
                 .ignoresSafeArea()
+
             VStack(spacing: 20) {
 
                 // TITLE
@@ -44,26 +48,6 @@ backgroundLayer
         }
         .onAppear {
             inventory.debugInventory()
-        }
-    }
-}
-
-// MARK: - Background Layer
-private extension InventoryView {
-    var backgroundLayer: some View {
-        ZStack {
-
-            // 🌑 DARK → BLUE → DARK Gradient
-            LinearGradient(
-                colors: [
-                    .black,
-                    Color.white.opacity(0.3),
-                    .black
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-
         }
     }
 }

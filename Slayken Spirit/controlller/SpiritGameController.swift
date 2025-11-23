@@ -9,22 +9,17 @@ internal import Combine
 @MainActor
 final class SpiritGameController: ObservableObject {
 
-    struct GameEvent: Identifiable {
-        let id: String
-        let name: String
-        let icon: String
-        let targetModelID: String?
-    }
 
     // MARK: - Published: UI States
     @Published private(set) var current: ModelConfig
     @Published private(set) var currentHP: Int
-    @Published private(set) var stage: Int = 1
+    @Published private(set) var stage: Int = {
+        let saved = UserDefaults.standard.integer(forKey: "savedStage")
+        return max(saved, 1) // nie 0
+    }()
     @Published private(set) var backgroundName: String
     @Published var backgroundFade: Double = 0
     @Published var isAutoBattle: Bool = false
-    @Published private(set) var events: [GameEvent] = []
-    @Published private(set) var selectedEvent: GameEvent?
 
     private var autoBattleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
@@ -46,8 +41,9 @@ final class SpiritGameController: ObservableObject {
         self.backgroundName = first.background ?? "sky"
 
         setupArtefactListener()
-        loadDefaultEvents()
     }
+    
+
 
     // MARK: - Artefact Change Listener
     private func setupArtefactListener() {
@@ -64,27 +60,7 @@ final class SpiritGameController: ObservableObject {
         objectWillChange.send()
     }
 
-    // MARK: - Events
-    private func loadDefaultEvents() {
-        // Provide a minimal default set of events so EventSelectionView compiles and works.
-        // targetModelID allows switching to a specific spirit when an event is selected; nil keeps current.
-        events = [
-            GameEvent(id: "ev_1", name: "Forest Ambush", icon: "leaf", targetModelID: nil),
-            GameEvent(id: "ev_2", name: "Cave Descent", icon: "mountain.2", targetModelID: nil),
-            GameEvent(id: "ev_3", name: "Sky Ruins", icon: "cloud.sun", targetModelID: nil)
-        ]
-    }
 
-    func selectEvent(_ event: GameEvent) {
-        selectedEvent = event
-        // If the event targets a specific model, switch to it; otherwise keep current but reset HP.
-        if let target = event.targetModelID, let next = all.first(where: { $0.id == target }) {
-            current = next
-            stage += 1
-            updateBackground(for: next)
-        }
-        recalculateHP()
-    }
 
     // MARK: - Player Tap
     func tapAttack() {
@@ -190,6 +166,7 @@ final class SpiritGameController: ObservableObject {
         let next = all[nextIndex]
 
         stage += 1
+        UserDefaults.standard.set(stage, forKey: "savedStage")
         current = next
         recalculateHP()
 

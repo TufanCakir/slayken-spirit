@@ -42,19 +42,10 @@ struct FooterTabView: View {
             SettingsView()
         }
         .tabItem {
-            Image(systemName: "gearshape.fill")
+            Image(systemName: "gear")
             Text("Settings")
         }
-        .tag(4)
-            NavigationStack {
-                EventView()
-            }
-            .tabItem {
-                Image(systemName: "gearshape.fill")
-                Text("Event")
-            }
-            .tag(5)
-            
+        .tag(4)            
         }
     }
 }

@@ -1,12 +1,14 @@
-//  HomeView.swift
-//  Slayken Fighter of Fists
-//
-
 import SwiftUI
 
 struct HomeView: View {
 
     @State private var buttons: [HomeButton] = Bundle.main.decode("homeButtons.json")
+
+    // Lade Hintergrundbild aus JSON
+    private let homeBG: String = {
+        let spirits = Bundle.main.loadSpiritArray("spirits")
+        return spirits.first?.background ?? "sky"
+    }()
 
     private let columns = [
         GridItem(.flexible(), spacing: 20),
@@ -16,9 +18,10 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-backgroundLayer
+
+                HomeBackgroundView(imageName: homeBG)
                     .ignoresSafeArea()
-                // CONTENT
+
                 VStack(spacing: 0) {
 
                     HeaderView()
@@ -48,25 +51,20 @@ backgroundLayer
     }
 }
 
-// MARK: - Background Layer
-private extension HomeView {
-    var backgroundLayer: some View {
-        ZStack {
-
-            // 🌑 DARK → BLUE → DARK Gradient
-            LinearGradient(
-                colors: [
-                    .black,
-                    Color.white.opacity(0.3),
-                    .black
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-
-        }
+struct HomeBackgroundView: View {
+    let imageName: String
+    
+    var body: some View {
+        Image(imageName)
+            .resizable()
+            .scaledToFill()
+            .transition(.opacity)
+            .animation(.easeInOut(duration: 0.4), value: imageName)
     }
 }
+
+
+
 #Preview {
     HomeView()
         .environmentObject(CoinManager.shared)
