@@ -17,6 +17,10 @@ final class SpiritGameController: ObservableObject {
         let saved = UserDefaults.standard.integer(forKey: "savedStage")
         return max(saved, 1) // nie 0
     }()
+    @Published private(set) var point: Int = {
+        let saved = UserDefaults.standard.integer(forKey: "savedPoint")
+        return max(saved, 1) // nie 0
+    }()
     @Published private(set) var backgroundName: String
     @Published var backgroundFade: Double = 0
     @Published var isAutoBattle: Bool = false
@@ -25,6 +29,7 @@ final class SpiritGameController: ObservableObject {
     @Published var totalKills: Int = UserDefaults.standard.integer(forKey: "totalKills")
     @Published var totalQuests: Int = UserDefaults.standard.integer(forKey: "totalQuests")
     @Published var playtimeMinutes: Int = UserDefaults.standard.integer(forKey: "playtimeMinutes")
+    @Published var isInEvent: Bool = false
 
     private var autoBattleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
@@ -70,6 +75,44 @@ final class SpiritGameController: ObservableObject {
         objectWillChange.send()
     }
 
+
+    // MARK: - Event Start
+    func startEvent(_ event: GameEvent) {
+        print("🔥 [EVENT] StartEvent aufgerufen")
+        print("🔥 [EVENT] Event ID: \(event.id)")
+        print("🔥 [EVENT] bossId aus JSON: \(event.bossId)")
+
+        // Markiere Event als aktiv
+        isInEvent = true
+
+        print("🎯 [STATE] isInEvent = true")
+
+        print("📦 [SPIRITS] Anzahl geladene Spirits: \(all.count)")
+        for s in all {
+            print("   → Spirit: \(s.id) (model: \(s.modelName) )")
+        }
+
+        guard let boss = all.first(where: { $0.id == event.bossId }) else {
+            print("❌ Boss für Event nicht gefunden:", event.bossId)
+            return
+        }
+
+        print("✅ [EVENT] Gefundener Boss: \(boss.id)")
+        print("   → modelName: \(boss.modelName)")
+        print("   → hp: \(boss.hp)")
+        print("   → background: \(boss.background ?? "none")")
+
+        // Boss setzen
+        current = boss
+        currentHP = boss.hp + ArtefactInventoryManager.shared.bonusHP
+        print("💙 [HP] HP gesetzt auf: \(currentHP)")
+
+        updateBackground(for: boss)
+
+        // UI Refresh
+        objectWillChange.send()
+        print("🎉 Event Start abgeschlossen!")
+    }
 
 
 
@@ -196,6 +239,7 @@ final class SpiritGameController: ObservableObject {
 
         // Stage erhöhen
         stage += 1
+        point += 1
         UserDefaults.standard.set(stage, forKey: "savedStage")
 
         // 🔥 Game Center + Rewards

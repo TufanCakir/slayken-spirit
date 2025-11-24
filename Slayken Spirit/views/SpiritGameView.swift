@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SpiritGameView: View {
 
-    @StateObject private var game = SpiritGameController()
+    @EnvironmentObject private var game: SpiritGameController
 
     @State private var activeSheet: ActiveSheet?
     @State private var gameButtons: [GameButton] = Bundle.main.loadGameButtons()
@@ -19,9 +19,8 @@ struct SpiritGameView: View {
                    .ignoresSafeArea()
 
 
-            // 3D Szene
             SpiritView(config: game.current)
-                .id(game.current.id)
+                .id(game.current.id + (game.isInEvent ? "_event" : "_normal"))
                 .onTapGesture { game.tapAttack() }
 
             VStack {
@@ -75,6 +74,10 @@ private extension SpiritGameView {
 
                 // 👉 Stage Anzeige
                 stageDisplay
+                // 👉 Points Anzeige
+
+                poointDisplay
+
 
                 // 👉 HP Bar
                 hpBar
@@ -88,17 +91,46 @@ private extension SpiritGameView {
 private extension SpiritGameView {
 
     var stageDisplay: some View {
+        
+        HStack(spacing: 8) {
+
+            Image(systemName: "squares.leading.rectangle")   // <- Wähle dein Symbol!
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(.yellow)
+
         Text("Stage \(game.stage)")
             .font(.system(size: 24, weight: .heavy, design: .rounded))
             .foregroundColor(.white)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 6)
-            .background(.blue)
-            .clipShape(Capsule())
-            .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
+        }
+        .padding(.horizontal, 30)
+        .padding(.vertical, 6)
+        .background(.blue)
+        .clipShape(Capsule())
+        .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
     }
 }
 
+        private extension SpiritGameView {
+
+            var poointDisplay: some View {
+
+                HStack(spacing: 8) {
+
+                    Image(systemName: "bubbles.and.sparkles")   // <- Wähle dein Symbol!
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(.yellow)
+
+                    Text("Points \(game.stage)")
+                        .font(.system(size: 24, weight: .heavy, design: .rounded))
+                        .foregroundColor(.white)
+                }
+                .padding(.horizontal, 30)
+                .padding(.vertical, 6)
+                .background(.blue)
+                .clipShape(Capsule())
+                .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
+            }
+        }
 
 
 private extension SpiritGameView {
@@ -256,5 +288,5 @@ private extension SpiritGameView {
 
 #Preview {
     SpiritGameView()
+        .environmentObject(SpiritGameController())
 }
-

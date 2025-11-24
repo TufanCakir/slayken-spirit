@@ -32,7 +32,7 @@ struct HomeView: View {
                         LazyVGrid(columns: columns, spacing: 24) {
                             ForEach(buttons) { button in
                                 NavigationLink(
-                                    destination: ScreenFactory.make(button.destination)
+                                    destination: ScreenFactory.shared.make(button.destination)
                                 ) {
                                     HomeButtonView(button: button)
                                 }
@@ -71,4 +71,5 @@ struct HomeBackgroundView: View {
         .environmentObject(CrystalManager.shared)
         .environmentObject(AccountLevelManager.shared)
         .preferredColorScheme(.dark)
+        .environmentObject(SpiritGameController())
 }

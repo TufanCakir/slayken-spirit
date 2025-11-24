@@ -18,6 +18,7 @@ struct Slayken_SpiritApp: App {
 
     init() {
         GameCenterManager.shared.authenticate()
+        ScreenFactory.shared.setGameController(spiritGame)
     }
 
     var body: some Scene {

@@ -9,6 +9,14 @@
   },
   {
     "id": "2",
+    "title": "Events",
+    "icon": "flame.fill",
+    "color": "#000000",
+    "iconColor": "#FF4500",
+    "destination": "EventView"
+  },
+  {
+    "id": "3",
     "title": "Upgrades",
     "icon": "arrow.up.circle.fill",
     "color": "#000000",
@@ -16,7 +24,7 @@
     "destination": "UpgradeView"
   },
   {
-    "id": "3",
+    "id": "4",
     "title": "Artefakte",
     "icon": "sparkles",
     "color": "#000000",
@@ -24,7 +32,7 @@
     "destination": "ArtefactView"
   },
   {
-    "id": "4",
+    "id": "5",
     "title": "Quests",
     "icon": "list.bullet.rectangle.fill",
     "color": "#000000",
@@ -32,7 +40,7 @@
     "destination": "QuestView"
   },
   {
-    "id": "5",
+    "id": "6",
     "title": "Gifts",
     "icon": "gift",
     "color": "#000000",
@@ -40,7 +48,7 @@
     "destination": "GiftView"
   },
   {
-    "id": "6",
+    "id": "7",
     "title": "Daily Login Bonus",
     "icon": "giftcard",
     "color": "#000000",
@@ -48,7 +56,7 @@
     "destination": "DailyLoginView"
   },
   {
-    "id": "7",
+    "id": "8",
     "title": "Hall of Fame",
     "icon": "trophy.fill",
     "color": "#000000",
@@ -56,11 +64,19 @@
     "destination": "HallOfFameView"
   },
   {
-    "id": "8",
+    "id": "9",
+    "title": "Spirits",
+    "icon": "cube.transparent",
+    "color": "#FFFFFF",
+    "iconColor": "#9B9B9B",
+    "destination": "SpiritListView"
+  },
+  {
+    "id": "10",
     "title": "Settings",
     "icon": "gear",
     "color": "#000000",
     "iconColor": "#9B9B9B",
     "destination": "SettingsView"
-  },
+  }
 ]

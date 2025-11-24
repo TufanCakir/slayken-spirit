@@ -9,10 +9,20 @@ import SwiftUI
 
 // MARK: - 🧭 ScreenFactory
 @MainActor
-struct ScreenFactory {
+final class ScreenFactory {
+
+    static let shared = ScreenFactory()
+    
+
+
+      private var game: SpiritGameController?
+
+      func setGameController(_ controller: SpiritGameController) {
+          self.game = controller
+      }
 
     // MARK: Public API
-    static func make(_ name: String) -> AnyView {
+    func make(_ name: String) -> AnyView {
         switch name {
 
         // MARK: ⚙️ Core Screens
@@ -21,16 +31,32 @@ struct ScreenFactory {
         // MARK: 🎁 Gifts / Daily
         case "GiftView": return AnyView(GiftView())
         case "DailyLoginView": return AnyView(DailyLoginView())
-        case "SpiritGameView": return AnyView(SpiritGameView())
+        case "SpiritGameView":
+            guard let game = game else {
+                fatalError("❌ SpiritGameController fehlt in ScreenFactory! setGameController zuerst aufrufen.")
+            }
+            return AnyView(SpiritGameView().environmentObject(game))
+
         case "UpgradeView": return AnyView(UpgradeView())
         case "ArtefactView": return AnyView(ArtefactView())
         case "HallOfFameView": return AnyView(HallOfFameView())
         case "QuestView": return AnyView(QuestView())
+        case "Spirit3DView": return AnyView(Spirit3DView(modelName: "spirit1", rotation: 0, scale: 1.0))
+        case "EventView":
+            guard let game = game else {
+                fatalError("❌ SpiritGameController fehlt in ScreenFactory! setGameController zuerst aufrufen.")
+            }
+            return AnyView(EventView().environmentObject(game))
+
+
+
+          
+
 
             
         // MARK: 🧩 Fallback
         default:
-            return AnyView(fallbackView(for: name))
+            return AnyView(ScreenFactory.fallbackView(for: name))
         }
     }
 }
@@ -156,3 +182,4 @@ extension View {
             .environmentObject(account)
     }
 }
+
