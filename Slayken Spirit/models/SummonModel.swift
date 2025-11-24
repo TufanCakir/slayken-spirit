@@ -3,7 +3,6 @@ import Foundation
 struct SummonOption: Identifiable, Codable {
     let id: String
     let title: String
-    let priceCoins: Int
     let priceCrystals: Int
     let amount: Int
 }

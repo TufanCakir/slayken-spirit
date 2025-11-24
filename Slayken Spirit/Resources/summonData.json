@@ -2,15 +2,7 @@
   {
     "id": "single",
     "title": "Single Summon",
-    "priceCoins": 10,
-    "priceCrystals": 1,
+    "priceCrystals": 5,
     "amount": 1
   },
-  {
-    "id": "multi",
-    "title": "10x Summon",
-    "priceCoins": 0,
-    "priceCrystals": 0,
-    "amount": 10
-  }
 ]

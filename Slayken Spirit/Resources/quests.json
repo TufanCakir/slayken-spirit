@@ -1,0 +1,156 @@
+[
+  {
+    "id": "quest_reach_stage_10",
+    "name_de": "Erreiche Stage 10",
+    "name_en": "Reach Stage 10",
+    "desc_de": "Erreiche Stage 10, um deine Stärke zu beweisen.",
+    "desc_en": "Reach Stage 10 to prove your strength.",
+    "type": "stage",
+    "target": 10,
+    "reward": {
+      "coins": 100,
+      "crystals": 0,
+      "exp": 50,
+      "artefact": null
+    }
+  },
+  {
+    "id": "quest_reach_stage_50",
+    "name_de": "Erreiche Stage 50",
+    "name_en": "Reach Stage 50",
+    "desc_de": "Besiege 50 Spirits hintereinander!",
+    "desc_en": "Defeat 50 spirits in a row!",
+    "type": "stage",
+    "target": 50,
+    "reward": {
+      "coins": 300,
+      "crystals": 5,
+      "exp": 150,
+      "artefact": null
+    }
+  },
+  {
+    "id": "quest_reach_stage_100",
+    "name_de": "Erreiche Stage 100",
+    "name_en": "Reach Stage 100",
+    "desc_de": "Nur wahre Kämpfer schaffen Stage 100.",
+    "desc_en": "Only true fighters reach stage 100.",
+    "type": "stage",
+    "target": 100,
+    "reward": {
+      "coins": 500,
+      "crystals": 10,
+      "exp": 300,
+      "artefact": "artifact_fire_core"
+    }
+  },
+
+  {
+    "id": "quest_kill_100",
+    "name_de": "Besiege 100 Gegner",
+    "name_en": "Defeat 100 Enemies",
+    "desc_de": "Besiege insgesamt 100 Gegner.",
+    "desc_en": "Defeat a total of 100 enemies.",
+    "type": "kills",
+    "target": 100,
+    "reward": {
+      "coins": 200,
+      "crystals": 0,
+      "exp": 100,
+      "artefact": null
+    }
+  },
+  {
+    "id": "quest_kill_500",
+    "name_de": "Besiege 500 Gegner",
+    "name_en": "Defeat 500 Enemies",
+    "desc_de": "Besiege insgesamt 500 Gegner.",
+    "desc_en": "Defeat a total of 500 enemies.",
+    "type": "kills",
+    "target": 500,
+    "reward": {
+      "coins": 400,
+      "crystals": 5,
+      "exp": 200,
+      "artefact": null
+    }
+  },
+
+  {
+    "id": "quest_collect_25_artefacts",
+    "name_de": "Sammle 25 Artefakte",
+    "name_en": "Collect 25 Artefacts",
+    "desc_de": "Sammle 25 Artefakte und werde stärker.",
+    "desc_en": "Collect 25 artefacts to become stronger.",
+    "type": "artefacts",
+    "target": 25,
+    "reward": {
+      "coins": 250,
+      "crystals": 5,
+      "exp": 200,
+      "artefact": null
+    }
+  },
+  {
+    "id": "quest_collect_50_artefacts",
+    "name_de": "Sammle 50 Artefakte",
+    "name_en": "Collect 50 Artefacts",
+    "desc_de": "Du bist ein echter Sammler!",
+    "desc_en": "You are a true collector!",
+    "type": "artefacts",
+    "target": 50,
+    "reward": {
+      "coins": 600,
+      "crystals": 10,
+      "exp": 300,
+      "artefact": "artifact_void_core"
+    }
+  },
+
+  {
+    "id": "quest_play_30_minutes",
+    "name_de": "Spiele 30 Minuten",
+    "name_en": "Play 30 Minutes",
+    "desc_de": "Verbringe 30 Minuten im Spiel.",
+    "desc_en": "Spend 30 minutes in the game.",
+    "type": "playtime",
+    "target": 30,
+    "reward": {
+      "coins": 150,
+      "crystals": 0,
+      "exp": 100,
+      "artefact": null
+    }
+  },
+  {
+    "id": "quest_play_120_minutes",
+    "name_de": "Spiele 120 Minuten",
+    "name_en": "Play 120 Minutes",
+    "desc_de": "Ein wahrer Grinder!",
+    "desc_en": "A true grinder!",
+    "type": "playtime",
+    "target": 120,
+    "reward": {
+      "coins": 300,
+      "crystals": 5,
+      "exp": 200,
+      "artefact": null
+    }
+  },
+
+  {
+    "id": "quest_special_first_boss",
+    "name_de": "Besiege deinen ersten Boss",
+    "name_en": "Defeat your first Boss",
+    "desc_de": "Tritt gegen deinen ersten echten Boss an.",
+    "desc_en": "Face your first real boss.",
+    "type": "special",
+    "target": 1,
+    "reward": {
+      "coins": 500,
+      "crystals": 10,
+      "exp": 300,
+      "artefact": "artifact_ice_core"
+    }
+  }
+]

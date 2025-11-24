@@ -14,6 +14,7 @@ struct SettingsView: View {
     @EnvironmentObject var crystalManager: CrystalManager
     @EnvironmentObject var accountManager: AccountLevelManager
     @EnvironmentObject var musicManager: MusicManager
+    @EnvironmentObject var spiritGame: SpiritGameController
 
     // MARK: - Local State
     @State private var showResetAlert = false
@@ -125,6 +126,7 @@ extension SettingsView {
 // MARK: - Reset Logic
 extension SettingsView {
     private func performReset() {
+        
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
         
@@ -133,14 +135,20 @@ extension SettingsView {
         crystalManager.reset()
         accountManager.reset()
         
-        // Gameplay systems
+        // Gameplay
         UpgradeManager.shared.reset()
         ArtefactInventoryManager.shared.reset()
-        InventoryManager.shared.reset()
-        
-        // Gifts / Daily
+        spiritGame.resetStats()
+
+        // Social / Daily
         DailyLoginManager.shared.reset()
         GiftManager.shared.reset()
+        
+        // Quests
+        QuestManager.shared.reset()
+        
+        // Game Center Rewards zurücksetzen
+        GameCenterRewardService.shared.reset()
         
         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
             showResetConfirmation = true

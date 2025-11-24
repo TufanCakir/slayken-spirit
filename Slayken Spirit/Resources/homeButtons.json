@@ -25,6 +25,14 @@
   },
   {
     "id": "4",
+    "title": "Quests",
+    "icon": "list.bullet.rectangle.fill",
+    "color": "#000000",
+    "iconColor": "#7CFF4D",
+    "destination": "QuestView"
+  },
+  {
+    "id": "5",
     "title": "Gifts",
     "icon": "gift",
     "color": "#000000",
@@ -32,7 +40,7 @@
     "destination": "GiftView"
   },
   {
-    "id": "5",
+    "id": "6",
     "title": "Daily Login Bonus",
     "icon": "giftcard",
     "color": "#000000",
@@ -40,7 +48,15 @@
     "destination": "DailyLoginView"
   },
   {
-    "id": "6",
+    "id": "7",
+    "title": "Hall of Fame",
+    "icon": "trophy.fill",
+    "color": "#000000",
+    "iconColor": "#FFB800",
+    "destination": "HallOfFameView"
+  },
+  {
+    "id": "8",
     "title": "Settings",
     "icon": "gear",
     "color": "#000000",

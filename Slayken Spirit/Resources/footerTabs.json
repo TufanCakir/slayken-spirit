@@ -8,23 +8,30 @@
   },
   {
     "id": "2",
-    "title": "Summon",
-    "icon": "sparkles",
+    "title": "Upgrades",
+    "icon": "arrow.up.circle.fill",
     "color": "#FFFFFF",
-    "destination": "SummonView"
-  }
+    "destination": "UpgradeView"
+  },
   {
     "id": "3",
+    "title": "Artefacts",
+    "icon": "sparkles",
+    "color": "#FFFFFF",
+    "destination": "ArtefactView"
+  },
+  {
+    "id": "4",
+    "title": "Hall of Fame",
+    "icon": "trophy.fill",
+    "color": "#FFFFFF",
+    "destination": "HallOfFameView"
+  },
+  {
+    "id": "5",
     "title": "Exchange",
     "icon": "arrow.trianglehead.2.counterclockwise",
     "color": "#FFFFFF",
     "destination": "ExchangeView"
-  },
-  {
-    "id": "4",
-    "title": "Settings",
-    "icon": "gear",
-    "color": "#FFFFFF",
-    "destination": "SettingsView"
   },
 ]

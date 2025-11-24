@@ -21,8 +21,19 @@ final class SpiritGameController: ObservableObject {
     @Published var backgroundFade: Double = 0
     @Published var isAutoBattle: Bool = false
 
+    // MARK: - Stats fürs Game Center
+    @Published var totalKills: Int = UserDefaults.standard.integer(forKey: "totalKills")
+    @Published var totalQuests: Int = UserDefaults.standard.integer(forKey: "totalQuests")
+    @Published var playtimeMinutes: Int = UserDefaults.standard.integer(forKey: "playtimeMinutes")
+
     private var autoBattleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
+
+    private func saveStats() {
+        UserDefaults.standard.set(totalKills, forKey: "totalKills")
+        UserDefaults.standard.set(totalQuests, forKey: "totalQuests")
+        UserDefaults.standard.set(playtimeMinutes, forKey: "playtimeMinutes")
+    }
 
     // MARK: - Data
     private let all: [ModelConfig]
@@ -49,8 +60,7 @@ final class SpiritGameController: ObservableObject {
     private func setupArtefactListener() {
         ArtefactInventoryManager.shared.objectWillChange
             .sink { [weak self] _ in
-                guard let self else { return }
-                self.recalculateHP()
+                self?.recalculateHP()
             }
             .store(in: &cancellables)
     }
@@ -59,6 +69,7 @@ final class SpiritGameController: ObservableObject {
         currentHP = max(1, current.hp + ArtefactInventoryManager.shared.bonusHP)
         objectWillChange.send()
     }
+
 
 
 
@@ -95,6 +106,21 @@ final class SpiritGameController: ObservableObject {
         isAutoBattle.toggle()
         isAutoBattle ? startAutoBattle() : stopAutoBattle()
     }
+    
+    func resetStats() {
+        totalKills = 0
+        totalQuests = 0
+        playtimeMinutes = 0
+
+        UserDefaults.standard.set(0, forKey: "totalKills")
+        UserDefaults.standard.set(0, forKey: "totalQuests")
+        UserDefaults.standard.set(0, forKey: "playtimeMinutes")
+        UserDefaults.standard.set(1, forKey: "savedStage")
+
+        stage = 1
+        print("🔄 SpiritGame Stats reset!")
+    }
+
 
     private func startAutoBattle() {
 
@@ -132,6 +158,10 @@ final class SpiritGameController: ObservableObject {
     // MARK: - Artefact Drop
     private func rollArtefactDrop() {
 
+        let total = ArtefactInventoryManager.shared.total
+        GCArtefacts.submit(total)
+        GameCenterRewardService.shared.rewardForArtefacts(total)
+
         let artefacts = Bundle.main.loadArtefacts("artefacts")
         let lootBoost = ArtefactInventoryManager.shared.bonusLootBoost
 
@@ -156,23 +186,42 @@ final class SpiritGameController: ObservableObject {
         AccountLevelManager.shared.addExp(reward.exp + expBonus)
     }
 
-    // MARK: - Next Spirit (automatisch per Reihenfolge)
+    // MARK: - Next Spirit
     private func goToNext() {
-
-        // Index finden
         guard let idx = all.firstIndex(where: { $0.id == current.id }) else { return }
 
+        // Nächster Spirit
         let nextIndex = (idx + 1) % all.count
         let next = all[nextIndex]
 
+        // Stage erhöhen
         stage += 1
         UserDefaults.standard.set(stage, forKey: "savedStage")
+
+        // 🔥 Game Center + Rewards
+        GCKills.submit(totalKills)
+        GameCenterRewardService.shared.rewardForKills(totalKills)
+
+        GCQuests.submit(totalQuests)
+        GameCenterRewardService.shared.rewardForQuests(totalQuests)
+
+        GCPlaytime.submit(playtimeMinutes)
+        GameCenterRewardService.shared.rewardForPlaytime(playtimeMinutes)
+
+        GCHighestStage.submit(stage)
+        GameCenterRewardService.shared.rewardForStage(stage)
+
+        // Stats speichern
+        saveStats()
+
+        // Spirit Update
         current = next
         recalculateHP()
 
+        // Hintergrund animiert wechseln
         updateBackground(for: next)
     }
-
+    
     // MARK: - Background Change
     private func updateBackground(for next: ModelConfig) {
 

@@ -21,14 +21,23 @@ struct FooterTabView: View {
             .tag(0)
             
             NavigationStack {
-                SummonView()
+                UpgradeView()
             }
             .tabItem {
-                Image(systemName: "sparkle")
-                Text("Summon")
+                Image(systemName: "arrow.up.circle.fill")
+                Text("Upgrade")
+            }
+            .tag(1)
+            
+            NavigationStack {
+                ArtefactView()
+            }
+            .tabItem {
+                Image(systemName: "sparkles")
+                Text("Artefact")
             }
             .tag(2)
-            
+
             NavigationStack {
                 ExchangeView()
             }
@@ -37,15 +46,6 @@ struct FooterTabView: View {
                 Text("Exchange")
             }
             .tag(3)
-            
-        NavigationStack {
-            SettingsView()
-        }
-        .tabItem {
-            Image(systemName: "gear")
-            Text("Settings")
-        }
-        .tag(4)            
         }
     }
 }

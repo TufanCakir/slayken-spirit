@@ -24,10 +24,9 @@ struct ScreenFactory {
         case "SpiritGameView": return AnyView(SpiritGameView())
         case "UpgradeView": return AnyView(UpgradeView())
         case "ArtefactView": return AnyView(ArtefactView())
+        case "HallOfFameView": return AnyView(HallOfFameView())
+        case "QuestView": return AnyView(QuestView())
 
-
-            
-            
             
         // MARK: 🧩 Fallback
         default:
@@ -42,10 +41,14 @@ extension ScreenFactory {
     /// Erstellt eine SpiritGameView basierend auf JSON-Daten.
     fileprivate static func makeSpiritGameView() -> AnyView {
         do {
-            let allSpirits: [Spirit] = try Bundle.main.decodeSafe("spirits.json")
+            let allSpirits: [Spirit] = try Bundle.main.decodeSafe(
+                "spirits.json"
+            )
 
             guard allSpirits.first != nil else {
-                return AnyView(fallbackView(for: "SpiritGameView – keine Spirit-Daten"))
+                return AnyView(
+                    fallbackView(for: "SpiritGameView – keine Spirit-Daten")
+                )
             }
 
             // 🔥 Manager
@@ -60,11 +63,13 @@ extension ScreenFactory {
             return AnyView(view)
 
         } catch {
-            print("⚠️ [ScreenFactory] Fehler beim Laden von spirits.json:", error)
+            print(
+                "⚠️ [ScreenFactory] Fehler beim Laden von spirits.json:",
+                error
+            )
             return AnyView(fallbackView(for: "SpiritGameView (JSON-Fehler)"))
         }
     }
-
 
     // MARK: Fallback
     fileprivate static func fallbackView(for name: String) -> some View {
@@ -79,11 +84,13 @@ extension ScreenFactory {
                 .font(.system(size: 22, weight: .semibold, design: .rounded))
                 .foregroundColor(.white)
 
-            Text("Dieser Screen ist noch nicht in der ScreenFactory registriert.")
-                .font(.subheadline)
-                .foregroundColor(.white.opacity(0.65))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 30)
+            Text(
+                "Dieser Screen ist noch nicht in der ScreenFactory registriert."
+            )
+            .font(.subheadline)
+            .foregroundColor(.white.opacity(0.65))
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 30)
 
             Divider()
                 .background(Color.white.opacity(0.25))
@@ -128,7 +135,10 @@ extension Bundle {
             throw NSError(
                 domain: "ScreenFactory.DecodeError",
                 code: 500,
-                userInfo: [NSLocalizedDescriptionKey: "Fehler beim Decodieren von \(file): \(error)"]
+                userInfo: [
+                    NSLocalizedDescriptionKey:
+                        "Fehler beim Decodieren von \(file): \(error)"
+                ]
             )
         }
     }
@@ -146,4 +156,3 @@ extension View {
             .environmentObject(account)
     }
 }
-
