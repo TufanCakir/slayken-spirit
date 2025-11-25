@@ -37,15 +37,7 @@ struct EventView: View {
      
             VStack(spacing: 22) {
 
-                Text("Events")
-                    .font(.system(size: 42, weight: .black, design: .rounded))
-                    .foregroundStyle(
-                        LinearGradient(colors: [.white, .cyan],
-                                       startPoint: .top,
-                                       endPoint: .bottom)
-                    )
-                    .shadow(radius: 10)
-                    .padding(.top, 10)
+   
 
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 20) {
@@ -83,7 +75,7 @@ private extension EventView {
                 .frame(height: 200)                               // <- Card Größe
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(.red, lineWidth: 3)
+                        .stroke(.blue, lineWidth: 3)
                 )
             
             HStack {
@@ -119,9 +111,7 @@ struct EventDetailView: View {
     var body: some View {
         VStack(spacing: 20) {
 
-            Text(event.name)
-                .font(.system(size: 34, weight: .black, design: .rounded))
-                .foregroundColor(.white)
+   
 
             // 🔥 CARD-Grid — NICHT fullscreen!
             SpiritGridBackground(glowColor: Color(hex: event.gridColor))
@@ -129,12 +119,14 @@ struct EventDetailView: View {
                 .frame(height: 200)                               // <- Card Größe
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(.red, lineWidth: 3)
+                        .stroke(.blue, lineWidth: 3)
                 )
             
             
+            
             Text(event.description)
-                .foregroundColor(.white.opacity(0.8))
+                .font(Font.body.italic())
+                .foregroundColor(.white)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
@@ -158,7 +150,7 @@ struct EventDetailView: View {
         }
         .padding()
         .background(
-            LinearGradient(colors: [.black, .blue.opacity(0.4)],
+            LinearGradient(colors: [.black, .blue, .blue],
                            startPoint: .top,
                            endPoint: .bottom)
                 .ignoresSafeArea()

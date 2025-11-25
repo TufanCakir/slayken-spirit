@@ -6,19 +6,14 @@ struct SpiritCardView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 22)
+            RoundedRectangle(cornerRadius: 20)
                 .fill(.ultraThinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 22)
-                        .stroke(Color.white.opacity(0.15), lineWidth: 1.2)
-                )
-                .shadow(color: .black.opacity(0.4), radius: 10, y: 6)
-
+              
             VStack(spacing: 12) {
 
                 Spirit3DMini(modelName: spirit.modelName)
                     .frame(height: 200)
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
             }
             .padding(14)
         }

@@ -4,22 +4,21 @@ struct ArtefactView: View {
 
     @ObservedObject private var inventory = ArtefactInventoryManager.shared
 
-  
     var body: some View {
         NavigationStack {
             ZStack {
-                SpiritGridBackground(glowColor: .purple)
+                SpiritGridBackground()
 
-
-                ScrollView {
-                    LazyVStack(spacing: 18) {
-
+                ScrollView(showsIndicators: false) {
+                    LazyVStack(spacing: 24) {
                         ForEach(inventory.owned) { art in
                             artefactCard(art)
                         }
                     }
+                    .padding(.top, 20)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 40)
                 }
-                .padding()
             }
         }
     }
@@ -29,24 +28,43 @@ extension ArtefactView {
 
     fileprivate func artefactCard(_ art: Artefact) -> some View {
 
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 16) {
 
-            HStack(spacing: 12) {
+            HStack(alignment: .top, spacing: 14) {
 
-                // ICON (Emoji oder SF Symbol)
-                Image(systemName: art.displayIcon)
-                    .font(.headline)
-                    .foregroundColor(art.rarityColor)
-                    .shadow(color: art.rarityColor, radius: 6)
+                // MARK: - ICON
+                ZStack {
+                    Circle()
+                        .fill(art.rarityColor.opacity(0.15))
+                        .frame(width: 52, height: 52)
+                        .shadow(color: art.rarityColor.opacity(0.6), radius: 10)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("\(art.name)  Lv.\(art.level)")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                    Image(systemName: art.displayIcon)
+                        .font(.system(size: 22, weight: .heavy))
+                        .foregroundColor(art.rarityColor)
+                }
+
+                // MARK: - TEXT + TITLE
+                VStack(alignment: .leading, spacing: 6) {
+
+                    HStack {
+                        Text("\(art.name)")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.white)
+
+                        Text("Lv.\(art.level)")
+                            .font(.headline)
+                            .foregroundColor(.yellow)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(.yellow.opacity(0.2))
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                    }
 
                     Text(art.desc)
-                        .font(.caption)
-                        .foregroundColor(.white)
+                        .foregroundColor(.white.opacity(0.75))
+                        .font(.subheadline)
+                        .multilineTextAlignment(.leading)
                 }
 
                 Spacer()
@@ -54,25 +72,31 @@ extension ArtefactView {
                 rarityBadge(art.rarity)
             }
 
-            // POWER Anzeige
+            Divider().background(.white.opacity(0.2))
+
+            // MARK: - Power Row
             HStack {
                 Text("Power: \(art.totalPower)")
-                    .font(.headline)
+                    .font(.headline.bold())
                     .foregroundColor(.white)
 
                 Spacer()
 
                 upgradeButton(art)
             }
+
         }
-        .padding(16)
-        .background(.black)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(art.rarityColor.opacity(0.7), lineWidth: 1.4)
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .fill(Color.white.opacity(0.06))
+                .background(.ultraThinMaterial)
         )
-        .shadow(color: art.rarityColor.opacity(0.4), radius: 12)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(art.rarityColor.opacity(0.6), lineWidth: 1.3)
+        )
+        .shadow(color: art.rarityColor.opacity(0.35), radius: 14, y: 6)
     }
 }
 
@@ -83,16 +107,17 @@ extension ArtefactView {
             ArtefactInventoryManager.shared.upgrade(art)
         } label: {
             Text("Upgrade")
-                .font(.headline)
+                .font(.headline.bold())
                 .foregroundColor(.white)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(art.rarityColor.opacity(0.2))
-                .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(art.rarityColor.opacity(0.8), lineWidth: 1)
+                .padding(.horizontal, 22)
+                .padding(.vertical, 10)
+                .background(
+                    LinearGradient(colors: [art.rarityColor, art.rarityColor.opacity(0.65)],
+                                   startPoint: .topLeading,
+                                   endPoint: .bottomTrailing)
                 )
+                .clipShape(Capsule())
+                .shadow(color: art.rarityColor.opacity(0.6), radius: 8)
         }
     }
 }
@@ -110,12 +135,15 @@ extension ArtefactView {
         }()
 
         return Text(rarity.uppercased())
-            .font(.headline)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(color.opacity(0.85))
-            .clipShape(RoundedRectangle(cornerRadius: 6))
+            .font(.system(size: 12, weight: .bold))
             .foregroundColor(.white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(color.opacity(0.9))
+            )
+            .shadow(color: color.opacity(0.7), radius: 6)
     }
 }
 

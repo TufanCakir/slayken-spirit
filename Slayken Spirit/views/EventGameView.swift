@@ -21,7 +21,7 @@ struct EventGameView: View {
 
     var body: some View {
         ZStack {
-            SpiritGridBackground(glowColor: .red)
+            SpiritGridBackground()
 
        
             // 3D SPIRIT
@@ -87,7 +87,7 @@ private extension EventGameView {
             .background(.ultraThinMaterial)
             .clipShape(Capsule())
             .overlay(
-                Capsule().stroke(Color.white.opacity(0.3), lineWidth: 1)
+                Capsule().stroke(Color.white, lineWidth: 1)
             )
         }
     }
@@ -121,7 +121,7 @@ private extension EventGameView {
                     // Material layer behind for glow/depth when inactive
                     if !isActive {
                         Capsule()
-                            .fill(.red)
+                            .fill(.blue)
                     }
                     // Foreground capsule fill uses consistent ShapeStyle types
                     Capsule()
@@ -166,7 +166,7 @@ private extension EventGameView {
         
         .padding(.horizontal, 30)
         .padding(.vertical, 6)
-        .background(.red)
+        .background(.blue)
         .clipShape(Capsule())
         .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
     
@@ -187,7 +187,8 @@ private extension EventGameView {
         return ZStack(alignment: .leading) {
 
             Capsule()
-                .fill(LinearGradient(colors: [.red, .black, .red],
+                .fill(LinearGradient(colors:                         [.blue, .black, .blue],
+
                                      startPoint: .leading,
                                      endPoint: .trailing))
                 .frame(maxWidth: 260 * percent)

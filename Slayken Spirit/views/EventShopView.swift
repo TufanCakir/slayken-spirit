@@ -18,14 +18,9 @@ struct EventShopView: View {
                 
                 // MARK: - Titel
                 VStack(spacing: 6) {
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 42))
-                        .foregroundColor(.red)
-                        .shadow(color: .red.opacity(0.5), radius: 12)
+                
                     
-                    Text("Event Shop")
-                        .font(.system(size: 40, weight: .black, design: .rounded))
-                        .foregroundColor(.white)
+                  
                 }
                 .padding(.top, 10)
                 
@@ -42,7 +37,7 @@ struct EventShopView: View {
                 
                 // MARK: - Shop Items
                 ScrollView(showsIndicators: false) {
-                    LazyVStack(spacing: 22) {
+                    LazyVStack(spacing: 20) {
                         ForEach(shop.items) { item in
                             EventShopItemView(
                                 item: item,
@@ -51,7 +46,6 @@ struct EventShopView: View {
                             )
                         }
                     }
-                    .padding(.horizontal, 20)
                 }
                 
                 
@@ -59,9 +53,12 @@ struct EventShopView: View {
                 NavigationLink("Inventory") {
                     EventShopInventoryView()
                 }
-                .font(.headline)
+                .font(.title2.bold())
                 .foregroundColor(.white)
-                .padding(.bottom, 25)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 8)
+                .background(.ultraThinMaterial)
+                .clipShape(Capsule())
             }
             
             // ⭐ POPUP ÜBER ALLEM

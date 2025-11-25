@@ -28,7 +28,7 @@ struct BuyConfirmPopup: View {
                 // MESSAGE
                 Text("Buy \(item.name) for \(item.price) Spirit Points?")
                     .font(.system(size: 17, weight: .medium))
-                    .foregroundColor(.white.opacity(0.85))
+                    .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
 
@@ -39,10 +39,10 @@ struct BuyConfirmPopup: View {
                     Button(action: onCancel) {
                         Text("Cancel")
                             .font(.headline)
-                            .foregroundColor(.white.opacity(0.8))
+                            .foregroundColor(.white)
                             .padding(.vertical, 12)
                             .frame(maxWidth: .infinity)
-                            .background(Color.white.opacity(0.12))
+                            .background(.ultraThinMaterial)
                             .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
 
@@ -53,9 +53,8 @@ struct BuyConfirmPopup: View {
                             .foregroundColor(.white)
                             .padding(.vertical, 12)
                             .frame(maxWidth: .infinity)
-                            .background(Color.red)
+                            .background(.ultraThinMaterial)
                             .clipShape(RoundedRectangle(cornerRadius: 14))
-                            .shadow(color: .red.opacity(0.6), radius: 10, y: 4)
                     }
                 }
                 .padding(.horizontal, 20)
@@ -64,10 +63,7 @@ struct BuyConfirmPopup: View {
             .padding(.vertical, 24)
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 26)
-                    .stroke(Color.white.opacity(0.12), lineWidth: 1)
-            )
+         
             .shadow(color: .black.opacity(0.45), radius: 25, y: 6)
             .padding(.horizontal, 40)
             .scaleEffect(animate ? 1 : 0.7)

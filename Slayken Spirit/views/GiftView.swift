@@ -136,8 +136,8 @@ struct GiftView: View {
                         .foregroundColor(.white)
 
                     Text(gift.description)
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.7))
+                        .font(.headline.bold())
+                        .foregroundStyle(.white)
                 }
 
                 Spacer()

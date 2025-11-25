@@ -25,7 +25,7 @@ struct EventShopInventoryView: View {
                                 HStack {
                                     Image(systemName: item.icon)
                                         .font(.title2)
-                                        .foregroundColor(.red)
+                                        .foregroundColor(.yellow)
 
                                     VStack(alignment: .leading) {
                                         Text(item.name)

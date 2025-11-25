@@ -10,12 +10,8 @@ struct HallOfFameView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [.black, .blue, .black],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            SpiritGridBackground()
+
             
 
             VStack(spacing: 0) {

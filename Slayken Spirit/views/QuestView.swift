@@ -6,21 +6,26 @@ struct QuestView: View {
     @ObservedObject private var questManager = QuestManager.shared
     @State private var selectedQuest: Quest?
 
-
-
     var body: some View {
         ZStack {
-            SpiritGridBackground(glowColor: .yellow)
+            SpiritGridBackground()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 28) {
+                VStack(spacing: 32) {
 
-         
+                    // MARK: Header
+                    Text("Quests")
+                        .font(.system(size: 40, weight: .black, design: .rounded))
+                        .foregroundStyle(.white)
+                        .shadow(radius: 10)
+                        .padding(.top, 20)
+
+                    // MARK: Quest Cards
                     ForEach(quests) { quest in
                         questCard(quest)
                     }
 
-                    Spacer(minLength: 32)
+                    Spacer(minLength: 40)
                 }
                 .padding(.horizontal, 20)
             }
@@ -33,118 +38,116 @@ struct QuestView: View {
     }
 }
 
-
-
 private extension QuestView {
-    
+
     func questCard(_ quest: Quest) -> some View {
 
         let progress = questManager.progress(for: quest)
         let ratio = min(1.0, Double(progress) / Double(quest.target))
-
         let isDone = progress >= quest.target
         let isClaimed = questManager.completed.contains(quest.id)
 
-        return VStack(alignment: .leading, spacing: 16) {
+        return ZStack {
+            // 🔥 Glow-Glass Card Hintergrund
+            RoundedRectangle(cornerRadius: 24)
+                .fill(Color.white.opacity(0.07))
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 24))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24)
+                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                )
+                .shadow(color: Color.yellow.opacity(0.25), radius: 15, y: 8)
 
-            // HEADER
-            HStack {
-                Text(QuestManager.shared.localizedTitle(for: quest))
-                    .font(.headline.bold())
-                    .foregroundColor(.white)
+            VStack(alignment: .leading, spacing: 18) {
 
-                Spacer()
-
-                Button {
-                    selectedQuest = quest
-                } label: {
-                    Image(systemName: "info.circle")
-                        .font(.headline.bold())
+                // MARK: Header Row
+                HStack {
+                    Text(QuestManager.shared.localizedTitle(for: quest))
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
 
+                    Spacer()
 
+                    Button {
+                        selectedQuest = quest
+                    } label: {
+                        Image(systemName: "info.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                           
+                    }
                 }
-            }
 
-            // DESCRIPTION
-            Text(QuestManager.shared.localizedDescription(for: quest))
-                .font(.headline.bold())
-                .foregroundColor(.white)
+                // MARK: Description
+                Text(QuestManager.shared.localizedDescription(for: quest))
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.85))
+                    .multilineTextAlignment(.leading)
 
-            // PROGRESS BAR
-            VStack(alignment: .leading, spacing: 6) {
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.white.opacity(0.12))
+                // MARK: Progress Bar
+                VStack(alignment: .leading, spacing: 6) {
 
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(
-                            LinearGradient(colors: [.cyan, .blue.opacity(0.7)],
-                                           startPoint: .leading,
-                                           endPoint: .trailing)
-                        )
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .frame(width: UIScreen.main.bounds.width * 0.75 * ratio)
-                        .animation(.easeInOut(duration: 0.25), value: ratio)
+                    ZStack(alignment: .leading) {
+                        // Background Bar
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.white.opacity(0.15))
+
+                        // Fill Bar
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(
+                                LinearGradient(colors: [.yellow, .orange.opacity(0.8)],
+                                               startPoint: .leading,
+                                               endPoint: .trailing)
+                            )
+                            .frame(width: UIScreen.main.bounds.width * 0.70 * ratio)
+                            .animation(.easeInOut(duration: 0.25), value: ratio)
+                    }
+                    .frame(height: 16)
+
+                    Text("\(progress) / \(quest.target)")
+                        .font(.subheadline.bold())
+                        .foregroundColor(.white.opacity(0.7))
                 }
-                .frame(height: 14)
 
-                Text("\(progress) / \(quest.target)")
+                // MARK: Claim Button
+                Button {
+                    questManager.claim(quest)
+                } label: {
+                    Text(
+                        isClaimed ? "Erhalten" :
+                        (isDone ? "Belohnung abholen" : "Noch nicht erfüllt")
+                    )
                     .font(.headline.bold())
-                    .foregroundColor(.white.opacity(0.7))
-            }
-
-            // CLAIM BUTTON
-            Button {
-                questManager.claim(quest)
-            } label: {
-                Text(
-                    isClaimed ? "Erhalten"
-                    : (isDone ? "Belohnung abholen" : "Noch nicht erfüllt")
-                )
-                .font(.headline.bold())
-                .foregroundColor(.white)
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
-                .background(
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(
-                            isClaimed ?
-                                LinearGradient(colors: [Color.green.opacity(0.25), Color.green.opacity(0.25)], startPoint: .top, endPoint: .bottom) :
+                    .foregroundColor(.white)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(
+                                isClaimed ?
+                                    AnyShapeStyle(Color.green.opacity(0.25)) :
                                 (isDone ?
-                                    LinearGradient(colors: [.green, .green.opacity(0.75)], startPoint: .top, endPoint: .bottom) :
-                                    LinearGradient(colors: [Color.gray.opacity(0.35), Color.gray.opacity(0.35)], startPoint: .top, endPoint: .bottom)
+                                    AnyShapeStyle(LinearGradient(colors: [.yellow, .orange],
+                                                                 startPoint: .top,
+                                                                 endPoint: .bottom)) :
+                                    AnyShapeStyle(Color.gray.opacity(0.35))
                                 )
-                        )
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                )
+                            )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                    )
+                }
+                .disabled(!isDone || isClaimed)
+
             }
-            .disabled(!isDone || isClaimed)
-
+            .padding(20)
         }
-        .padding(18)
-        .background(Color.white.opacity(0.05).blur(radius: 0.5))
-        .clipShape(RoundedRectangle(cornerRadius: 22))
-        .shadow(color: .black.opacity(0.5), radius: 10, y: 6)
     }
 }
 
-@ViewBuilder
-func rewardLabel(_ text: String, value: Int?, icon: String) -> some View {
-    HStack(spacing: 6) {
-        Image(systemName: icon).foregroundColor(.white)
-        Text(value != nil ? "\(text): \(value!)" : text)
-            .foregroundColor(.white)
-            .font(.caption)
-    }
-    .padding(.horizontal, 8)
-    .padding(.vertical, 5)
-    .background(Color.white)
-    .clipShape(RoundedRectangle(cornerRadius: 10))
-}
 
 #Preview {
     QuestView()

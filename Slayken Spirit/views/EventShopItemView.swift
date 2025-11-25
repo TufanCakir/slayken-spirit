@@ -15,16 +15,12 @@ struct EventShopItemView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 22)
                 .fill(.ultraThinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 22)
-                        .stroke(Color.white.opacity(0.2), lineWidth: 1.5)
-                )
 
             HStack(spacing: 16) {
 
                 Image(systemName: item.icon)
                     .font(.system(size: 38))
-                    .foregroundColor(.red)
+                    .foregroundColor(.blue)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(item.name)
@@ -32,8 +28,8 @@ struct EventShopItemView: View {
                         .font(.headline)
 
                     Text(item.description)
-                        .foregroundColor(.white.opacity(0.7))
-                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .font(.headline)
                 }
 
                 Spacer()
@@ -49,7 +45,7 @@ struct EventShopItemView: View {
                 .font(.headline)
                 .padding(.horizontal, 18)
                 .padding(.vertical, 8)
-                .background(alreadyBought ? .gray : .red)
+                .background(alreadyBought ? .gray : .blue)
                 .clipShape(Capsule())
                 .foregroundColor(.white)
                 .disabled(alreadyBought)
@@ -59,3 +55,5 @@ struct EventShopItemView: View {
         .padding(.horizontal, 2)
     }
 }
+
+

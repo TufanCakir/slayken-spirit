@@ -10,8 +10,8 @@ struct UpgradeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                SpiritGridBackground(glowColor: .purple)
-                
+                SpiritGridBackground(glowColor: .blue)
+
                 VStack(spacing: 22) {
                     
                     // MARK: Tap Damage Upgrade
@@ -96,14 +96,13 @@ struct UpgradeView: View {
                         .padding(.horizontal, 20)
                         .padding(.vertical, 8)
                         .foregroundColor(.white)
-                        .background(
-                            LinearGradient(colors: [.black, .black, .black], startPoint: .top, endPoint: .bottom)
+                        .background(.ultraThinMaterial
                                 .opacity(CoinManager.shared.coins >= cost ? 1 : 0.3)
                         )
                         .cornerRadius(12)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.cyan.opacity(CoinManager.shared.coins >= cost ? 0.7 : 0.2), lineWidth: 1.5)
+                                .stroke(Color.white.opacity(CoinManager.shared.coins >= cost ? 0.7 : 0.2), lineWidth: 1.5)
                         )
                 }
                 .disabled(CoinManager.shared.coins < cost)
