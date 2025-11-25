@@ -67,16 +67,32 @@
     "id": "9",
     "title": "Spirits",
     "icon": "cube.transparent",
-    "color": "#FFFFFF",
-    "iconColor": "#9B9B9B",
+    "color": "#000000",
+    "iconColor": "#0000FF",
     "destination": "SpiritListView"
   },
   {
     "id": "10",
+    "title": "Exchange",
+    "icon": "arrow.trianglehead.2.counterclockwise",
+    "color": "#000000",
+    "iconColor": "#9B9B9B",
+    "destination": "ExchangeView"
+  },
+  {
+    "id": "11",
     "title": "Settings",
     "icon": "gear",
     "color": "#000000",
     "iconColor": "#9B9B9B",
     "destination": "SettingsView"
+  },
+  {
+    "id": "12",
+    "title": "Inventory",
+    "icon": "bag",
+    "color": "#000000",
+    "iconColor": "#FF8C00",
+    "destination": "EventShopInventoryView"
   }
 ]

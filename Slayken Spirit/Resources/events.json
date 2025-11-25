@@ -3,7 +3,7 @@
     "id": "event_fire",
     "name": "Spirit Master",
     "description": "Besiege den Fire Spirit in einem Flammenkampf und sichere dir verbessertes Loot!",
-    "image": "event_bg",
+    "gridColor": "#FF3B2F",
     "bossId": "spirit_fire"
-  },
+  }
 ]

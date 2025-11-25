@@ -23,11 +23,7 @@ struct GiftView: View {
     @State private var showPopup = false
     @State private var popupText = ""
 
-    // Lade Hintergrundbild aus JSON
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
+  
     
     // MARK: - Unclaimed gifts
     private var unclaimedGifts: [GiftItem] {
@@ -37,10 +33,8 @@ struct GiftView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-             
-                HomeBackgroundView(imageName: homeBG)
-                    .ignoresSafeArea()
-                
+                SpiritGridBackground()
+
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 20) {
 

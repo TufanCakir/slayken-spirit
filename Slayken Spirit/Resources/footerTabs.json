@@ -21,17 +21,10 @@
     "destination": "ArtefactView"
   },
   {
-    "id": "4",
-    "title": "Hall of Fame",
-    "icon": "trophy.fill",
-    "color": "#FFFFFF",
-    "destination": "HallOfFameView"
-  },
-  {
-    "id": "5",
-    "title": "Exchange",
-    "icon": "arrow.trianglehead.2.counterclockwise",
-    "color": "#FFFFFF",
-    "destination": "ExchangeView"
+      "id": "4",
+      "title": "Event Shop",
+      "icon": "cart.fill",
+      "color": "#FFFFFF",
+      "destination": "EventShopView"
   },
 ]

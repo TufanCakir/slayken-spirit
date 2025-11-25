@@ -39,11 +39,11 @@ struct FooterTabView: View {
             .tag(2)
 
             NavigationStack {
-                ExchangeView()
+                EventShopView()
             }
             .tabItem {
-                Image(systemName: "arrow.trianglehead.2.counterclockwise")
-                Text("Exchange")
+                Image(systemName: "cart.fill")
+                Text("Event Shop")
             }
             .tag(3)
         }

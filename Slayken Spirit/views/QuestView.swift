@@ -6,16 +6,11 @@ struct QuestView: View {
     @ObservedObject private var questManager = QuestManager.shared
     @State private var selectedQuest: Quest?
 
-    // Lade Spirit-Hintergrund
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
+
 
     var body: some View {
         ZStack {
-            HomeBackgroundView(imageName: homeBG)
-                .ignoresSafeArea()
+            SpiritGridBackground(glowColor: .yellow)
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 28) {
@@ -64,15 +59,17 @@ private extension QuestView {
                     selectedQuest = quest
                 } label: {
                     Image(systemName: "info.circle")
-                        .font(.title3)
-                        .foregroundColor(.white.opacity(0.9))
+                        .font(.headline.bold())
+                        .foregroundColor(.white)
+
+
                 }
             }
 
             // DESCRIPTION
             Text(QuestManager.shared.localizedDescription(for: quest))
-                .font(.subheadline)
-                .foregroundColor(.white.opacity(0.75))
+                .font(.headline.bold())
+                .foregroundColor(.white)
 
             // PROGRESS BAR
             VStack(alignment: .leading, spacing: 6) {
@@ -93,7 +90,7 @@ private extension QuestView {
                 .frame(height: 14)
 
                 Text("\(progress) / \(quest.target)")
-                    .font(.caption)
+                    .font(.headline.bold())
                     .foregroundColor(.white.opacity(0.7))
             }
 
@@ -145,7 +142,10 @@ func rewardLabel(_ text: String, value: Int?, icon: String) -> some View {
     }
     .padding(.horizontal, 8)
     .padding(.vertical, 5)
-    .background(Color.white.opacity(0.1))
+    .background(Color.white)
     .clipShape(RoundedRectangle(cornerRadius: 10))
 }
 
+#Preview {
+    QuestView()
+}

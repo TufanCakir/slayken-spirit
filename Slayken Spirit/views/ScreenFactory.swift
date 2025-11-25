@@ -12,14 +12,12 @@ import SwiftUI
 final class ScreenFactory {
 
     static let shared = ScreenFactory()
-    
 
+    private var game: SpiritGameController?
 
-      private var game: SpiritGameController?
-
-      func setGameController(_ controller: SpiritGameController) {
-          self.game = controller
-      }
+    func setGameController(_ controller: SpiritGameController) {
+        self.game = controller
+    }
 
     // MARK: Public API
     func make(_ name: String) -> AnyView {
@@ -33,27 +31,28 @@ final class ScreenFactory {
         case "DailyLoginView": return AnyView(DailyLoginView())
         case "SpiritGameView":
             guard let game = game else {
-                fatalError("❌ SpiritGameController fehlt in ScreenFactory! setGameController zuerst aufrufen.")
+                fatalError(
+                    "❌ SpiritGameController fehlt in ScreenFactory! setGameController zuerst aufrufen."
+                )
             }
             return AnyView(SpiritGameView().environmentObject(game))
 
         case "UpgradeView": return AnyView(UpgradeView())
+        case "ExchangeView": return AnyView(ExchangeView())
         case "ArtefactView": return AnyView(ArtefactView())
         case "HallOfFameView": return AnyView(HallOfFameView())
+        case "EventShopInventoryView": return AnyView(EventShopInventoryView())
         case "QuestView": return AnyView(QuestView())
-        case "Spirit3DView": return AnyView(Spirit3DView(modelName: "spirit1", rotation: 0, scale: 1.0))
+        case "SpiritListView":
+            return AnyView(SpiritListView())
         case "EventView":
             guard let game = game else {
-                fatalError("❌ SpiritGameController fehlt in ScreenFactory! setGameController zuerst aufrufen.")
+                fatalError(
+                    "❌ SpiritGameController fehlt in ScreenFactory! setGameController zuerst aufrufen."
+                )
             }
             return AnyView(EventView().environmentObject(game))
 
-
-
-          
-
-
-            
         // MARK: 🧩 Fallback
         default:
             return AnyView(ScreenFactory.fallbackView(for: name))
@@ -182,4 +181,3 @@ extension View {
             .environmentObject(account)
     }
 }
-

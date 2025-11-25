@@ -15,8 +15,8 @@ struct SpiritGameView: View {
 
     var body: some View {
         ZStack {
-            SpiritBackgroundView(imageName: game.current.background ?? "sky")
-                   .ignoresSafeArea()
+            SpiritGridBackground()
+
 
 
             SpiritView(config: game.current)
@@ -69,15 +69,12 @@ private extension SpiritGameView {
                             gameButton(btn)
                         }
                     }
-                    .padding(.trailing, 145)
+                    .padding(.trailing, 100)
                 }
 
                 // 👉 Stage Anzeige
                 stageDisplay
                 // 👉 Points Anzeige
-
-                poointDisplay
-
 
                 // 👉 HP Bar
                 hpBar
@@ -94,9 +91,9 @@ private extension SpiritGameView {
         
         HStack(spacing: 8) {
 
-            Image(systemName: "squares.leading.rectangle")   // <- Wähle dein Symbol!
+            /*Image(systemName: "squares.leading.rectangle")   // <- Wähle dein Symbol!
                 .font(.system(size: 22, weight: .bold))
-                .foregroundColor(.yellow)
+                .foregroundColor(.yellow)*/
 
         Text("Stage \(game.stage)")
             .font(.system(size: 24, weight: .heavy, design: .rounded))
@@ -110,27 +107,6 @@ private extension SpiritGameView {
     }
 }
 
-        private extension SpiritGameView {
-
-            var poointDisplay: some View {
-
-                HStack(spacing: 8) {
-
-                    Image(systemName: "bubbles.and.sparkles")   // <- Wähle dein Symbol!
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundColor(.yellow)
-
-                    Text("Points \(game.stage)")
-                        .font(.system(size: 24, weight: .heavy, design: .rounded))
-                        .foregroundColor(.white)
-                }
-                .padding(.horizontal, 30)
-                .padding(.vertical, 6)
-                .background(.blue)
-                .clipShape(Capsule())
-                .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
-            }
-        }
 
 
 private extension SpiritGameView {
@@ -174,13 +150,13 @@ private extension SpiritGameView {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: btn.icon)
-                    .font(.headline)
+                    .font(.system(size: 20, weight: .heavy, design: .rounded))
                 Text(btn.title)
-                    .font(.subheadline)
+                    .font(.system(size: 20, weight: .heavy, design: .rounded))
             }
             .foregroundColor(.white)
-            .padding(.horizontal, 26)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 30)
+            .padding(.vertical, 6)
             .background {
                 ZStack {
                     // Material layer behind for glow/depth when inactive

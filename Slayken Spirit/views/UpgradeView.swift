@@ -1,25 +1,19 @@
 import SwiftUI
 
 struct UpgradeView: View {
-
+    
     @EnvironmentObject var coins: CoinManager
     @EnvironmentObject var upgrades: UpgradeManager
-
-    // Lade Hintergrundbild aus JSON
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
+    
+    
     
     var body: some View {
         NavigationStack {
             ZStack {
-
-                HomeBackgroundView(imageName: homeBG)
-                    .ignoresSafeArea()
+                SpiritGridBackground(glowColor: .purple)
                 
                 VStack(spacing: 22) {
-
+                    
                     // MARK: Tap Damage Upgrade
                     upgradeCard(
                         icon: "hand.tap.fill",
@@ -29,7 +23,7 @@ struct UpgradeView: View {
                         cost: upgrades.tapDamage * 10,
                         action: { upgrades.upgradeTapDamage(cost: upgrades.tapDamage * 10) }
                     )
-
+                    
                     // MARK: Loot Chance Upgrade
                     upgradeCard(
                         icon: "sparkles",
@@ -39,7 +33,7 @@ struct UpgradeView: View {
                         cost: 50,
                         action: { upgrades.upgradeLootChance(cost: 50) }
                     )
-
+                    
                     // MARK: Attack Speed Upgrade
                     upgradeCard(
                         icon: "bolt.fill",
@@ -49,16 +43,14 @@ struct UpgradeView: View {
                         cost: Int(upgrades.speed * 100),
                         action: { upgrades.upgradeSpeed(cost: Int(upgrades.speed * 100)) }
                     )
-
+                    
                     Spacer()
                 }
-                .padding()
-                .navigationTitle("Upgrades")
-                .navigationBarTitleDisplayMode(.inline)
+                .padding(.top, 100)
             }
         }
     }
-
+    
     // MARK: - UPGRADE CARD
     private func upgradeCard(
         icon: String,
@@ -68,30 +60,31 @@ struct UpgradeView: View {
         cost: Int,
         action: @escaping () -> Void
     ) -> some View {
-
+        
         VStack(alignment: .leading, spacing: 10) {
-
+            
             HStack {
                 Label(title, systemImage: icon)
                     .font(.title2.bold())
                     .foregroundColor(.white)
-
+                
                 Spacer()
-
+                
                 Text("Lvl \(value)")
                     .font(.headline)
-                    .foregroundColor(.cyan)
-                    .shadow(color: .cyan.opacity(0.4), radius: 4)
+                    .foregroundColor(.white)
+                    .shadow(color: .white, radius: 4)
             }
-
+            
             Text(description)
-                .foregroundColor(.white.opacity(0.7))
-                .font(.subheadline)
+                .foregroundColor(.white)
+                .font(.headline)
 
             HStack {
                 Text("Kosten: \(cost) Coins")
-                    .font(.subheadline)
-                    .foregroundColor(.yellow)
+                    .font(.headline)
+                    .foregroundColor(.white)
+         
 
                 Spacer()
 
@@ -102,8 +95,9 @@ struct UpgradeView: View {
                         .font(.headline)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 8)
+                        .foregroundColor(.white)
                         .background(
-                            LinearGradient(colors: [.blue, .black], startPoint: .top, endPoint: .bottom)
+                            LinearGradient(colors: [.black, .black, .black], startPoint: .top, endPoint: .bottom)
                                 .opacity(CoinManager.shared.coins >= cost ? 1 : 0.3)
                         )
                         .cornerRadius(12)
@@ -127,4 +121,9 @@ struct UpgradeView: View {
         )
         .shadow(color: .black.opacity(0.6), radius: 10)
     }
+}
+
+#Preview {
+    UpgradeView()
+        .environmentObject(UpgradeManager())
 }

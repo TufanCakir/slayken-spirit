@@ -7,13 +7,7 @@ import SwiftUI
 struct DailyLoginView: View {
     
     @EnvironmentObject var loginManager: DailyLoginManager
-    
-    // Lade Hintergrundbild aus JSON
-     private let homeBG: String = {
-         let spirits = Bundle.main.loadSpiritArray("spirits")
-         return spirits.first?.background ?? "sky"
-     }()
-    
+ 
     private let rewards: [DailyReward] = [
         DailyReward(day: 1, title: "+300 Coins", coins: 300, crystals: nil),
         DailyReward(day: 2, title: "+30 Crystals", coins: nil, crystals: 30),
@@ -30,8 +24,8 @@ struct DailyLoginView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                HomeBackgroundView(imageName: homeBG)
-                    .ignoresSafeArea()
+                SpiritGridBackground()
+
                 
                 VStack(spacing: 22) {
                     

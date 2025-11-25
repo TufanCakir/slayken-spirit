@@ -6,17 +6,17 @@ struct HallOfFameView: View {
     @State private var player: GKPlayer?
     @State private var isAuthenticated = false
 
-    // Lade das dynamische Spirit-Hintergrundbild
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
+
 
     var body: some View {
         ZStack {
-            // 🔹 Hintergrund
-            HomeBackgroundView(imageName: homeBG)
-                .ignoresSafeArea()
+            LinearGradient(
+                colors: [.black, .blue, .black],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
 
             VStack(spacing: 0) {
 

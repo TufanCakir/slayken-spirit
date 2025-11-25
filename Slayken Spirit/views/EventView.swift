@@ -7,13 +7,16 @@ struct EventView: View {
     @State private var events: [GameEvent] = []
     @State private var selectedEvent: GameEvent?
     @State private var showBattle: Bool = false
+    @State private var activeSheet: ActiveSheet?
+    @State private var gameButtons: [GameButton] = Bundle.main.loadGameButtons()
+    enum ActiveSheet: Identifiable {
+        case upgrade
+        case artefacts
+
+        var id: Int { hashValue }
+    }
     
-    // Lade Hintergrundbild aus JSON
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
-    
+  
     init() {
         // Move potentially throwing decoding out of the property initializer
         let decoded: [GameEvent]
@@ -29,8 +32,8 @@ struct EventView: View {
     var body: some View {
         ZStack {
           
-            HomeBackgroundView(imageName: homeBG)
-                .ignoresSafeArea()
+            SpiritGridBackground()
+
      
             VStack(spacing: 22) {
 
@@ -64,7 +67,7 @@ struct EventView: View {
                 .presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: $showBattle) {
-            SpiritGameView()
+            EventGameView()
                 .environmentObject(game)
         }
     }
@@ -74,37 +77,36 @@ private extension EventView {
     
     func eventCard(_ event: GameEvent) -> some View {
         ZStack {
-            
-            // 🔥 Dein PNG als Hintergrund
-            Image(event.image)     // <- PNG aus JSON
-                .resizable()
-                .scaledToFill()
-                .clipShape(RoundedRectangle(cornerRadius: 22))
+            // 🔥 CARD-Grid — NICHT fullscreen!
+            SpiritGridBackground(glowColor: Color(hex: event.gridColor))
+                .clipShape(RoundedRectangle(cornerRadius: 20))   // <- wichtig!!!
+                .frame(height: 200)                               // <- Card Größe
                 .overlay(
-                    RoundedRectangle(cornerRadius: 22)
-                        .stroke(Color.white.opacity(0.2), lineWidth: 1.5)
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(.red, lineWidth: 3)
                 )
-                .shadow(color: .black.opacity(0.4), radius: 8, y: 5)
             
-            HStack() {
-                
-  
-                
+            HStack {
                 VStack(alignment: .center, spacing: 6) {
+                    
                     Text(event.name)
-                        .font(.system(size: 30, weight: .black, design: .rounded))
+                        .font(.system(size: 45, weight: .black, design: .rounded))
                         .foregroundColor(.white)
-                        .frame(maxWidth: .infinity, alignment: .init(horizontal: .center, vertical: .center))
-
-                    /* Text(event.description)
-                        .font(.system(size: 22, weight: .black, design: .rounded))
-                        .foregroundColor(.white)
-                        .lineLimit(1) */
+                        .frame(maxWidth: .infinity)
+                    
+                    /* Optional:
+                     Text(event.description)
+                     .font(.system(size: 16, weight: .medium))
+                     .foregroundColor(.white.opacity(0.8))
+                     .lineLimit(1)
+                     */
                 }
                 
                 Spacer()
             }
+            .padding(.horizontal, 20)
         }
+        .padding(.horizontal, 5)
     }
 }
 
@@ -121,13 +123,16 @@ struct EventDetailView: View {
                 .font(.system(size: 34, weight: .black, design: .rounded))
                 .foregroundColor(.white)
 
-            Image(event.image)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 200)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .shadow(radius: 10)
-
+            // 🔥 CARD-Grid — NICHT fullscreen!
+            SpiritGridBackground(glowColor: Color(hex: event.gridColor))
+                .clipShape(RoundedRectangle(cornerRadius: 20))   // <- wichtig!!!
+                .frame(height: 200)                               // <- Card Größe
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(.red, lineWidth: 3)
+                )
+            
+            
             Text(event.description)
                 .foregroundColor(.white.opacity(0.8))
                 .multilineTextAlignment(.center)

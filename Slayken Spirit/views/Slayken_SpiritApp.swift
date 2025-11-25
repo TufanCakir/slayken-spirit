@@ -15,6 +15,8 @@ struct Slayken_SpiritApp: App {
     @StateObject private var spiritGame = SpiritGameController()
     @StateObject private var questManager = QuestManager.shared
     @StateObject private var musicManager = MusicManager()
+    @StateObject private var eventShopManager = EventShopManager.shared
+
 
     init() {
         GameCenterManager.shared.authenticate()
@@ -41,6 +43,7 @@ struct Slayken_SpiritApp: App {
             .environmentObject(upgradeManager)
             .environmentObject(artefactInventoryManager)
             .environmentObject(questManager)
+            .environmentObject(eventShopManager)
         }
     }
 }

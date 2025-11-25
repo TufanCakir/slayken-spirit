@@ -2,6 +2,10 @@ import SwiftUI
 
 struct OfflineScreen: View {
     var body: some View {
+        ZStack {
+            SpiritGridBackground()
+
+        }
         VStack(spacing: 20) {
             
             Image(systemName: "wifi.exclamationmark")
@@ -24,6 +28,6 @@ struct OfflineScreen: View {
                 .padding(.top, 20)
         }
         .padding()
-        .background(Color.black.ignoresSafeArea())
+
     }
 }

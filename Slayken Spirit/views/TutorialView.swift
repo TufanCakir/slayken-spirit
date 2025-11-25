@@ -11,16 +11,11 @@ struct TutorialView: View {
 
     @State private var showWelcome = false
 
-    // Hintergrund aus Spirits.json
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
 
     var body: some View {
         ZStack {
-            HomeBackgroundView(imageName: homeBG)
-                .ignoresSafeArea()
+            SpiritGridBackground()
+
 
             VStack {
                 Spacer()

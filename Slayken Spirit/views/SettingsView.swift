@@ -21,19 +21,12 @@ struct SettingsView: View {
     @State private var showResetConfirmation = false
     @State private var resetAnimation = false
 
-    // Lade Hintergrundbild aus JSON
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
-
     // MARK: - Body
     var body: some View {
         NavigationStack {
             ZStack {
+                SpiritGridBackground()
 
-                HomeBackgroundView(imageName: homeBG)
-                    .ignoresSafeArea()
 
                 // MARK: - Content
                 ScrollView(showsIndicators: false) {
@@ -140,6 +133,10 @@ extension SettingsView {
         ArtefactInventoryManager.shared.reset()
         spiritGame.resetStats()
 
+        
+        // Event Shop reset  ⬇️ NEU
+        EventShopManager.shared.reset()
+        
         // Social / Daily
         DailyLoginManager.shared.reset()
         GiftManager.shared.reset()

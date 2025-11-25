@@ -4,12 +4,7 @@ struct HomeView: View {
 
     @State private var buttons: [HomeButton] = Bundle.main.decode("homeButtons.json")
 
-    // Lade Hintergrundbild aus JSON
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
-
+ 
     private let columns = [
         GridItem(.flexible(), spacing: 20),
         GridItem(.flexible(), spacing: 20)
@@ -19,8 +14,7 @@ struct HomeView: View {
         NavigationStack {
             ZStack {
 
-                HomeBackgroundView(imageName: homeBG)
-                    .ignoresSafeArea()
+                SpiritGridBackground()
 
                 VStack(spacing: 0) {
 

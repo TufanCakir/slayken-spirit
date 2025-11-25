@@ -4,18 +4,12 @@ struct ArtefactView: View {
 
     @ObservedObject private var inventory = ArtefactInventoryManager.shared
 
-    // Lade Hintergrundbild aus JSON
-    private let homeBG: String = {
-        let spirits = Bundle.main.loadSpiritArray("spirits")
-        return spirits.first?.background ?? "sky"
-    }()
-
+  
     var body: some View {
         NavigationStack {
             ZStack {
+                SpiritGridBackground(glowColor: .purple)
 
-                HomeBackgroundView(imageName: homeBG)
-                    .ignoresSafeArea()
 
                 ScrollView {
                     LazyVStack(spacing: 18) {
@@ -27,14 +21,6 @@ struct ArtefactView: View {
                 }
                 .padding()
             }
-            .background(
-                LinearGradient(
-                    colors: [.black, Color.white.opacity(0.3), .black],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-            )
         }
     }
 }
@@ -49,7 +35,7 @@ extension ArtefactView {
 
                 // ICON (Emoji oder SF Symbol)
                 Image(systemName: art.displayIcon)
-                    .font(.system(size: 28))
+                    .font(.headline)
                     .foregroundColor(art.rarityColor)
                     .shadow(color: art.rarityColor, radius: 6)
 
@@ -71,7 +57,7 @@ extension ArtefactView {
             // POWER Anzeige
             HStack {
                 Text("Power: \(art.totalPower)")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.headline)
                     .foregroundColor(.white)
 
                 Spacer()
@@ -97,7 +83,8 @@ extension ArtefactView {
             ArtefactInventoryManager.shared.upgrade(art)
         } label: {
             Text("Upgrade")
-                .font(.caption.bold())
+                .font(.headline)
+                .foregroundColor(.white)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
                 .background(art.rarityColor.opacity(0.2))
@@ -123,11 +110,15 @@ extension ArtefactView {
         }()
 
         return Text(rarity.uppercased())
-            .font(.caption2.bold())
+            .font(.headline)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(color.opacity(0.85))
             .clipShape(RoundedRectangle(cornerRadius: 6))
             .foregroundColor(.white)
     }
+}
+
+#Preview {
+    ArtefactView()
 }

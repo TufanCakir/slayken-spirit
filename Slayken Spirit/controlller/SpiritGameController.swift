@@ -30,6 +30,7 @@ final class SpiritGameController: ObservableObject {
     @Published var totalQuests: Int = UserDefaults.standard.integer(forKey: "totalQuests")
     @Published var playtimeMinutes: Int = UserDefaults.standard.integer(forKey: "playtimeMinutes")
     @Published var isInEvent: Bool = false
+    @Published var eventWon: Bool = false
 
     private var autoBattleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
@@ -114,18 +115,35 @@ final class SpiritGameController: ObservableObject {
         print("🎉 Event Start abgeschlossen!")
     }
 
+    func handleEventVictory() {
+        print("🔥 EVENT GEWONNEN – SPIRIT POINTS +10")
+
+        // Punkte vergeben
+        EventShopManager.shared.spiritPoints += 10
+
+        // Event wird beendet
+        isInEvent = false
+
+        // Trigger für UI damit EventGameView geschlossen wird
+        eventWon = true
+    }
+
 
 
     // MARK: - Player Tap
     func tapAttack() {
         guard currentHP > 0 else { return }
-
+        
         let base = UpgradeManager.shared.tapDamage + ArtefactInventoryManager.shared.bonusTapDamage
         let damage = calculateDamage(base: base)
         currentHP = max(0, currentHP - damage)
-
+        
         if currentHP == 0 {
-            handleDefeat()
+            if isInEvent {
+                handleEventVictory()
+            } else {
+                handleDefeat()
+            }
         }
     }
 
