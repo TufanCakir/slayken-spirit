@@ -4,6 +4,7 @@ struct ArtefactView: View {
 
     @ObservedObject private var inventory = ArtefactInventoryManager.shared
 
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -164,6 +165,7 @@ extension ArtefactView {
     }
 }
 
+
 #Preview {
-    ArtefactView()
+ ArtefactView()
 }

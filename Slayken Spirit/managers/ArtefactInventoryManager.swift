@@ -11,9 +11,12 @@ final class ArtefactInventoryManager: ObservableObject {
 
     private let saveKey = "ownedArtefacts"
 
-    private init() {
+    init() {
         load()
     }
+    
+
+
 
 
     // MARK: - Total Stats (für Game Center)

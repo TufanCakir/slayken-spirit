@@ -6,7 +6,9 @@
     "icon": "bolt.fill",
     "price": 300,
     "type": "tapDamage",
-    "value": 1,
+    "required": 30,
+    "stack": 30,
+    "isActive": false
   },
   {
     "id": "coin1",
@@ -15,7 +17,9 @@
     "icon": "bitcoinsign.circle.fill",
     "price": 600,
     "type": "coinBoost",
-    "value": 1
+    "required": 60,
+    "stack": 60,
+    "isActive": false
   },
   {
     "id": "exp1",
@@ -24,7 +28,9 @@
     "icon": "star.fill",
     "price": 900,
     "type": "expBoost",
-    "value": 1,
+    "required": 90,
+    "stack": 90,
+    "isActive": false
   },
   {
     "id": "loot1",
@@ -33,6 +39,8 @@
     "icon": "shippingbox.fill",
     "price": 1200,
     "type": "lootBoost",
-    "value": 1
-  },
+    "required": 120,
+    "stack": 120,
+    "isActive": false
+  }
 ]

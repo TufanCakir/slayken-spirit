@@ -12,35 +12,51 @@ final class EventShopManager: ObservableObject {
     
     @Published var spiritPoints: Int = 0
     
+    private let saveKey = "eventShopInventory"
+    
     private init() {
         loadShop()
         loadInventory()
     }
     
-    // MARK: Shop Daten laden
+    
+    func activate(_ item: EventShopItem) {
+        guard let index = inventory.firstIndex(where: { $0.id == item.id }) else { return }
+        inventory[index].isActive = true
+        applyBonus(inventory[index])
+        saveInventory()
+        objectWillChange.send()
+    }
+
+    
+    // MARK: - Shop Daten laden
     private func loadShop() {
         do {
             items = try Bundle.main.decodeSafe("eventShop.json")
         } catch {
             print("❌ Fehler beim Laden von eventShop.json:", error)
+            items = []
         }
     }
+    
     
     // MARK: Inventory speichern/lesen
     private func saveInventory() {
         if let encoded = try? JSONEncoder().encode(inventory) {
-            UserDefaults.standard.set(encoded, forKey: "eventShopInventory")
+            UserDefaults.standard.set(encoded, forKey: saveKey)
         }
     }
     
     private func loadInventory() {
-        if let data = UserDefaults.standard.data(forKey: "eventShopInventory"),
-           let decoded = try? JSONDecoder().decode([EventShopItem].self, from: data) {
-            inventory = decoded
+        guard let data = UserDefaults.standard.data(forKey: saveKey),
+              let decoded = try? JSONDecoder().decode([EventShopItem].self, from: data) else {
+            return
         }
+        inventory = decoded
     }
     
-    // MARK: Kaufen
+    
+    // MARK: - Kaufen / Stack erhöhen
     func buyItem(_ item: EventShopItem) -> Bool {
         
         guard spiritPoints >= item.price else {
@@ -48,53 +64,78 @@ final class EventShopManager: ObservableObject {
             return false
         }
         
-        // SP abziehen
         spiritPoints -= item.price
         
-        // In Inventar
-        inventory.append(item)
+        // Prüfen ob Item bereits im Inventory existiert
+        if let index = inventory.firstIndex(where: { $0.id == item.id }) {
+            
+            // Stack +1
+            inventory[index].stack += 1
+            
+            // Aktivieren möglich?
+            if inventory[index].stack >= inventory[index].required {
+                inventory[index].isActive = true
+                applyBonus(inventory[index])
+            }
+            
+        } else {
+            // Neues Item ins Inventory
+            var newItem = item
+            newItem.stack = 1
+            
+            // Aktivieren möglich?
+            if newItem.stack >= newItem.required {
+                newItem.isActive = true
+                applyBonus(newItem)
+            }
+            
+            inventory.append(newItem)
+        }
+        
         saveInventory()
-        
-        // Werte anwenden
-        applyBonus(item)
-        
         return true
     }
     
-    // MARK: - Reset
-    func reset() {
-        // Alles zurücksetzen
-        spiritPoints = 0
-        inventory.removeAll()
-        
-        // Speicher löschen
-        UserDefaults.standard.removeObject(forKey: "eventShopInventory")
-        
-        print("🛒 EventShop reset!")
+    
+    // MARK: - Aktiv prüfen
+    func isActive(_ item: EventShopItem) -> Bool {
+        inventory.first(where: { $0.id == item.id })?.isActive ?? false
     }
-
-    func hasBought(_ item: EventShopItem) -> Bool {
-        return inventory.contains(where: { $0.id == item.id })
+    
+    func currentStack(for item: EventShopItem) -> Int {
+        inventory.first(where: { $0.id == item.id })?.stack ?? 0
     }
-
+    
+    
+    // MARK: - Bonus anwenden
     private func applyBonus(_ item: EventShopItem) {
         
+        guard item.isActive else { return }   // Bonus nur wenn aktiv
+        
         switch item.type {
-            
         case "tapDamage":
-            UpgradeManager.shared.increaseTapDamage(by: item.value)
+            UpgradeManager.shared.increaseTapDamage(by: 5)  // Beispielwert
             
         case "expBoost":
-            UpgradeManager.shared.increaseExpBoost(by: item.value)
+            UpgradeManager.shared.increaseExpBoost(by: 10)
             
         case "lootBoost":
-            UpgradeManager.shared.increaseLootBoost(by: Double(item.value))
+            UpgradeManager.shared.increaseLootBoost(by: 7)
             
         case "coinBoost":
-            UpgradeManager.shared.increaseCoinBoost(by: item.value)
+            UpgradeManager.shared.increaseCoinBoost(by: 15)
             
         default:
             break
         }
+    }
+    
+    
+    // MARK: - Reset
+    func reset() {
+        spiritPoints = 0
+        inventory.removeAll()
+        UserDefaults.standard.removeObject(forKey: saveKey)
+        print("🛒 EventShop reset!")
     }
 }
