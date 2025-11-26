@@ -94,14 +94,17 @@ private extension QuestView {
                             .fill(Color.white.opacity(0.15))
 
                         // Fill Bar
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(
-                                LinearGradient(colors: [.yellow, .orange.opacity(0.8)],
-                                               startPoint: .leading,
-                                               endPoint: .trailing)
-                            )
-                            .frame(width: UIScreen.main.bounds.width * 0.70 * ratio)
-                            .animation(.easeInOut(duration: 0.25), value: ratio)
+                        GeometryReader { geo in
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(
+                                    LinearGradient(colors: [.yellow, .orange.opacity(0.8)],
+                                                   startPoint: .leading,
+                                                   endPoint: .trailing)
+                                )
+                                .frame(width: geo.size.width * 0.70 * ratio, alignment: .leading)
+                                .animation(.easeInOut(duration: 0.25), value: ratio)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                     .frame(height: 16)
 

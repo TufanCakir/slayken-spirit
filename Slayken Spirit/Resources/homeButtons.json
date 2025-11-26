@@ -94,5 +94,14 @@
     "color": "#000000",
     "iconColor": "#FF8C00",
     "destination": "EventShopInventoryView"
-  }
+  },
+  {
+    "id": "13",
+    "title": "Multiplayer",
+    "icon": "bag",
+    "color": "#000000",
+    "iconColor": "#FF8C00",
+    "destination": "MultiplayerView"
+  },
 ]
+ 

@@ -19,6 +19,9 @@ struct Slayken_SpiritApp: App {
 
     init() {
         ScreenFactory.shared.setGameController(spiritGame)
+
+        // 🔥 Game Center Auto-Login bei App-Start
+        GameCenterManager.shared.authenticate()
     }
 
     var body: some Scene {
@@ -42,7 +45,7 @@ struct Slayken_SpiritApp: App {
             .environmentObject(artefactInventoryManager)
             .environmentObject(questManager)
             .environmentObject(eventShopManager)
-            .environmentObject(internet)   // <— Wichtig!
+            .environmentObject(internet)
         }
     }
 }

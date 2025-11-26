@@ -21,6 +21,12 @@ struct HomeView: View {
                     HeaderView()
                         .padding(.top, 12)
                         .padding(.bottom, 8)
+                    TestScoreButton()
+                        .padding(.horizontal, 20)
+                    Button("Manuell Game Center Login öffnen") {
+                        GameCenterManager.shared.openGameCenterLogin()
+                    }
+
 
                     ScrollView(showsIndicators: false) {
                         LazyVGrid(columns: columns, spacing: 24) {

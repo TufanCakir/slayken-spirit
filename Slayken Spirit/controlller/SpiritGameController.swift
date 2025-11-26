@@ -4,12 +4,31 @@
 //
 
 import Foundation
+import GameKit
 internal import Combine
+
+// MARK: - Game Action Structure
+struct GameAction: Codable {
+    enum ActionType: String, Codable {
+        case attack
+        case itemCollected
+        case experienceGained
+        case bossDefeated // Hinzugefügt für Synchronisation
+    }
+    let type: ActionType
+    let playerID: String // Wer die Aktion ausgeführt hat
+    let value: Int // Schaden, Item-ID, etc.
+}
+
+// MARK: - Notification Name
+extension Notification.Name {
+    static let multiplayerDidReceiveAction = Notification.Name("MultiplayerDidReceiveAction")
+}
 
 @MainActor
 final class SpiritGameController: ObservableObject {
-
-
+    
+    
     // MARK: - Published: UI States
     @Published private(set) var current: ModelConfig
     @Published private(set) var currentHP: Int
@@ -24,44 +43,56 @@ final class SpiritGameController: ObservableObject {
     @Published private(set) var backgroundName: String
     @Published var backgroundFade: Double = 0
     @Published var isAutoBattle: Bool = false
-
+    
     // MARK: - Stats fürs Game Center
     @Published var totalKills: Int = UserDefaults.standard.integer(forKey: "totalKills")
     @Published var totalQuests: Int = UserDefaults.standard.integer(forKey: "totalQuests")
     @Published var playtimeMinutes: Int = UserDefaults.standard.integer(forKey: "playtimeMinutes")
     @Published var isInEvent: Bool = false
     @Published var eventWon: Bool = false
-
+    
     private var autoBattleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
-
+    
     private func saveStats() {
         UserDefaults.standard.set(totalKills, forKey: "totalKills")
         UserDefaults.standard.set(totalQuests, forKey: "totalQuests")
         UserDefaults.standard.set(playtimeMinutes, forKey: "playtimeMinutes")
     }
-
+    
     // MARK: - Data
     private let all: [ModelConfig]
-
+    
     // MARK: - Init
     init() {
-
+        
         let loaded = Bundle.main.loadSpiritArray("spirits")
         guard let first = loaded.first else {
             fatalError("❌ spirits.json hat keine Einträge")
         }
-
+        
         self.all = loaded
         self.current = first
         self.currentHP = first.hp + ArtefactInventoryManager.shared.bonusHP
         self.backgroundName = first.background ?? "sky"
-
+        
         setupArtefactListener()
+        setupMultiplayerListener() // <--- NEU: Rufe den Listener hier auf
     }
     
-
-
+    
+    
+    // MARK: - Multiplayer Listener
+    private func setupMultiplayerListener() {
+        NotificationCenter.default.publisher(for: .multiplayerDidReceiveAction)
+            .compactMap { $0.userInfo }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] userInfo in
+                self?.handleMultiplayerAction(userInfo: userInfo)
+            }
+            .store(in: &cancellables)
+    }
+    
     // MARK: - Artefact Change Listener
     private func setupArtefactListener() {
         ArtefactInventoryManager.shared.objectWillChange
@@ -70,79 +101,155 @@ final class SpiritGameController: ObservableObject {
             }
             .store(in: &cancellables)
     }
-
+    
     private func recalculateHP() {
         currentHP = max(1, current.hp + ArtefactInventoryManager.shared.bonusHP)
         objectWillChange.send()
     }
-
-
+    
+    
     // MARK: - Event Start
     func startEvent(_ event: GameEvent) {
         print("🔥 [EVENT] StartEvent aufgerufen")
         print("🔥 [EVENT] Event ID: \(event.id)")
         print("🔥 [EVENT] bossId aus JSON: \(event.bossId)")
-
+        
         // Markiere Event als aktiv
         isInEvent = true
-
+        
         print("🎯 [STATE] isInEvent = true")
-
+        
         print("📦 [SPIRITS] Anzahl geladene Spirits: \(all.count)")
         for s in all {
             print("   → Spirit: \(s.id) (model: \(s.modelName) )")
         }
-
+        
         guard let boss = all.first(where: { $0.id == event.bossId }) else {
             print("❌ Boss für Event nicht gefunden:", event.bossId)
             return
         }
-
+        
         print("✅ [EVENT] Gefundener Boss: \(boss.id)")
         print("   → modelName: \(boss.modelName)")
         print("   → hp: \(boss.hp)")
         print("   → background: \(boss.background ?? "none")")
-
+        
         // Boss setzen
         current = boss
         currentHP = boss.hp + ArtefactInventoryManager.shared.bonusHP
         print("💙 [HP] HP gesetzt auf: \(currentHP)")
-
+        
         updateBackground(for: boss)
-
+        
         // UI Refresh
         objectWillChange.send()
         print("🎉 Event Start abgeschlossen!")
     }
-
+    
     func handleEventVictory() {
         print("🔥 EVENT GEWONNEN – SPIRIT POINTS +10")
-
+        
         // Punkte vergeben
         EventShopManager.shared.spiritPoints += 10
-
+        
         // Event wird beendet
         isInEvent = false
-
+        
         // Trigger für UI damit EventGameView geschlossen wird
         eventWon = true
     }
-
-
+    
+    // Im SpiritGameController:
+    
+    // MARK: - Multiplayer Action Handler
+    private func handleMultiplayerAction(userInfo: [AnyHashable: Any]) {
+        guard let action = userInfo["action"] as? GameAction,
+              let player = userInfo["fromPlayer"] as? GKPlayer
+        else {
+            print("❌ MP Handler: Ungültige Action- oder Player-Daten.")
+            return
+        }
+        
+        if action.type == .attack {
+            let newHP = max(0, currentHP - action.value)
+            currentHP = newHP
+            
+            print("💥 [MP Game] \(player.displayName) verursacht \(action.value) Schaden. Neue HP: \(currentHP)")
+            
+            if newHP == 0 {
+                // Wenn der Boss besiegt ist, senden WIR ein synchronisiertes Signal.
+                // Es ist unwahrscheinlich, dass zwei Clients GLEICHZEITIG auf 0 setzen,
+                // aber es kann passieren. Game Center garantiert die Reihenfolge nicht immer 100%,
+                // aber dies ist der beste Ansatz.
+                
+                // Sende das Defeat-Signal (alle anderen werden darauf reagieren)
+                let defeatAction = GameAction(
+                    type: .bossDefeated,
+                    playerID: GKLocalPlayer.local.playerID,
+                    value: stage // Sende die aktuelle Stage als Wert
+                )
+                MatchManager.shared.sendActionData(defeatAction)
+            }
+        }
+        // NEU: Empfange das Defeat-Signal
+        else if action.type == .bossDefeated {
+            // HIER: Alle Spieler erhalten das Defeat-Signal und führen die goToNext-Logik aus.
+            // Die Rewards müssen in dieser goToNext-Funktion nur EINMAL ausgeführt werden.
+            
+            // Da die goToNext() Funktion bereits die Rewards gibt:
+            handleMultiplayerDefeat()
+        }
+    }
+    
+    // IN SpiritGameController.swift
+    // NEU: Separate Defeat-Funktion für Multiplayer, die keine Rewards gibt
+    private func handleMultiplayerDefeat() {
+        // Hier können visuelle Effekte für den Sieg im Multiplayer hinzugefügt werden
+        print("🎉 SYNCHRONISIERTER MP-SIEG! Wechsle zur nächsten Stage.")
+        
+        // Die Rewards (Coins, Exp etc.) MÜSSEN im MP-Modus anders behandelt werden,
+        // um Duplikate zu vermeiden. Vorerst nur die Spielfortschritt-Logik:
+        rollArtefactDrop() // Artefakte sind lokal und können fallen
+        goToNext()
+    }
 
     // MARK: - Player Tap
     func tapAttack() {
         guard currentHP > 0 else { return }
         
+        // Schaden berechnen (lokal, da Crit-Chance etc. nur vom lokalen Spieler abhängt)
         let base = UpgradeManager.shared.tapDamage + ArtefactInventoryManager.shared.bonusTapDamage
         let damage = calculateDamage(base: base)
-        currentHP = max(0, currentHP - damage)
         
-        if currentHP == 0 {
-            if isInEvent {
-                handleEventVictory()
-            } else {
-                handleDefeat()
+        // NEU: Unterscheidung zwischen Singleplayer und Multiplayer
+        if MatchManager.shared.isMatchActive {
+            // --- MULTIPLAYER-PFAD ---
+            
+            // 1. Definiere die Aktion
+            let attack = GameAction(
+                type: .attack,
+                playerID: GKLocalPlayer.local.playerID,
+                value: damage
+            )
+            
+            // 2. Sende die Aktion an alle Spieler
+            MatchManager.shared.sendActionData(attack)
+            
+            // WICHTIG: Die tatsächliche HP-Änderung findet JETZT NICHT statt.
+            // Sie wird erst durchgeführt, wenn der MatchManager die GESENDETEN
+            // Daten ÜBER DAS NETZWERK ZURÜCK empfängt (siehe unten).
+            
+        } else {
+            // --- SINGLEPLAYER-PFAD (Bestehende Logik) ---
+            
+            currentHP = max(0, currentHP - damage)
+            
+            if currentHP == 0 {
+                if isInEvent {
+                    handleEventVictory()
+                } else {
+                    handleDefeat()
+                }
             }
         }
     }
@@ -297,5 +404,5 @@ final class SpiritGameController: ObservableObject {
             self.backgroundFade = 0
         }
     }
-}
 
+}

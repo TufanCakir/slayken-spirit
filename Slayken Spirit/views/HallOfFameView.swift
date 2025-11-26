@@ -1,159 +1,172 @@
+// MARK: - Game Center UIKit Wrapper
+
 import SwiftUI
 import GameKit
+struct GameCenterModalView: UIViewControllerRepresentable {
+    
+    // Definiert, ob das Dashboard oder eine spezifische Bestenliste angezeigt werden soll
+    enum GameCenterViewType {
+        case dashboard
+        case leaderboard(id: String)
+    }
+    
+    let viewType: GameCenterViewType
+    
+    // Environment-Variable, um den Modal-Sheet zu schließen
+    @Environment(\.dismiss) var dismiss
+
+    func makeUIViewController(context: Context) -> GKGameCenterViewController {
+        let vc = GKGameCenterViewController()
+        vc.gameCenterDelegate = context.coordinator // Delegate setzen
+        
+        switch viewType {
+        case .dashboard:
+            vc.viewState = .dashboard // Zeigt das Haupt-Dashboard
+        case .leaderboard(let id):
+            vc.viewState = .leaderboards // Zeigt die Bestenlisten-Seite
+            // Optional: Wenn iOS 14/15 unterstützt werden muss, könnte hier
+            // der spezifische Leaderboard-Identifier gesetzt werden (GKGameCenterViewController.leaderboardIdentifier = id)
+            // Ab iOS 16 öffnet es meist die Liste, von wo aus der Nutzer navigieren kann.
+        }
+        return vc
+    }
+
+    func updateUIViewController(_ uiViewController: GKGameCenterViewController, context: Context) {
+        // Keine Aktualisierung notwendig
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, GKGameCenterControllerDelegate {
+        var parent: GameCenterModalView
+
+        init(_ parent: GameCenterModalView) {
+            self.parent = parent
+        }
+        
+        // Wichtig: Entlässt den View Controller, wenn der Benutzer auf "Fertig" klickt
+        func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+            parent.dismiss()
+        }
+    }
+}
 
 struct HallOfFameView: View {
+    // GameCenterManager als ObservableObject beobachten
+    @ObservedObject var gameCenterManager = GameCenterManager.shared
 
-    @ObservedObject var gc = GameCenterManager.shared
+    struct LeaderboardSelection: Identifiable { let id: String }
+    @State private var selectedLeaderboard: LeaderboardSelection? = nil // Optional Identifiable wrapper
+
+    // State-Variablen zum Steuern der Modal-Präsentation
+    @State private var showDashboard = false
 
     var body: some View {
-        ZStack {
-            SpiritGridBackground()
-
-            VStack(spacing: 0) {
-
-                header
-                    .padding(.horizontal, 20)
-                    .padding(.top, 18)
-
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 26) {
-
-                        leaderboardSection(title: "Höchste Stage",
-                                           leaderboardID: GCHighestStage.leaderboardID)
-
-                        leaderboardSection(title: "Gesammelte Artefakte",
-                                           leaderboardID: GCArtefacts.leaderboardID)
-
-                        leaderboardSection(title: "Gegner Besiegt",
-                                           leaderboardID: GCKills.leaderboardID)
-
-                        leaderboardSection(title: "Spielzeit (Minuten)",
-                                           leaderboardID: GCPlaytime.leaderboardID)
-
-                        leaderboardSection(title: "Abgeschlossene Quests",
-                                           leaderboardID: GCQuests.leaderboardID)
-
-                        leaderboardSection(title: "Sammlungs-Score",
-                                           leaderboardID: GCCollection.leaderboardID)
-
-                        Spacer(minLength: 40)
+        NavigationView {
+            List {
+                // MARK: - Authentifizierungsstatus
+                Section(header: Text("Game Center Status")) {
+                    HStack {
+                        Text("Status:")
+                        Spacer()
+                        Text(gameCenterManager.isAuthenticated ? "✅ Eingeloggt" : "❌ Nicht eingeloggt")
+                            .foregroundColor(gameCenterManager.isAuthenticated ? .green : .red)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 12)
+                    HStack {
+                        Text("Spielername:")
+                        Spacer()
+                        Text(gameCenterManager.playerName)
+                    }
                 }
+                
+                // MARK: - Aktionen
+                Section(header: Text("Aktionen")) {
+                    // Button zum Login (falls nicht authentifiziert)
+                    if !gameCenterManager.isAuthenticated {
+                        Button("Game Center Login öffnen") {
+                            // Verwendet die bestehende Login-Funktion im Manager
+                            gameCenterManager.openGameCenterLogin()
+                        }
+                    }
+
+                    // Button zum Öffnen des Dashboards (falls authentifiziert)
+                    if gameCenterManager.isAuthenticated {
+                        Button("Game Center Dashboard anzeigen") {
+                            // Löst die Modal-Anzeige aus
+                            showDashboard = true
+                        }
+                    }
+                }
+                
+                // MARK: - Bestenlisten
+                Section(header: Text("Bestenlisten")) {
+                    // Verwende die neue Hilfs-View, die den State setzt
+                    LeaderboardButtonNew(
+                        title: "Gesamte Artefakte",
+                        id: GCArtefacts.leaderboardID,
+                        isAuthenticated: gameCenterManager.isAuthenticated,
+                        selected: $selectedLeaderboard // Binding übergeben
+                    )
+                    LeaderboardButtonNew(
+                        title: "Sammel-Score",
+                        id: GCCollection.leaderboardID,
+                        isAuthenticated: gameCenterManager.isAuthenticated,
+                        selected: $selectedLeaderboard
+                    )
+                    // ... (Füge hier alle weiteren LeaderboardButtonNew Aufrufe ein) ...
+                    LeaderboardButtonNew(
+                        title: "Höchste Stage",
+                        id: GCHighestStage.leaderboardID,
+                        isAuthenticated: gameCenterManager.isAuthenticated,
+                        selected: $selectedLeaderboard
+                    )
+                }
+            }
+            .navigationTitle("Hall of Fame")
+            // Game Center Authentifizierung beim Laden der View versuchen
+            .onAppear {
+                gameCenterManager.authenticate()
+            }
+            // MARK: - MODALE PRÄSENTATIONEN
+            // 1. Dashboard Modal
+            .sheet(isPresented: $showDashboard) {
+                GameCenterModalView(viewType: .dashboard)
+            }
+            // 2. Spezifische Bestenliste Modal
+            .sheet(item: $selectedLeaderboard) { selection in
+                // Nutzt die 'selection' als Item, um den Sheet auszulösen und die ID zu übergeben
+                GameCenterModalView(viewType: .leaderboard(id: selection.id))
             }
         }
     }
 }
 
-
-
-// MARK: - Header Bereich
-private extension HallOfFameView {
-    var header: some View {
-        VStack(spacing: 12) {
-
-            VStack(spacing: 4) {
-                Text("Hall of Fame")
-                    .font(.largeTitle.bold())
-                    .foregroundStyle(
-                        LinearGradient(colors: [.white, .cyan.opacity(0.9)],
-                                       startPoint: .top, endPoint: .bottom)
-                    )
-                    .shadow(color: .cyan.opacity(0.4), radius: 8)
-            }
-            .padding()
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 18))
-            .overlay(
-                RoundedRectangle(cornerRadius: 18)
-                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(0.35), radius: 15, y: 8)
-
-            // AUTH CHECK
-            if gc.isAuthenticated {
-                Text("Willkommen, \(gc.playerName)")
-                    .font(.headline)
-                    .foregroundColor(.green.opacity(0.9))
-            } else {
-                Text("Nicht eingeloggt")
-                    .font(.headline.bold())
-                    .foregroundColor(.red.opacity(0.9))
-            }
-
-            Button {
-                GameCenterManager.shared.showDashboard()
-            } label: {
-                Text("Globales Ranking anzeigen")
-                    .font(.subheadline.bold())
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 26)
-                    .padding(.vertical, 10)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Capsule())
-                    .overlay(
-                        Capsule().stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-            }
-            .padding(.top, 6)
+// MARK: - Aktualisierte Hilfs-View für Bestenlisten-Button
+// Ersetzt die alte LeaderboardButton
+struct LeaderboardButtonNew: View {
+    let title: String
+    let id: String
+    let isAuthenticated: Bool
+    @Binding var selected: HallOfFameView.LeaderboardSelection? // Binding auf den State in der Parent View
+    
+    var body: some View {
+        ZStack {
+            SpiritGridBackground() // <-- HIER MUSS DIE
         }
-    }
-}
-
-
-
-
-private extension HallOfFameView {
-
-    func leaderboardSection(title: String, leaderboardID: String) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
-
-            Text(title)
-                .font(.title3.bold())
-                .foregroundStyle(.white.opacity(0.95))
-
-            Button {
-                GameCenterManager.shared.showLeaderboard(id: leaderboardID)
-            } label: {
-                HStack {
-                    Text("Ansehen")
-                        .font(.headline)
-                        .foregroundColor(.white)
-
-                    Spacer()
-
-                    Image(systemName: "chevron.right")
-                        .font(.headline)
-                        .foregroundColor(.white.opacity(0.7))
-                }
-                .padding()
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.white.opacity(0.12), lineWidth: 1.2)
-                )
-                .shadow(color: .cyan.opacity(0.2), radius: 12, y: 6)
-            }
+        Button(title) {
+            selected = HallOfFameView.LeaderboardSelection(id: id) // Setzt die ID und löst das .sheet(item:) in der Parent View aus
         }
-        .padding(20)
-        .background(
-            .ultraThinMaterial.blendMode(.overlay)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .shadow(color: .black.opacity(0.4), radius: 20, y: 10)
-        .overlay(
-            RoundedRectangle(cornerRadius: 22)
-                .stroke(
-                    LinearGradient(colors: [.white.opacity(0.06), .cyan.opacity(0.15)],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing),
-                    lineWidth: 1.2
-                )
-        )
+        .disabled(!isAuthenticated) // Button deaktivieren, wenn nicht eingeloggt
     }
 }
 
 #Preview {
-    HallOfFameView()
+    LeaderboardButtonNew(
+        title: "Test",
+        id: "spirit_highest_stage",
+        isAuthenticated: true,
+        selected: .constant(nil)
+    )
 }

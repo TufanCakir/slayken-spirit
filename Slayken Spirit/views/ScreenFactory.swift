@@ -43,6 +43,7 @@ final class ScreenFactory {
         case "HallOfFameView": return AnyView(HallOfFameView())
         case "EventShopInventoryView": return AnyView(EventShopInventoryView())
         case "QuestView": return AnyView(QuestView())
+        case "MultiplayerView": return AnyView(MultiplayerView())
         case "SpiritListView":
             return AnyView(SpiritListView())
         case "EventView":
