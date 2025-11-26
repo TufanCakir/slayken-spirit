@@ -39,11 +39,14 @@ final class GameCenterManager: NSObject, ObservableObject, GKGameCenterControlle
                 print("🎮 Game Center Authenticated")
                 self.isAuthenticated = true
                 self.playerName = GKLocalPlayer.local.displayName
-                self.playerName = "Not logged in"
                 self.authCompletion?(true, GKLocalPlayer.local)
                 self.authCompletion = nil
                 return
             }
+
+       
+
+
 
             // Fehlgeschlagen
             print("❌ Game Center Authentication failed")
