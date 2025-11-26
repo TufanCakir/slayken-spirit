@@ -54,6 +54,7 @@ struct SettingsView: View {
                             GameCenterLoginButton()
                         }
 
+
                         // MARK: Data & Storage
                         settingsSection(title: "Data & Storage") {
                             Button {

@@ -3,8 +3,7 @@ import GameKit
 
 struct HallOfFameView: View {
 
-    @State private var player: GKPlayer?
-    @State private var isAuthenticated = false
+    @ObservedObject var gc = GameCenterManager.shared
 
     var body: some View {
         ZStack {
@@ -12,7 +11,6 @@ struct HallOfFameView: View {
 
             VStack(spacing: 0) {
 
-                // 🔥 Fixed Glass Header
                 header
                     .padding(.horizontal, 20)
                     .padding(.top, 18)
@@ -45,25 +43,16 @@ struct HallOfFameView: View {
                 }
             }
         }
-        .onAppear {
-            GameCenterManager.shared.authenticate { authenticated, player in
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    self.isAuthenticated = authenticated
-                    self.player = player
-                }
-            }
-        }
     }
 }
 
 
+
 // MARK: - Header Bereich
 private extension HallOfFameView {
-
     var header: some View {
         VStack(spacing: 12) {
 
-            // Glass Title Box
             VStack(spacing: 4) {
                 Text("Hall of Fame")
                     .font(.largeTitle.bold())
@@ -75,23 +64,22 @@ private extension HallOfFameView {
             }
             .padding()
             .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 18))
             .overlay(
                 RoundedRectangle(cornerRadius: 18)
                     .stroke(Color.white.opacity(0.1), lineWidth: 1)
             )
             .shadow(color: .black.opacity(0.35), radius: 15, y: 8)
 
-            if isAuthenticated {
-                Text("Willkommen, \(player?.displayName ?? "Spieler")")
+            // AUTH CHECK
+            if gc.isAuthenticated {
+                Text("Willkommen, \(gc.playerName)")
                     .font(.headline)
                     .foregroundColor(.green.opacity(0.9))
-                    .transition(.opacity)
             } else {
                 Text("Nicht eingeloggt")
                     .font(.headline.bold())
                     .foregroundColor(.red.opacity(0.9))
-                    .transition(.opacity)
             }
 
             Button {
@@ -105,14 +93,14 @@ private extension HallOfFameView {
                     .background(.ultraThinMaterial)
                     .clipShape(Capsule())
                     .overlay(
-                        Capsule()
-                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                        Capsule().stroke(Color.white.opacity(0.25), lineWidth: 1)
                     )
             }
             .padding(.top, 6)
         }
     }
 }
+
 
 
 
@@ -164,4 +152,8 @@ private extension HallOfFameView {
                 )
         )
     }
+}
+
+#Preview {
+    HallOfFameView()
 }
