@@ -2,19 +2,18 @@ import SwiftUI
 
 struct HeaderView: View {
 
-    // MARK: - EnvironmentObjects
     @EnvironmentObject var coinManager: CoinManager
     @EnvironmentObject var crystalManager: CrystalManager
     @EnvironmentObject var accountManager: AccountLevelManager
+    @EnvironmentObject var artefacts: ArtefactInventoryManager   // Shards kommen von hier
 
-    // MARK: - Icons aus JSON
     @State private var icons: HUDIconSet = Bundle.main.decode("hudIcons.json")
-
-    // MARK: - Glow Animation
     @State private var glow = false
 
     var body: some View {
         HStack(spacing: 20) {
+
+            // LEVEL
             hudItem(
                 symbol: icons.level.symbol,
                 color: Color(hex: icons.level.color),
@@ -22,24 +21,33 @@ struct HeaderView: View {
                 label: "Lv."
             )
 
+            // COINS
             hudItem(
                 symbol: icons.coin.symbol,
                 color: Color(hex: icons.coin.color),
                 value: coinManager.coins
             )
 
+            // CRYSTALS
             hudItem(
                 symbol: icons.crystal.symbol,
                 color: Color(hex: icons.crystal.color),
                 value: crystalManager.crystals
             )
+
+            // ⭐ SHARDS — NEU
+            hudItem(
+                symbol: icons.shards.symbol,
+                color: Color(hex: icons.shards.color),
+                value: artefacts.totalShards,
+            )
         }
+        
         .frame(width: 400)
-        .padding(.horizontal, 0)
         .padding(.vertical, 30)
         .background(
             RoundedRectangle(cornerRadius: 18)
-                .fill(.black)
+                .fill(.ultraThinMaterial)
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
                         .stroke(.white, lineWidth: 1)
@@ -54,33 +62,28 @@ struct HeaderView: View {
         }
     }
 
-    // MARK: - HUD Item (Verbessert)
     private func hudItem(symbol: String, color: Color, value: Int, label: String? = nil) -> some View {
         HStack(spacing: 6) {
 
-            // Animated Glow Icon
             Image(systemName: symbol)
-                .font(.system(size: 20))
+                .font(.system(size: 12))
                 .foregroundColor(color)
                 .shadow(color: color.opacity(glow ? 0.7 : 0.2), radius: glow ? 10 : 3)
                 .scaleEffect(glow ? 1.05 : 1.0)
 
-            // Label + Value
             if let label = label {
                 Text("\(label) \(value)")
-                    .font(.system(size: 0))
-                    .foregroundColor(.white.opacity(0.9))
+                    .foregroundColor(.white)
             } else {
                 Text("\(value)")
-                    .font(.system(size: 0))
-                    .foregroundColor(.white.opacity(0.9))
+                    .foregroundColor(.white)
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(Color.white.opacity(0.03))
+                .fill(.ultraThinMaterial)
                 .overlay(
                     Capsule()
                         .stroke(color, lineWidth: 1)
@@ -90,9 +93,6 @@ struct HeaderView: View {
 }
 
 #Preview {
-    HeaderView()
-        .environmentObject(CoinManager.shared)
-        .environmentObject(CrystalManager.shared)
-        .environmentObject(AccountLevelManager.shared)
-        .preferredColorScheme(.dark)
+    HeaderView() .environmentObject(CoinManager.shared) .environmentObject(CrystalManager.shared) .environmentObject(AccountLevelManager.shared)
+        .environmentObject(ArtefactInventoryManager.shared) .preferredColorScheme(.dark)
 }

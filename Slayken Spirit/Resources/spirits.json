@@ -7,7 +7,7 @@
     "scale": [1.0, 1.0, 1.0],
     "position": [0.0, 0.2, 0.0],
     "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 300,
+    "hp": 10,
     "next": "spirit_ice",
     "reward": {
       "coins": 30,
@@ -31,7 +31,7 @@
       "scale": [1.0, 1.0, 1.0],
       "position": [0.0, 0.2, 0.0],
       "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-      "hp": 300,
+      "hp": 10,
       "next": "spirit_void",
       "reward": {
           "coins": 30,
@@ -55,7 +55,7 @@
     "scale": [1.0, 1.0, 1.0],
     "position": [0.0, 0.2, 0.0],
     "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 300,
+    "hp": 10,
     "next": "spirit_lighning",
     "reward": {
         "coins": 30,

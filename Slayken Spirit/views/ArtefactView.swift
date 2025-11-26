@@ -103,24 +103,41 @@ extension ArtefactView {
 extension ArtefactView {
 
     fileprivate func upgradeButton(_ art: Artefact) -> some View {
-        Button {
-            ArtefactInventoryManager.shared.upgrade(art)
+
+        let current = art.shards
+        let needed = art.shardsForNextLevel
+        let canUpgrade = current >= needed
+
+        return Button {
+            ArtefactInventoryManager.shared.upgrade(byID: art.id)
         } label: {
-            Text("Upgrade")
-                .font(.headline.bold())
-                .foregroundColor(.white)
-                .padding(.horizontal, 22)
-                .padding(.vertical, 10)
-                .background(
-                    LinearGradient(colors: [art.rarityColor, art.rarityColor.opacity(0.65)],
-                                   startPoint: .topLeading,
-                                   endPoint: .bottomTrailing)
-                )
-                .clipShape(Capsule())
-                .shadow(color: art.rarityColor.opacity(0.6), radius: 8)
+
+            VStack(spacing: 4) {
+                Text("Upgrade")
+                    .font(.headline.bold())
+                    .foregroundColor(.white)
+
+                // 👉 Shard Counter
+                Text("\(current)/\(needed)")
+                    .font(.caption.bold())
+                    .foregroundColor(canUpgrade ? .green : .red)
+            }
+            .padding(.horizontal, 22)
+            .padding(.vertical, 10)
+            .background(
+                LinearGradient(colors: [
+                    canUpgrade ? art.rarityColor : .gray,
+                    canUpgrade ? art.rarityColor.opacity(0.65) : .gray.opacity(0.65)
+                ], startPoint: .topLeading, endPoint: .bottomTrailing)
+            )
+            .clipShape(Capsule())
+            .shadow(color: art.rarityColor.opacity(0.6), radius: 8)
         }
+        .disabled(!canUpgrade)  // ❗ verhindert nutzloses Drücken
     }
-}
+
+    }
+
 
 extension ArtefactView {
 

@@ -1,5 +1,5 @@
 import SwiftUI
-import GameKit
+internal import GameKit
 
 struct GameCenterLoginButton: View {
     @ObservedObject private var gc = GameCenterManager.shared

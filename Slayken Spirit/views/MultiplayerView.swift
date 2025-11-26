@@ -1,7 +1,7 @@
 // FÜGE DIESE STRUKTUR IN DEINE DATEI HINZU, WO AUCH GameCenterModalView IST
 
 import SwiftUI
-import GameKit
+internal import GameKit
 
 // MARK: - Matchmaker UIKit Wrapper
 struct MatchmakerModalView: UIViewControllerRepresentable {
@@ -94,10 +94,21 @@ struct MatchmakerModalView: UIViewControllerRepresentable {
 struct MultiplayerView: View {
     
     @ObservedObject var gameCenterManager = GameCenterManager.shared
-    @ObservedObject var matchManager = MatchManager.shared // NEU: MatchManager beobachten
+    @ObservedObject var matchManager = MatchManager.shared
     
     @State private var isShowingMatchmaker = false
     @State private var matchmakerParams: (min: Int, max: Int)? = nil
+    
+    init() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+
 
     var body: some View {
         ZStack {
@@ -105,56 +116,57 @@ struct MultiplayerView: View {
 
             NavigationView {
                 List {
-                    // MARK: - Matchmaking starten
-                    Section(header: Text("Neues Spiel starten")) {
+                    Section(header: Text("Neues Spiel starten").foregroundColor(.white)) {
+
                         if !matchManager.isMatchActive {
-                            // Zeige Matchmaking-Optionen nur, wenn kein Match aktiv ist
+
                             Button("Real-Time Match (2 Spieler)") {
-                                matchmakerParams = (min: 2, max: 2)
+                                matchmakerParams = (2, 2)
                                 isShowingMatchmaker = true
-                            }.disabled(!gameCenterManager.isAuthenticated)
-                            
+                            }
+                            .foregroundColor(.black)
+                            .disabled(!gameCenterManager.isAuthenticated)
+
                             Button("Real-Time Match (4 Spieler)") {
-                                matchmakerParams = (min: 2, max: 4)
+                                matchmakerParams = (2, 4)
                                 isShowingMatchmaker = true
-                            }.disabled(!gameCenterManager.isAuthenticated)
+                            }
+                            .foregroundColor(.black)
+                            .disabled(!gameCenterManager.isAuthenticated)
                         } else {
-                            // Wenn Match aktiv, zeige Match-Informationen
+
                             VStack(alignment: .leading) {
                                 Text("Match-Status: \(matchManager.matchStateText)")
-                                    .foregroundColor(.yellow)
+                                    .foregroundColor(.white)
 
-                                // MARK: Spieler-Anzeige
                                 HStack {
-                                    Text("Teilnehmer:")
+                                    Text("Teilnehmer:").foregroundColor(.white)
                                     ForEach(matchManager.connectedPlayers, id: \.gamePlayerID) { player in
                                         HStack(spacing: 4) {
-                                            Image(systemName: "person.fill") // SF Symbol für den Spieler
-                                                .foregroundColor(.blue)
+                                            Image(systemName: "person.fill")
+                                                .foregroundColor(.cyan)
                                             Text(player.displayName)
-                                                .lineLimit(1)
+                                                .foregroundColor(.white)
                                         }
                                     }
                                 }
                             }
-                            
-                            // MARK: Leaven-Button
+
                             Button("❌ Match verlassen") {
                                 matchManager.leaveMatch()
                             }
                             .foregroundColor(.red)
                         }
                     }
-                    
-                    // ... (Rest der View bleibt gleich) ...
                 }
+                .scrollContentBackground(.hidden)
+                .background(SpiritGridBackground())
                 .navigationTitle("Multiplayer")
-                .onAppear { gameCenterManager.authenticate() }
-                .sheet(isPresented: $isShowingMatchmaker) {
-                    if let params = matchmakerParams {
-                        MatchmakerModalView(minPlayers: params.min, maxPlayers: params.max)
-                    }
-                }
+            }
+        }
+        .sheet(isPresented: $isShowingMatchmaker) {
+            if let params = matchmakerParams {
+                MatchmakerModalView(minPlayers: params.min, maxPlayers: params.max)
             }
         }
     }

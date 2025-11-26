@@ -1,5 +1,5 @@
 import Foundation
-import GameKit
+internal import GameKit
 import SwiftUI
 internal import Combine
 

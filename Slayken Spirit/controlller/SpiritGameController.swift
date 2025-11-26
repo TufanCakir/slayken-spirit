@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import GameKit
+internal import GameKit
 internal import Combine
 
 // MARK: - Game Action Structure
@@ -337,7 +337,10 @@ final class SpiritGameController: ObservableObject {
             var chance = art.dropChance + (lootBoost / 100.0)
             chance = min(chance, 0.95) // Hard cap
             if Double.random(in: 0...1) <= chance {
-                ArtefactInventoryManager.shared.addArtefact(art)
+                let dropShards = art.dropShardsAmount   // z.B. 3–5
+                ArtefactInventoryManager.shared.addShards(for: art, amount: dropShards)
+                print("💎 Found \(dropShards) \(art.name) shards!")
+                return
             }
         }
     }

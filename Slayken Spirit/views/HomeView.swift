@@ -21,11 +21,12 @@ struct HomeView: View {
                     HeaderView()
                         .padding(.top, 12)
                         .padding(.bottom, 8)
-                    TestScoreButton()
+                    
+                    /*TestScoreButton()
                         .padding(.horizontal, 20)
                     Button("Manuell Game Center Login öffnen") {
                         GameCenterManager.shared.openGameCenterLogin()
-                    }
+                    }*/
 
 
                     ScrollView(showsIndicators: false) {
@@ -70,6 +71,7 @@ struct HomeBackgroundView: View {
         .environmentObject(CoinManager.shared)
         .environmentObject(CrystalManager.shared)
         .environmentObject(AccountLevelManager.shared)
+        .environmentObject(ArtefactInventoryManager.shared)
         .preferredColorScheme(.dark)
         .environmentObject(SpiritGameController())
 }

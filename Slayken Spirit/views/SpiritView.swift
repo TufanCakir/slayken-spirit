@@ -1,6 +1,6 @@
 import SwiftUI
 import RealityKit
-import GameKit
+internal import GameKit
 
 struct SpiritView: View {
     

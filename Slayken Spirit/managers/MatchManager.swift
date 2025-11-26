@@ -1,7 +1,7 @@
 // MARK: - MatchManager
 
 internal import Combine
-import GameKit
+internal import GameKit
 
 final class MatchManager: NSObject, ObservableObject, GKMatchDelegate {
     static let shared = MatchManager()

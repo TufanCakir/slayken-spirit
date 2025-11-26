@@ -8,6 +8,7 @@ struct HUDIcon: Codable {
 struct HUDIconSet: Codable {
     let coin: HUDIcon
     let crystal: HUDIcon
+    let shards: HUDIcon
     let level: HUDIcon
 }
 
