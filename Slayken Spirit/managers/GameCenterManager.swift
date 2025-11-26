@@ -9,6 +9,7 @@ final class GameCenterManager: NSObject, ObservableObject, GKGameCenterControlle
 
     @Published var isAuthenticated = false
     private var authCompletion: ((Bool, GKPlayer?) -> Void)?
+    @Published var playerName: String = "Not logged in"
 
     private override init() {
         super.init()
@@ -37,6 +38,8 @@ final class GameCenterManager: NSObject, ObservableObject, GKGameCenterControlle
             if GKLocalPlayer.local.isAuthenticated {
                 print("🎮 Game Center Authenticated")
                 self.isAuthenticated = true
+                self.playerName = GKLocalPlayer.local.displayName
+                self.playerName = "Not logged in"
                 self.authCompletion?(true, GKLocalPlayer.local)
                 self.authCompletion = nil
                 return

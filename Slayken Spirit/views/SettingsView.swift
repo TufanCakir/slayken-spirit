@@ -48,6 +48,11 @@ struct SettingsView: View {
                             .frame(maxWidth: .infinity)
 
                         }
+                        
+                        
+                        settingsSection(title: "Game Center") {
+                            GameCenterLoginButton()
+                        }
 
                         // MARK: Data & Storage
                         settingsSection(title: "Data & Storage") {

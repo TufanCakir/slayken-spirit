@@ -17,9 +17,7 @@ struct Slayken_SpiritApp: App {
     @StateObject private var musicManager = MusicManager()
     @StateObject private var eventShopManager = EventShopManager.shared
 
-
     init() {
-        GameCenterManager.shared.authenticate()
         ScreenFactory.shared.setGameController(spiritGame)
     }
 
@@ -30,7 +28,7 @@ struct Slayken_SpiritApp: App {
                 if internet.isConnected {
                     TutorialView()
                 } else {
-                    OfflineScreen()   // ⛔ Kein Internet → Offline-Screen
+                    OfflineScreen()
                 }
             }
             .environmentObject(spiritGame)
@@ -44,6 +42,7 @@ struct Slayken_SpiritApp: App {
             .environmentObject(artefactInventoryManager)
             .environmentObject(questManager)
             .environmentObject(eventShopManager)
+            .environmentObject(internet)   // <— Wichtig!
         }
     }
 }
