@@ -6,6 +6,7 @@ struct EventGameView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var activeSheet: ActiveSheet?
+    @State private var isARMode: Bool = false   // NEU 🔥
 
     enum ActiveSheet: Identifiable {
         case upgrade
@@ -21,41 +22,81 @@ struct EventGameView: View {
 
     var body: some View {
         ZStack {
-            SpiritGridBackground(glowColor: Color(hex: game.currentEventGridColor))
 
+            // 🔥 1. AR oder Normal 3D
+            Group {
+                if isARMode {
+                    ARSpiritBattleView(config: game.current)
+                        .ignoresSafeArea()
+                } else {
+                    ZStack {
+                        SpiritGridBackground(glowColor: Color(hex: game.currentEventGridColor))
+                        SpiritView(config: game.current)
+                            .id(game.current.id + "_event")
+                    }
+                }
+            }
 
-       
-            // 3D SPIRIT
-            SpiritView(config: game.current)
-                .id(game.current.id + "_event")
-                .onTapGesture { game.tapAttack() }
-         
+            // 🔥 2. Tap-Layer (Angriff)
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    game.tapAttack()
+                }
+
+            // 🔥 3. HUD
             VStack {
                 topHUD
                 Spacer()
                 bottomHUD
             }
+
+            // 🔥 4. AR Toggle
+            VStack {
+                HStack {
+                    Spacer()
+                    ARSwitch
+                }
+                Spacer()
+            }
         }
         .onChange(of: game.eventWon) { oldValue, newValue in
             if newValue {
                 dismiss()
-                game.eventWon = false   // ← RESET
+                game.eventWon = false
             }
         }
-
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .upgrade:
                 UpgradeView()
                     .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-
             case .artefacts:
                 ArtefactView()
             }
         }
     }
 }
+
+private extension EventGameView {
+    var ARSwitch: some View {
+        Button {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+                isARMode.toggle()
+            }
+        } label: {
+            Image(systemName: isARMode ? "arkit" : "arkit.badge.xmark")
+                .font(.system(size: 30, weight: .bold))
+                .foregroundColor(.cyan)
+                .padding(14)
+                .background(.ultraThinMaterial)
+                .clipShape(Circle())
+                .shadow(color: .cyan.opacity(0.8), radius: 8)
+        }
+        .padding()
+    }
+}
+
 
 private extension EventGameView {
     
@@ -121,13 +162,13 @@ private extension EventGameView {
                     // Material layer behind for glow/depth when inactive
                     if !isActive {
                         Capsule()
-                            .fill(.blue)
+                            .fill(.clear)
                     }
                     // Foreground capsule fill uses consistent ShapeStyle types
                     Capsule()
                         .fill(
                             isActive
-                            ? AnyShapeStyle(LinearGradient(colors: [.red, .black, .red], startPoint: .top, endPoint: .bottom))
+                            ? AnyShapeStyle(LinearGradient(colors: [.cyan, .blue, .black], startPoint: .top, endPoint: .bottom))
                             : AnyShapeStyle(Color.white.opacity(0.08))
                         )
                 }
@@ -166,7 +207,13 @@ private extension EventGameView {
         
         .padding(.horizontal, 30)
         .padding(.vertical, 6)
-        .background(.blue)
+        .background(
+            LinearGradient(
+                colors: [.cyan, .blue, .black],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        )
         .clipShape(Capsule())
         .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
     
@@ -187,7 +234,7 @@ private extension EventGameView {
         return ZStack(alignment: .leading) {
 
             Capsule()
-                .fill(LinearGradient(colors:                         [.blue, .black, .blue],
+                .fill(LinearGradient(colors:                         [.cyan, .blue, .black],
 
                                      startPoint: .leading,
                                      endPoint: .trailing))
