@@ -1,5 +1,6 @@
 import SwiftUI
 
+
 struct EventView: View {
     
     @EnvironmentObject private var game: SpiritGameController
@@ -7,41 +8,44 @@ struct EventView: View {
     @State private var events: [GameEvent] = []
     @State private var selectedEvent: GameEvent?
     @State private var showBattle: Bool = false
-    @State private var activeSheet: ActiveSheet?
-    @State private var gameButtons: [GameButton] = Bundle.main.loadGameButtons()
-    enum ActiveSheet: Identifiable {
-        case upgrade
-        case artefacts
 
-        var id: Int { hashValue }
-    }
+    @State private var selectedCategory: EventCategory? = nil // nil = ALL
     
-  
     init() {
-        // Move potentially throwing decoding out of the property initializer
         let decoded: [GameEvent]
         do {
             decoded = try Bundle.main.decodeSafe("events.json")
         } catch {
-            // Fallback to empty list on failure; consider logging in real app
             decoded = []
         }
         _events = State(initialValue: decoded)
     }
     
+    // 🔥 Kategorien für Leiste
+    private var categories: [EventCategory] {
+        EventCategory.allCases
+    }
+    
+    // 🔥 Gefilterte Events
+    private var filteredEvents: [GameEvent] {
+        if let cat = selectedCategory {
+            return events.filter { $0.category == cat }
+        }
+        return events
+    }
+
     var body: some View {
         ZStack {
-          
             SpiritGridBackground()
 
-     
             VStack(spacing: 22) {
 
-   
+                // 🔥 CATEGORY BAR
+                categoryBar
 
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 20) {
-                        ForEach(events) { event in
+                        ForEach(filteredEvents) { event in
                             eventCard(event)
                                 .onTapGesture {
                                     selectedEvent = event
@@ -101,6 +105,59 @@ private extension EventView {
         .padding(.horizontal, 5)
     }
 }
+
+private extension EventView {
+
+    var categoryBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 14) {
+
+                // ALL Button
+                categoryButton(
+                    title: "All",
+                    isActive: selectedCategory == nil
+                ) {
+                    selectedCategory = nil
+                }
+
+                // Dynamisch Kategorien erzeugen
+                ForEach(categories, id: \.self) { cat in
+                    categoryButton(
+                        title: cat.rawValue.capitalized,
+                        isActive: selectedCategory == cat
+                    ) {
+                        selectedCategory = cat
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 10)
+        }
+    }
+
+    // UI für einzelne Kategorie-Buttons
+    func categoryButton(title: String, isActive: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.white)
+                .padding(.horizontal, 22)
+                .padding(.vertical, 10)
+                .background(
+                    Capsule().fill(
+                        isActive
+                        ? Color.blue.opacity(0.8)
+                        : Color.white.opacity(0.15)
+                    )
+                )
+                .overlay(
+                    Capsule().stroke(isActive ? Color.white : Color.white.opacity(0.3), lineWidth: 1)
+                )
+                .shadow(color: isActive ? .blue.opacity(0.6) : .clear, radius: 8)
+        }
+    }
+}
+
 
 struct EventDetailView: View {
     let event: GameEvent

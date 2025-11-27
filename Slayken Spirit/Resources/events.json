@@ -1,9 +1,88 @@
 [
   {
-    "id": "event_fire",
-    "name": "Spirit Master",
-    "description": "Verdiene Spirit Points in diesem Epischen Event.",
-    "gridColor": "#0000FF",
-    "bossId": "spirit_fire"
+    "id": "event_fire_raid",
+    "name": "Fire Raid",
+    "description": "Ein epischer Multi-Boss Raid mit skalierenden HP & Belohnungen.",
+    "gridColor": "#FF4500",
+    "category": "raid",
+
+    "bosses": [
+      {
+        "modelNames": ["spirit_fire", "spirit_ice", "spirit_void"],
+        "hp": [300, 435, 630],
+        "coins": [50, 67, 90],
+        "crystals": [2, 4, 6],
+        "exp": [40, 48, 57]
+      }
+    ]
+  },
+
+  {
+    "id": "event_lightning",
+    "name": "Lightning Challenge",
+    "description": "Besiege den mächtigen Lightning Spirit!",
+    "gridColor": "#FFD700",
+    "category": "trial",
+
+    "bosses": [
+      {
+        "modelNames": ["spirit_lighning"],
+        "hp": 300,
+        "coins": 80,
+        "crystals": 3,
+        "exp": 60
+      }
+    ]
+  },
+  {
+    "id": "event_void_gauntlet",
+    "name": "Void Gauntlet",
+    "description": "Ein dunkler Raid durch die Tiefen des Vakuums.",
+    "gridColor": "#7F00FF",
+    "category": "raid",
+
+    "bosses": [
+      {
+        "modelNames": ["spirit_void", "spirit_fire", "spirit_lighning"],
+        "hp": [400, 560, 840],
+        "coins": [60, 84, 120],
+        "crystals": [3, 5, 7],
+        "exp": [50, 65, 80]
+      }
+    ]
+  },
+  {
+    "id": "event_ice_trial",
+    "name": "Ice Trial",
+    "description": "Eine frostige Herausforderung gegen den Ice Spirit.",
+    "gridColor": "#66CCFF",
+    "category": "trial",
+
+    "bosses": [
+      {
+        "modelNames": ["spirit_ice"],
+        "hp": 250,
+        "coins": 45,
+        "crystals": 2,
+        "exp": 35
+      }
+    ]
+  },
+  {
+    "id": "event_spirit_master",
+    "name": "Spirit Master Challenge",
+    "description": "Ein spezielles Event mit erhöhten Belohnungen und Bonus Spirit Points.",
+    "gridColor": "#00FFFF",
+    "category": "special",
+
+    "bosses": [
+      {
+        "modelNames": ["spirit_fire"],
+        "hp": 200,
+        "coins": 100,
+        "crystals": 4,
+        "exp": 55
+      }
+    ]
   }
 ]

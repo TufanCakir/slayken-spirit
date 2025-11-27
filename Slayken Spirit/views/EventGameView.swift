@@ -33,7 +33,6 @@ struct EventGameView: View {
                 topHUD
                 Spacer()
                 bottomHUD
-                bottomHUDButton
             }
         }
         .onChange(of: game.eventWon) { oldValue, newValue in
@@ -223,22 +222,7 @@ private extension EventGameView {
 }
 
 
-private extension EventGameView {
 
-    var bottomHUDButton: some View {
-        Button {
-            game.isInEvent = false
-        } label: {
-            Text("Leave Event")
-                .font(.headline)
-                .foregroundColor(.white)
-                .padding(.horizontal, 30)
-                .padding(.vertical, 12)
-                .background(.ultraThinMaterial)
-                .clipShape(Capsule())
-        }
-    }
-}
 
 
 private struct EventGameButton: Identifiable {

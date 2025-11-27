@@ -44,13 +44,18 @@ final class SpiritGameController: ObservableObject {
     @Published var backgroundFade: Double = 0
     @Published var isAutoBattle: Bool = false
     
+    // MARK: - Active Event
+    private var activeEvent: GameEvent?
+    
     // MARK: - Stats fürs Game Center
     @Published var totalKills: Int = UserDefaults.standard.integer(forKey: "totalKills")
     @Published var totalQuests: Int = UserDefaults.standard.integer(forKey: "totalQuests")
     @Published var playtimeMinutes: Int = UserDefaults.standard.integer(forKey: "playtimeMinutes")
     @Published var isInEvent: Bool = false
     @Published var eventWon: Bool = false
-    
+    @Published var eventBossList: [String] = []
+    @Published var eventBossIndex: Int = 0
+
     private var autoBattleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
     
@@ -110,41 +115,88 @@ final class SpiritGameController: ObservableObject {
     
     // MARK: - Event Start
     func startEvent(_ event: GameEvent) {
-        print("🔥 [EVENT] StartEvent aufgerufen")
-        print("🔥 [EVENT] Event ID: \(event.id)")
-        print("🔥 [EVENT] bossId aus JSON: \(event.bossId)")
-        
-        // Markiere Event als aktiv
         isInEvent = true
-        
-        print("🎯 [STATE] isInEvent = true")
-        
-        print("📦 [SPIRITS] Anzahl geladene Spirits: \(all.count)")
-        for s in all {
-            print("   → Spirit: \(s.id) (model: \(s.modelName) )")
-        }
-        
-        guard let boss = all.first(where: { $0.id == event.bossId }) else {
-            print("❌ Boss für Event nicht gefunden:", event.bossId)
-            return
-        }
-        
-        print("✅ [EVENT] Gefundener Boss: \(boss.id)")
-        print("   → modelName: \(boss.modelName)")
-        print("   → hp: \(boss.hp)")
-        print("   → background: \(boss.background ?? "none")")
-        
-        // Boss setzen
-        current = boss
-        currentHP = boss.hp + ArtefactInventoryManager.shared.bonusHP
-        print("💙 [HP] HP gesetzt auf: \(currentHP)")
-        
-        updateBackground(for: boss)
-        
-        // UI Refresh
-        objectWillChange.send()
-        print("🎉 Event Start abgeschlossen!")
+        eventWon = false
+        activeEvent = event // store active event
+
+        // Lade die Bossliste
+        eventBossList = event.bosses.flatMap { $0.modelNames }
+        eventBossIndex = 0
+
+        loadEventBoss(modelID: eventBossList[0], data: event.bosses[0])
     }
+
+    
+    private func loadEventBoss(modelID: String, data: EventBoss) {
+
+        let model = all.first(where: { $0.id == modelID })
+
+        // 👉 RAID / MULTI-SCALING WERTE:
+        let hp = data.hp.value(at: eventBossIndex)
+        let coins = data.coins.value(at: eventBossIndex)
+        let crystals = data.crystals.value(at: eventBossIndex)
+        let exp = data.exp.value(at: eventBossIndex)
+
+        // 👉 Hp setzen
+        currentHP = hp + ArtefactInventoryManager.shared.bonusHP
+
+        current = ModelConfig(
+            id: modelID,
+            modelName: model?.modelName ?? "spirit_fire",
+            background: model?.background ?? "sky",
+            scale: model?.scale ?? [1,1,1],
+            position: model?.position ?? [0,0.2,0],
+            rotation: model?.rotation ?? .init(x:0,y:0,z:0),
+            camera: model?.camera ?? .init(position: [0,1.2,5], lookAt: [0,1,0]),
+            light: model?.light ?? .init(intensity: 5000, position: [1,2,2]),
+            facing: model?.facing ?? "right",
+            hp: hp,
+            next: nil,
+            reward: .init(
+                coins: coins,
+                crystals: crystals,
+                exp: exp
+            )
+        )
+    }
+
+
+
+        
+    private func handleDefeat() {
+        // MULTI-BOSS HANDLING
+        if isInEvent {
+            if let event = activeEvent {
+                // Mehr Bosse?
+                if eventBossIndex + 1 < eventBossList.count {
+                    eventBossIndex += 1
+                    let nextID = eventBossList[eventBossIndex]
+
+                    let bossData = event.bosses[0]
+                    loadEventBoss(modelID: nextID, data: bossData)
+                    return
+                } else {
+                    // Event abgeschlossen
+                    isInEvent = false
+                    eventWon = true   // -> EventGameView schließen
+                    handleEventVictory()
+                    return
+                }
+            } else {
+                // Falls kein aktives Event vorhanden ist, beende Event-Sitzung defensiv
+                isInEvent = false
+                eventWon = true
+                handleEventVictory()
+                return
+            }
+        } else {
+            // normaler Spirit → weiter zum nächsten Spirit
+            giveReward()
+            rollArtefactDrop()
+            goToNext()
+        }
+    }
+
     
     func handleEventVictory() {
         print("🔥 EVENT GEWONNEN – SPIRIT POINTS +10")
@@ -216,43 +268,33 @@ final class SpiritGameController: ObservableObject {
     // MARK: - Player Tap
     func tapAttack() {
         guard currentHP > 0 else { return }
-        
-        // Schaden berechnen (lokal, da Crit-Chance etc. nur vom lokalen Spieler abhängt)
+
         let base = UpgradeManager.shared.tapDamage + ArtefactInventoryManager.shared.bonusTapDamage
         let damage = calculateDamage(base: base)
-        
-        // NEU: Unterscheidung zwischen Singleplayer und Multiplayer
+
         if MatchManager.shared.isMatchActive {
-            // --- MULTIPLAYER-PFAD ---
-            
-            // 1. Definiere die Aktion
             let attack = GameAction(
                 type: .attack,
                 playerID: GKLocalPlayer.local.playerID,
                 value: damage
             )
-            
-            // 2. Sende die Aktion an alle Spieler
             MatchManager.shared.sendActionData(attack)
-            
-            // WICHTIG: Die tatsächliche HP-Änderung findet JETZT NICHT statt.
-            // Sie wird erst durchgeführt, wenn der MatchManager die GESENDETEN
-            // Daten ÜBER DAS NETZWERK ZURÜCK empfängt (siehe unten).
-            
         } else {
-            // --- SINGLEPLAYER-PFAD (Bestehende Logik) ---
-            
             currentHP = max(0, currentHP - damage)
-            
+
             if currentHP == 0 {
+
                 if isInEvent {
-                    handleEventVictory()
+                    // WICHTIG: Multi-Boss Handling!
+                    handleDefeat()
                 } else {
+                    // normaler Spirit
                     handleDefeat()
                 }
             }
         }
     }
+
 
     // MARK: - Crit System
     private func calculateDamage(base: Int) -> Int {
@@ -316,12 +358,6 @@ final class SpiritGameController: ObservableObject {
         autoBattleTimer = nil
     }
 
-    // MARK: - Defeat
-    private func handleDefeat() {
-        giveReward()
-        rollArtefactDrop()
-        goToNext()
-    }
 
     // MARK: - Artefact Drop
     private func rollArtefactDrop() {
