@@ -4,7 +4,7 @@ import simd
 struct ModelConfig: Codable {
     let id: String
     let modelName: String
-    let background: String?
+    let gridColor: String   // ← NEU
     let scale: [Float]
     let position: [Float]
     let rotation: Rotation

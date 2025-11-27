@@ -40,8 +40,7 @@ final class SpiritGameController: ObservableObject {
         let saved = UserDefaults.standard.integer(forKey: "savedPoint")
         return max(saved, 1) // nie 0
     }()
-    @Published private(set) var backgroundName: String
-    @Published var backgroundFade: Double = 0
+
     @Published var isAutoBattle: Bool = false
     
     // MARK: - Active Event
@@ -55,6 +54,7 @@ final class SpiritGameController: ObservableObject {
     @Published var eventWon: Bool = false
     @Published var eventBossList: [String] = []
     @Published var eventBossIndex: Int = 0
+    @Published var currentEventGridColor: String = "#00AACC"
 
     private var autoBattleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
@@ -79,7 +79,6 @@ final class SpiritGameController: ObservableObject {
         self.all = loaded
         self.current = first
         self.currentHP = first.hp + ArtefactInventoryManager.shared.bonusHP
-        self.backgroundName = first.background ?? "sky"
         
         setupArtefactListener()
         setupMultiplayerListener() // <--- NEU: Rufe den Listener hier auf
@@ -117,9 +116,10 @@ final class SpiritGameController: ObservableObject {
     func startEvent(_ event: GameEvent) {
         isInEvent = true
         eventWon = false
-        activeEvent = event // store active event
+        activeEvent = event
 
-        // Lade die Bossliste
+        currentEventGridColor = event.gridColor  // NEU 🔥
+
         eventBossList = event.bosses.flatMap { $0.modelNames }
         eventBossIndex = 0
 
@@ -142,8 +142,7 @@ final class SpiritGameController: ObservableObject {
 
         current = ModelConfig(
             id: modelID,
-            modelName: model?.modelName ?? "spirit_fire",
-            background: model?.background ?? "sky",
+            modelName: model?.modelName ?? "spirit_fire", gridColor: "0099FF",
             scale: model?.scale ?? [1,1,1],
             position: model?.position ?? [0,0.2,0],
             rotation: model?.rotation ?? .init(x:0,y:0,z:0),
@@ -199,17 +198,12 @@ final class SpiritGameController: ObservableObject {
 
     
     func handleEventVictory() {
-        print("🔥 EVENT GEWONNEN – SPIRIT POINTS +10")
-        
-        // Punkte vergeben
         EventShopManager.shared.spiritPoints += 10
-        
-        // Event wird beendet
         isInEvent = false
-        
-        // Trigger für UI damit EventGameView geschlossen wird
+        currentEventGridColor = "#0066FF"   // Default oder Theme-Farbe
         eventWon = true
     }
+
     
     // Im SpiritGameController:
     
@@ -425,23 +419,5 @@ final class SpiritGameController: ObservableObject {
         // Spirit Update
         current = next
         recalculateHP()
-
-        // Hintergrund animiert wechseln
-        updateBackground(for: next)
     }
-    
-    // MARK: - Background Change
-    private func updateBackground(for next: ModelConfig) {
-
-        let newBG = next.background ?? "sky"
-        guard newBG != backgroundName else { return }
-
-        backgroundFade = 1
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            self.backgroundName = newBG
-            self.backgroundFade = 0
-        }
-    }
-
 }

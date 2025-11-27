@@ -21,7 +21,8 @@ struct EventGameView: View {
 
     var body: some View {
         ZStack {
-            SpiritGridBackground()
+            SpiritGridBackground(glowColor: Color(hex: game.currentEventGridColor))
+
 
        
             // 3D SPIRIT

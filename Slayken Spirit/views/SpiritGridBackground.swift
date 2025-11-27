@@ -1,29 +1,29 @@
 import SwiftUI
 
 struct SpiritGridBackground: View {
-    var glowColor: Color = .blue      // ← dynamisch!
+    var glowColor: Color = .blue
+    var intensity: Double = 1.0       // <--- NEU
 
     var body: some View {
         ZStack {
-            TimelineView(.animation) { (timeline: TimelineViewDefaultContext) in
-                
+            TimelineView(.animation) { timeline in
+
                 let gridSize: CGFloat = 50
-                let lineWidth: CGFloat = 1.0
-                let glow = glowColor      // ← hier benutzen!
+                let lineWidth: CGFloat = 1.2
 
                 let t = timeline.date.timeIntervalSinceReferenceDate
                 let offset = CGFloat(t.remainder(dividingBy: gridSize))
                 let slowOffset = CGFloat((t * 0.35).remainder(dividingBy: gridSize))
-                
+
                 Canvas { context, size in
-                    
-                    // MARK: - Background Gradient
+
+                    // background
                     let bgGradient = Gradient(colors: [
                         .black,
-                        .blue.opacity(0.25),
+                        glowColor.opacity(0.15 * intensity),   // mehr Farbe!
                         .black
                     ])
-                    
+
                     context.fill(
                         Path(CGRect(origin: .zero, size: size)),
                         with: .linearGradient(
@@ -32,44 +32,49 @@ struct SpiritGridBackground: View {
                             endPoint: CGPoint(x: 0.5, y: 1)
                         )
                     )
-                    
+
                     context.blendMode = .plusLighter
-                    
+
                     var path = Path()
-                    
-                    // Vertical lines
-                    for x in stride(from: 0, through: size.width, by: gridSize) {
+
+                    // vertical
+                    for x in stride(from: 0, through: size.width, by: 50) {
                         let xx = x + offset
                         path.move(to: CGPoint(x: xx, y: 0))
                         path.addLine(to: CGPoint(x: xx, y: size.height))
                     }
-                    
-                    // Horizontal lines
-                    for y in stride(from: 0, through: size.height, by: gridSize) {
+
+                    // horizontal
+                    for y in stride(from: 0, through: size.height, by: 50) {
                         let yy = y + slowOffset
                         path.move(to: CGPoint(x: 0, y: yy))
                         path.addLine(to: CGPoint(x: size.width, y: yy))
                     }
-                    
-                    // Base lines
+
+                    let strong = intensity
+
+                    // Base Stroke
                     context.stroke(path,
-                                   with: .color(glow.opacity(0.28)),
+                                   with: .color(glowColor.opacity(0.35 * strong)),
                                    lineWidth: lineWidth)
-                    
+
                     // Glow
-                    context.addFilter(.shadow(color: glow.opacity(0.9), radius: 8))
+                    context.addFilter(.shadow(color: glowColor.opacity(0.9 * strong),
+                                               radius: 12 * strong))   // <--- starker Glow!
+
                     context.drawLayer { layer in
                         layer.stroke(path,
-                                     with: .color(glow.opacity(0.85)),
+                                     with: .color(glowColor.opacity(0.85 * strong)),
                                      lineWidth: lineWidth)
                     }
                 }
             }
         }
-        .ignoresSafeArea()      // <- garantiert wirklich fullscreen
-        .background(Color.black) // <- verhindert weißes Flashing beim Transition
+        .ignoresSafeArea()
+        .background(Color.black)
     }
 }
+
 
 #Preview {
     SpiritGridBackground()

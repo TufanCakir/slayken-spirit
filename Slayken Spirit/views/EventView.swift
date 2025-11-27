@@ -74,8 +74,18 @@ private extension EventView {
     func eventCard(_ event: GameEvent) -> some View {
         ZStack {
             // 🔥 CARD-Grid — NICHT fullscreen!
-            SpiritGridBackground(glowColor: Color(hex: event.gridColor))
-                .clipShape(RoundedRectangle(cornerRadius: 20))   // <- wichtig!!!
+            SpiritGridBackground(
+                glowColor: Color(hex: event.gridColor),
+                intensity: 2.0           // doppelte Stärke
+            )
+            .shadow(color: Color(hex: event.gridColor).opacity(0.9), radius: 20)
+
+                 .clipShape(RoundedRectangle(cornerRadius: 20))
+                 .frame(height: 200)
+                 .overlay(
+                     RoundedRectangle(cornerRadius: 20)
+                         .stroke(Color(hex: event.gridColor), lineWidth: 3) // optional schöner
+                 )  // <- wichtig!!!
                 .frame(height: 200)                               // <- Card Größe
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
@@ -171,7 +181,12 @@ struct EventDetailView: View {
    
 
             // 🔥 CARD-Grid — NICHT fullscreen!
-            SpiritGridBackground(glowColor: Color(hex: event.gridColor))
+            SpiritGridBackground(
+                glowColor: Color(hex: event.gridColor),
+                intensity: 2.0           // doppelte Stärke
+            )
+            .shadow(color: Color(hex: event.gridColor).opacity(0.9), radius: 20)
+
                 .clipShape(RoundedRectangle(cornerRadius: 20))   // <- wichtig!!!
                 .frame(height: 200)                               // <- Card Größe
                 .overlay(

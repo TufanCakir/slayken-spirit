@@ -15,7 +15,7 @@ struct SpiritGameView: View {
 
     var body: some View {
         ZStack {
-            SpiritGridBackground()
+            SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
 
 
 

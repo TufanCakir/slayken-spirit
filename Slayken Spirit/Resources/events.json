@@ -1,87 +1,113 @@
 [
   {
-    "id": "event_fire_raid",
-    "name": "Fire Raid",
-    "description": "Ein epischer Multi-Boss Raid mit skalierenden HP & Belohnungen.",
-    "gridColor": "#FF4500",
+    "id": "event_aquadrax_raid",
+    "name": "AquaDrax Depth Raid",
+    "description": "Ein uralter Wasserdrache prüft deine Stärke in einem tobenden Ozean.",
+    "gridColor": "#0077CC",
     "category": "raid",
-
     "bosses": [
       {
-        "modelNames": ["spirit_fire", "spirit_ice", "spirit_void"],
-        "hp": [300, 435, 630],
-        "coins": [50, 67, 90],
-        "crystals": [2, 4, 6],
-        "exp": [40, 48, 57]
+        "modelNames": ["spirit_aquadrax", "spirit_glacielion", "spirit_frostfang"],
+        "hp": [5, 5, 5],
+        "coins": [70, 95, 130],
+        "crystals": [3, 5, 7],
+        "exp": [55, 70, 90]
       }
     ]
   },
-
   {
-    "id": "event_lightning",
-    "name": "Lightning Challenge",
-    "description": "Besiege den mächtigen Lightning Spirit!",
-    "gridColor": "#FFD700",
+    "id": "event_arc_lightning_trial",
+    "name": "Arc Lightning Wolf Trial",
+    "description": "Der Blitzwolf entfesselt elektrische Stürme gegen jeden Herausforderer.",
+    "gridColor": "#0066CC",
     "category": "trial",
-
     "bosses": [
       {
-        "modelNames": ["spirit_lighning"],
-        "hp": 300,
-        "coins": 80,
+        "modelNames": ["spirit_arc_lightning_wolf"],
+        "hp": 5,
+        "coins": 90,
         "crystals": 3,
         "exp": 60
       }
     ]
   },
   {
-    "id": "event_void_gauntlet",
-    "name": "Void Gauntlet",
-    "description": "Ein dunkler Raid durch die Tiefen des Vakuums.",
-    "gridColor": "#7F00FF",
+    "id": "event_glacier_breach",
+    "name": "Glacier Breach",
+    "description": "Drei frostige Bestien brechen aus den Eisfeldern hervor.",
+    "gridColor": "#AEEBFF",
     "category": "raid",
-
     "bosses": [
       {
-        "modelNames": ["spirit_void", "spirit_fire", "spirit_lighning"],
-        "hp": [400, 560, 840],
-        "coins": [60, 84, 120],
+        "modelNames": ["spirit_glacielion", "spirit_frostfang", "spirit_wolfrider"],
+        "hp": [5, 5, 5],
+        "coins": [80, 105, 150],
         "crystals": [3, 5, 7],
-        "exp": [50, 65, 80]
+        "exp": [55, 75, 95]
       }
     ]
   },
   {
-    "id": "event_ice_trial",
-    "name": "Ice Trial",
-    "description": "Eine frostige Herausforderung gegen den Ice Spirit.",
-    "gridColor": "#66CCFF",
+    "id": "event_frostfang_elite",
+    "name": "Frostfang Elite Trial",
+    "description": "Frostfang wartet auf den nächsten würdigen Herausforderer.",
+    "gridColor": "#44A8FF",
     "category": "trial",
-
     "bosses": [
       {
-        "modelNames": ["spirit_ice"],
-        "hp": 250,
-        "coins": 45,
-        "crystals": 2,
-        "exp": 35
-      }
-    ]
-  },
-  {
-    "id": "event_spirit_master",
-    "name": "Spirit Master Challenge",
-    "description": "Ein spezielles Event mit erhöhten Belohnungen und Bonus Spirit Points.",
-    "gridColor": "#00FFFF",
-    "category": "special",
-
-    "bosses": [
-      {
-        "modelNames": ["spirit_fire"],
-        "hp": 200,
+        "modelNames": ["spirit_frostfang"],
+        "hp": 5,
         "coins": 100,
         "crystals": 4,
-        "exp": 55
+        "exp": 70
+      }
+    ]
+  },
+  {
+    "id": "event_wolfrider_skirmish",
+    "name": "Wolfrider Skirmish",
+    "description": "Ein berüchtigter Wolfsreiter stellt sich dir in einem direkten Duell.",
+    "gridColor": "#3FA6FF",
+    "category": "special",
+    "bosses": [
+      {
+        "modelNames": ["spirit_wolfrider"],
+        "hp": 5,
+        "coins": 110,
+        "crystals": 4,
+        "exp": 75
+      }
+    ]
+  },
+  {
+    "id": "event_raptoroid_rampage",
+    "name": "Raptoroid Rampage",
+    "description": "Der technoide Dino-Spirit rastet völlig aus!",
+    "gridColor": "#00E6A0",
+    "category": "special",
+    "bosses": [
+      {
+        "modelNames": ["spirit_raptoroid"],
+        "hp": 5,
+        "coins": 130,
+        "crystals": 5,
+        "exp": 85
+      }
+    ]
+  },
+  {
+    "id": "event_ethereal_blue_awakening",
+    "name": "Ethereal Blue Awakening",
+    "description": "Der mystische himmelblaue Fox-Spirit erwacht aus uraltem Schlaf.",
+    "gridColor": "#66E0FF",
+    "category": "trial",
+    "bosses": [
+      {
+        "modelNames": ["spirit_ethereal_blue_fox"],
+        "hp": 5,
+        "coins": 140,
+        "crystals": 5,
+        "exp": 95
       }
     ]
   }
