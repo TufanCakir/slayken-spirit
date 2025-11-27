@@ -12,6 +12,7 @@ struct SettingsView: View {
     // MARK: - Environment Objects
     @EnvironmentObject var coinManager: CoinManager
     @EnvironmentObject var crystalManager: CrystalManager
+    @EnvironmentObject var artefactInventoryManager: ArtefactInventoryManager
     @EnvironmentObject var accountManager: AccountLevelManager
     @EnvironmentObject var musicManager: MusicManager
     @EnvironmentObject var spiritGame: SpiritGameController
@@ -41,19 +42,23 @@ struct SettingsView: View {
                         // MARK: Account
                         settingsSection(title: "Account Overview") {
                             HStack(spacing: 22) {
-                                StatBox(icon: "star.fill", title: "Level", value: "\(accountManager.level)", color: .green)
-                                StatBox(icon: "diamond.fill", title: "Crystals", value: "\(crystalManager.crystals)", color: .blue)
-                                StatBox(icon: "c.circle.fill", title: "Coins", value: "\(coinManager.coins)", color: .yellow)
+                                StatBox(icon: "star.fill", title: "Level", value: "\(accountManager.level)", color: Color(hex: "#32CD32")
+                                )
+                                StatBox(icon: "suit.diamond.fill", title: "Crystals", value: "\(crystalManager.crystals)",  color: Color(hex: "#0096FF")
+                                )
+                                StatBox(icon: "circle.fill", title: "Coins", value: "\(coinManager.coins)",                                     color: Color(hex: "#FFEA00")
+                                )
+                                StatBox(
+                                    icon: "hexagon.fill",
+                                    title: "Artefacts",
+                                    value: "\(artefactInventoryManager.total)",
+                                    color: Color(hex: "#00E5FF")
+                                )
+
                             }
                             .frame(maxWidth: .infinity)
 
                         }
-                        
-                        
-                        settingsSection(title: "Game Center") {
-                            GameCenterLoginButton()
-                        }
-
 
                         // MARK: Data & Storage
                         settingsSection(title: "Data & Storage") {
@@ -265,6 +270,7 @@ private struct StatBox: View {
     SettingsView()
         .environmentObject(CoinManager.shared)
         .environmentObject(CrystalManager.shared)
+        .environmentObject(ArtefactInventoryManager())
         .environmentObject(AccountLevelManager.shared)
         .environmentObject(MusicManager())
         .preferredColorScheme(.dark)

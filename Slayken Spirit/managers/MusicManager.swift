@@ -41,7 +41,7 @@ final class MusicManager: NSObject, ObservableObject, AVAudioPlayerDelegate {
 
 // MARK: - Audio Session
 extension MusicManager {
-    private func configureAudioSession() {
+    func configureAudioSession() {
         let session = AVAudioSession.sharedInstance()
 
         do {

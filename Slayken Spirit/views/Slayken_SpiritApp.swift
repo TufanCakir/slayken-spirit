@@ -1,8 +1,10 @@
 import SwiftUI
+internal import GameKit
 
 @main
 struct Slayken_SpiritApp: App {
 
+    // MARK: - Managers / Game State
     @StateObject private var internet = InternetMonitor()
 
     @StateObject private var coinManager = CoinManager.shared
@@ -17,35 +19,52 @@ struct Slayken_SpiritApp: App {
     @StateObject private var musicManager = MusicManager()
     @StateObject private var eventShopManager = EventShopManager.shared
 
+    
+    // MARK: - Init (App Setup)
     init() {
+        // Übergibt GameController an Factory
         ScreenFactory.shared.setGameController(spiritGame)
-
-        // 🔥 Game Center Auto-Login bei App-Start
-        GameCenterManager.shared.authenticate()
+        
+        // Game Center floating bubble
+        GKAccessPoint.shared.isActive = true
+        GKAccessPoint.shared.location = .topLeading
+        
+        // Game Center Login bei Start
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            GameCenterManager.shared.authenticate()
+        }
     }
 
+
+    // MARK: - Body
     var body: some Scene {
         WindowGroup {
-
-            Group {
-                if internet.isConnected {
-                    TutorialView()
-                } else {
-                    OfflineScreen()
+            rootView
+                .onAppear {
+                    musicManager.configureAudioSession()
                 }
-            }
-            .environmentObject(spiritGame)
-            .environmentObject(coinManager)
-            .environmentObject(crystalManager)
-            .environmentObject(accountManager)
-            .environmentObject(giftManager)
-            .environmentObject(dailyLoginManager)
-            .environmentObject(musicManager)
-            .environmentObject(upgradeManager)
-            .environmentObject(artefactInventoryManager)
-            .environmentObject(questManager)
-            .environmentObject(eventShopManager)
-            .environmentObject(internet)
+                .environmentObject(spiritGame)
+                .environmentObject(coinManager)
+                .environmentObject(crystalManager)
+                .environmentObject(accountManager)
+                .environmentObject(giftManager)
+                .environmentObject(dailyLoginManager)
+                .environmentObject(musicManager)
+                .environmentObject(upgradeManager)
+                .environmentObject(artefactInventoryManager)
+                .environmentObject(questManager)
+                .environmentObject(eventShopManager)
+                .environmentObject(internet)
+        }
+    }
+
+    // MARK: - Root View
+    @ViewBuilder
+    private var rootView: some View {
+        if internet.isConnected {
+            TutorialView()
+        } else {
+            OfflineScreen()
         }
     }
 }

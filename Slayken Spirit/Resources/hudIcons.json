@@ -1,15 +1,15 @@
 {
     "coin": {
-        "symbol": "c.circle",
-        "color": "#FFFF00"
+        "symbol": "circle.fill",
+        "color": "#FFEA00"
     },
     "crystal": {
-        "symbol": "diamond.fill",
-        "color": "#0096FF"
+        "symbol": "suit.diamond.fill",
+        "color": "##0096FF"
     },
     "level": {
         "symbol": "star",
-        "color": "#00FF00"
+        "color": "#32CD32"
     },
     "shards": {
         "symbol": "hexagon.fill",
