@@ -1,5 +1,5 @@
-import SwiftUI
 internal import Combine
+import SwiftUI
 
 final class AccountLevelManager: ObservableObject {
     static let shared = AccountLevelManager()
@@ -11,7 +11,7 @@ final class AccountLevelManager: ObservableObject {
         self.level = UserDefaults.standard.integer(forKey: "accountLevel")
         self.exp = UserDefaults.standard.integer(forKey: "accountExp")
 
-        if level == 0 { level = 1 } // Start bei Level 1
+        if level == 0 { level = 1 }  // Start bei Level 1
     }
 
     @MainActor
@@ -27,7 +27,7 @@ final class AccountLevelManager: ObservableObject {
 
         save()
     }
-    
+
     // ✅ Reset für Settings
     func reset() {
         level = 1

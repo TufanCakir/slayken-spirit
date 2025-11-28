@@ -2,8 +2,8 @@
 //  HudIconManager.swift
 //
 
-import SwiftUI
 internal import Combine
+import SwiftUI
 
 struct HudIcon: Codable {
     let symbol: String

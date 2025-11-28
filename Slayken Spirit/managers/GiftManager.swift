@@ -3,9 +3,9 @@
 //  Slayken Fighter of Fists
 //
 
+internal import Combine
 import Foundation
 import SwiftUI
-internal import Combine
 
 @MainActor
 final class GiftManager: ObservableObject {
@@ -40,7 +40,7 @@ final class GiftManager: ObservableObject {
 
         return true
     }
-    
+
     func reset() {
         claimedGifts.removeAll()
         UserDefaults.standard.removeObject(forKey: saveKey)
@@ -48,13 +48,13 @@ final class GiftManager: ObservableObject {
         print("🔄 GiftManager reset! Alle abgeholten Geschenke gelöscht.")
     }
 
-
     private func save() {
         UserDefaults.standard.set(Array(claimedGifts), forKey: saveKey)
     }
 
     private func load() {
-        if let saved = UserDefaults.standard.array(forKey: saveKey) as? [String] {
+        if let saved = UserDefaults.standard.array(forKey: saveKey) as? [String]
+        {
             claimedGifts = Set(saved)
         }
     }

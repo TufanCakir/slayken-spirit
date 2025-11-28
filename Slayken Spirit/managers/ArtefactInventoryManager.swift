@@ -1,5 +1,5 @@
-import Foundation
 internal import Combine
+import Foundation
 import SwiftUI
 
 @MainActor
@@ -14,10 +14,6 @@ final class ArtefactInventoryManager: ObservableObject {
     init() {
         load()
     }
-    
-
-
-
 
     // MARK: - Total Stats (für Game Center)
     var total: Int {
@@ -42,40 +38,40 @@ final class ArtefactInventoryManager: ObservableObject {
         }
     }
 
-
     // MARK: - Kosten
-      private func startingShardCost(for art: Artefact) -> Int {
-          switch art.rarity.lowercased() {
-          case "common": return 10
-          case "rare": return 20
-          case "epic": return 35
-          case "legendary": return 60
-          default: return 10
-          }
-      }
-
+    private func startingShardCost(for art: Artefact) -> Int {
+        switch art.rarity.lowercased() {
+        case "common": return 10
+        case "rare": return 20
+        case "epic": return 35
+        case "legendary": return 60
+        default: return 10
+        }
+    }
 
     // MARK: - Upgrade
-      func upgrade(byID id: String) {
-          guard let index = owned.firstIndex(where: { $0.id == id }) else { return }
+    func upgrade(byID id: String) {
+        guard let index = owned.firstIndex(where: { $0.id == id }) else {
+            return
+        }
 
-          var item = owned[index]
+        var item = owned[index]
 
-          guard item.shards >= item.shardsForNextLevel else {
-              print("❌ Nicht genug Shards: \(item.shards)/\(item.shardsForNextLevel)")
-              return
-          }
+        guard item.shards >= item.shardsForNextLevel else {
+            print(
+                "❌ Nicht genug Shards: \(item.shards)/\(item.shardsForNextLevel)"
+            )
+            return
+        }
 
-          item.shards -= item.shardsForNextLevel
-          item.level += 1
-          item.shardsForNextLevel = Int(Double(item.shardsForNextLevel) * 1.45)
+        item.shards -= item.shardsForNextLevel
+        item.level += 1
+        item.shardsForNextLevel = Int(Double(item.shardsForNextLevel) * 1.45)
 
-          owned[index] = item
-          save()
-          objectWillChange.send()   // UI sofort aktualisieren
-      }
-
-
+        owned[index] = item
+        save()
+        objectWillChange.send()  // UI sofort aktualisieren
+    }
 
     // MARK: - Add Shards (richtige Version!)
     func addShards(for art: Artefact, amount: Int) {
@@ -95,14 +91,12 @@ final class ArtefactInventoryManager: ObservableObject {
         objectWillChange.send()
     }
 
-
     // MARK: - Reset
     func reset() {
         owned.removeAll()
         UserDefaults.standard.removeObject(forKey: saveKey)
         print("🔄 Reset: Alle Artefakte gelöscht.")
     }
-
 
     // MARK: - Bonus Stats
     var bonusTapDamage: Int {
@@ -143,18 +137,17 @@ final class ArtefactInventoryManager: ObservableObject {
             .reduce(0, +)
     }
 
-
     // MARK: - Save
-      private func save() {
-          if let data = try? JSONEncoder().encode(owned) {
-              UserDefaults.standard.set(data, forKey: saveKey)
-          }
-      }
+    private func save() {
+        if let data = try? JSONEncoder().encode(owned) {
+            UserDefaults.standard.set(data, forKey: saveKey)
+        }
+    }
 
-      private func load() {
-          guard let data = UserDefaults.standard.data(forKey: saveKey),
-                let decoded = try? JSONDecoder().decode([Artefact].self, from: data)
-          else { return }
-          owned = decoded
-      }
-  }
+    private func load() {
+        guard let data = UserDefaults.standard.data(forKey: saveKey),
+            let decoded = try? JSONDecoder().decode([Artefact].self, from: data)
+        else { return }
+        owned = decoded
+    }
+}

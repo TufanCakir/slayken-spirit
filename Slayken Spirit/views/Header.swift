@@ -11,7 +11,7 @@ struct HeaderView: View {
     @State private var glow = false
 
     var body: some View {
-        HStack(spacing: 18) {   // ⬅️ Weniger Abstand
+        HStack(spacing: 18) {  // ⬅️ Weniger Abstand
 
             hudItem(
                 symbol: icons.level.symbol,
@@ -38,8 +38,8 @@ struct HeaderView: View {
                 value: artefacts.totalShards
             )
         }
-        .padding(.horizontal, 14)     // ⬅️ Weniger Außen-Padding
-        .padding(.vertical, 14)       // ⬅️ Weniger Höhe
+        .padding(.horizontal, 14)  // ⬅️ Weniger Außen-Padding
+        .padding(.vertical, 14)  // ⬅️ Weniger Höhe
         .background(
             RoundedRectangle(cornerRadius: 20)
                 .fill(.ultraThinMaterial)
@@ -49,22 +49,32 @@ struct HeaderView: View {
                         .stroke(Color.white.opacity(0.2), lineWidth: 1)
                 )
         )
-        .padding(.horizontal, 10)     // ⬅️ Rahmen auch kompakter
+        .padding(.horizontal, 10)  // ⬅️ Rahmen auch kompakter
         .onAppear {
-            withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: true)) {
+            withAnimation(
+                .easeInOut(duration: 1.8).repeatForever(autoreverses: true)
+            ) {
                 glow.toggle()
             }
         }
     }
 
-    private func hudItem(symbol: String, color: Color, title: String? = nil, value: Int) -> some View {
+    private func hudItem(
+        symbol: String,
+        color: Color,
+        title: String? = nil,
+        value: Int
+    ) -> some View {
         HStack(spacing: 6) {
 
             ZStack {
                 Circle()
                     .fill(color.opacity(0.12))
-                    .frame(width: 30, height: 30)    // ⬅️ kleiner
-                    .shadow(color: color.opacity(glow ? 0.5 : 0.2), radius: glow ? 8 : 2)
+                    .frame(width: 30, height: 30)  // ⬅️ kleiner
+                    .shadow(
+                        color: color.opacity(glow ? 0.5 : 0.2),
+                        radius: glow ? 8 : 2
+                    )
 
                 Image(systemName: symbol)
                     .font(.system(size: 14, weight: .semibold))  // ⬅️ kleiner
@@ -79,13 +89,13 @@ struct HeaderView: View {
                 }
 
                 Text("\(value)")
-                    .font(.subheadline.weight(.bold))        // ⬅️ kleiner
+                    .font(.subheadline.weight(.bold))  // ⬅️ kleiner
                     .foregroundColor(.white)
             }
 
             Spacer(minLength: 0)
         }
-        .frame(width: 70)   // ⬅️ kompakter
+        .frame(width: 70)  // ⬅️ kompakter
         .padding(.vertical, 6)
         .padding(.horizontal, 10)
         .background(
@@ -99,8 +109,10 @@ struct HeaderView: View {
     }
 }
 
-
 #Preview {
-    HeaderView() .environmentObject(CoinManager.shared) .environmentObject(CrystalManager.shared) .environmentObject(AccountLevelManager.shared)
-        .environmentObject(ArtefactInventoryManager.shared) .preferredColorScheme(.dark)
+    HeaderView().environmentObject(CoinManager.shared).environmentObject(
+        CrystalManager.shared
+    ).environmentObject(AccountLevelManager.shared)
+        .environmentObject(ArtefactInventoryManager.shared)
+        .preferredColorScheme(.dark)
 }

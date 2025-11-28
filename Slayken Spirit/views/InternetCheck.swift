@@ -1,6 +1,6 @@
+internal import Combine
 import Network
 import SwiftUI
-internal import Combine
 
 class InternetMonitor: ObservableObject {
     @Published var isConnected: Bool = true

@@ -17,19 +17,32 @@ struct ExchangeView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
 
-
     // MARK: - Exchange Options
     private let options: [ExchangeOption] = [
-        .init(id: "ex1", title: "Convert 1000 Coins → 30 Crystals", coins: 1000, crystals: 30),
-        .init(id: "ex2", title: "Convert 5000 Coins → 70 Crystals", coins: 5000, crystals: 70),
-        .init(id: "ex3", title: "Convert 10000 Coins → 300 Crystals", coins: 10000, crystals: 300),
+        .init(
+            id: "ex1",
+            title: "Convert 1000 Coins → 30 Crystals",
+            coins: 1000,
+            crystals: 30
+        ),
+        .init(
+            id: "ex2",
+            title: "Convert 5000 Coins → 70 Crystals",
+            coins: 5000,
+            crystals: 70
+        ),
+        .init(
+            id: "ex3",
+            title: "Convert 10000 Coins → 300 Crystals",
+            coins: 10000,
+            crystals: 300
+        ),
     ]
 
     var body: some View {
         NavigationStack {
             ZStack {
                 SpiritGridBackground()
-
 
                 VStack(spacing: 28) {
 
@@ -51,7 +64,7 @@ struct ExchangeView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .alert("Exchange", isPresented: $showAlert) {
-            Button("OK", role: .cancel) { }
+            Button("OK", role: .cancel) {}
         } message: {
             Text(alertMessage)
         }
@@ -61,10 +74,10 @@ struct ExchangeView: View {
 //
 // MARK: - UI Components
 //
-private extension ExchangeView {
+extension ExchangeView {
 
     // MARK: Header
-    var headerSection: some View {
+    fileprivate var headerSection: some View {
         VStack(spacing: 4) {
             Text("Crystal Exchange")
                 .font(.system(size: 28, weight: .bold))
@@ -76,18 +89,28 @@ private extension ExchangeView {
     }
 
     // MARK: Balance view
-    var balanceSection: some View {
+    fileprivate var balanceSection: some View {
         HStack(spacing: 20) {
 
-            balanceCard(title: "Coins", value: coinManager.coins, color: .yellow)
+            balanceCard(
+                title: "Coins",
+                value: coinManager.coins,
+                color: .yellow
+            )
 
-            balanceCard(title: "Crystals", value: crystalManager.crystals, color: .cyan)
+            balanceCard(
+                title: "Crystals",
+                value: crystalManager.crystals,
+                color: .cyan
+            )
 
         }
         .padding(.horizontal, 24)
     }
 
-    func balanceCard(title: String, value: Int, color: Color) -> some View {
+    fileprivate func balanceCard(title: String, value: Int, color: Color)
+        -> some View
+    {
         VStack(spacing: 6) {
             Text(title)
                 .font(.caption)
@@ -104,9 +127,8 @@ private extension ExchangeView {
         .shadow(color: color.opacity(0.35), radius: 8)
     }
 
-
     // MARK: Exchange list
-    var exchangeList: some View {
+    fileprivate var exchangeList: some View {
         VStack(spacing: 16) {
             ForEach(options) { option in
                 exchangeOptionRow(option)
@@ -120,7 +142,7 @@ private extension ExchangeView {
         .padding(.horizontal, 24)
     }
 
-    func exchangeOptionRow(_ option: ExchangeOption) -> some View {
+    fileprivate func exchangeOptionRow(_ option: ExchangeOption) -> some View {
 
         let isSelected = option.id == selectedOption?.id
 
@@ -146,18 +168,23 @@ private extension ExchangeView {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(isSelected ? Color.white.opacity(0.16) : Color.white.opacity(0.05))
+                .fill(
+                    isSelected
+                        ? Color.white.opacity(0.16) : Color.white.opacity(0.05)
+                )
         )
         .overlay(
             RoundedRectangle(cornerRadius: 14)
-                .stroke(isSelected ? Color.green.opacity(0.5) : .clear, lineWidth: 2)
+                .stroke(
+                    isSelected ? Color.green.opacity(0.5) : .clear,
+                    lineWidth: 2
+                )
         )
         .animation(.easeInOut, value: isSelected)
     }
 
-
     // MARK: Confirm Button
-    var confirmButton: some View {
+    fileprivate var confirmButton: some View {
         Button {
             performExchange()
         } label: {
@@ -173,14 +200,12 @@ private extension ExchangeView {
     }
 }
 
-
-
 //
 // MARK: - Logic
 //
-private extension ExchangeView {
+extension ExchangeView {
 
-    func performExchange() {
+    fileprivate func performExchange() {
         guard let option = selectedOption else { return }
 
         if coinManager.coins < option.coins {
@@ -193,7 +218,8 @@ private extension ExchangeView {
         coinManager.spendCoins(option.coins)
         crystalManager.addCrystals(option.crystals)
 
-        alertMessage = "Successfully exchanged \(option.coins) coins for \(option.crystals) crystals!"
+        alertMessage =
+            "Successfully exchanged \(option.coins) coins for \(option.crystals) crystals!"
         showAlert = true
 
         // Reset selection
@@ -203,7 +229,6 @@ private extension ExchangeView {
     }
 }
 
-
 // MARK: - Model
 struct ExchangeOption: Identifiable {
     let id: String
@@ -211,9 +236,6 @@ struct ExchangeOption: Identifiable {
     let coins: Int
     let crystals: Int
 }
-
-
-
 
 // MARK: - Preview
 #Preview {

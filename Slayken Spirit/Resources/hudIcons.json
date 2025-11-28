@@ -5,7 +5,7 @@
     },
     "crystal": {
         "symbol": "suit.diamond.fill",
-        "color": "##0096FF"
+        "color": "#0096FF"
     },
     "level": {
         "symbol": "star",

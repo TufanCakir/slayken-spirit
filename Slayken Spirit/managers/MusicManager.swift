@@ -5,9 +5,9 @@
 //  Created by Tufan Cakir on 2025-10-30.
 //
 
-import Foundation
 import AVFoundation
 internal import Combine
+import Foundation
 
 @MainActor
 final class MusicManager: NSObject, ObservableObject, AVAudioPlayerDelegate {
@@ -45,10 +45,17 @@ extension MusicManager {
         let session = AVAudioSession.sharedInstance()
 
         do {
-            try session.setCategory(.ambient, mode: .default, options: [.mixWithOthers])
+            try session.setCategory(
+                .ambient,
+                mode: .default,
+                options: [.mixWithOthers]
+            )
             try session.setActive(true)
         } catch {
-            print("⚠️ AudioSession konnte nicht gesetzt werden:", error.localizedDescription)
+            print(
+                "⚠️ AudioSession konnte nicht gesetzt werden:",
+                error.localizedDescription
+            )
 
             // Fallback
             try? session.setCategory(.playback)
@@ -61,7 +68,10 @@ extension MusicManager {
 extension MusicManager {
     private func loadSongs() {
         guard
-            let url = Bundle.main.url(forResource: "songs", withExtension: "json"),
+            let url = Bundle.main.url(
+                forResource: "songs",
+                withExtension: "json"
+            ),
             let data = try? Data(contentsOf: url),
             let decoded = try? JSONDecoder().decode(SongList.self, from: data)
         else {
@@ -110,7 +120,12 @@ extension MusicManager {
 
         let song = songs[currentSongIndex]
 
-        guard let url = Bundle.main.url(forResource: song.fileName, withExtension: "mp3") else {
+        guard
+            let url = Bundle.main.url(
+                forResource: song.fileName,
+                withExtension: "mp3"
+            )
+        else {
             print("❌ MP3-Datei fehlt:", song.fileName)
             return
         }
@@ -204,7 +219,10 @@ extension MusicManager {
         await playCurrentSong(fadeIn: true)
     }
 
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(
+        _ player: AVAudioPlayer,
+        successfully flag: Bool
+    ) {
         Task { await skipToNextSong() }
     }
 }
@@ -216,5 +234,5 @@ struct SongList: Codable {
 
 struct Song: Codable {
     let title: String
-    let fileName: String // MUSS lokal in App sein
+    let fileName: String  // MUSS lokal in App sein
 }

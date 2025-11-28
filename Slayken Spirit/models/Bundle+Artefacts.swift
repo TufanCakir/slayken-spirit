@@ -20,7 +20,10 @@ extension Bundle {
             return decoded
 
         } catch {
-            print("❌ Fehler beim Laden von \(filename).json:", error.localizedDescription)
+            print(
+                "❌ Fehler beim Laden von \(filename).json:",
+                error.localizedDescription
+            )
             return []
         }
     }

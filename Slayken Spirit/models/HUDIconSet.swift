@@ -11,6 +11,3 @@ struct HUDIconSet: Codable {
     let shards: HUDIcon
     let level: HUDIcon
 }
-
-
-

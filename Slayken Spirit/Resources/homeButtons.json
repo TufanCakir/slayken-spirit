@@ -1,99 +1,82 @@
 [
-  {
-    "id": "1",
-    "title": "Battle",
-    "icon": "arcade.stick.console",
-    "color": "#000000",
-    "iconColor": "#0000FF",
-    "destination": "SpiritGameView"
-  },
-  {
-    "id": "2",
-    "title": "Events",
-    "icon": "flame.fill",
-    "color": "#000000",
-    "iconColor": "#FF4500",
-    "destination": "EventView"
-  },
-  {
-    "id": "3",
-    "title": "Multiplayer",
-    "icon": "person.2.wave.2",
-    "color": "#000000",
-    "iconColor": "#00E5FF",
-    "destination": "MultiplayerView"
-  },
-  {
-    "id": "4",
-    "title": "Quests",
-    "icon": "list.bullet.rectangle.fill",
-    "color": "#000000",
-    "iconColor": "#7CFF4D",
-    "destination": "QuestView"
-  },
-  {
-    "id": "5",
-    "title": "Gifts",
-    "icon": "gift",
-    "color": "#000000",
-    "iconColor": "#00FF9C",
-    "destination": "GiftView"
-  },
-  {
-    "id": "6",
-    "title": "Daily Login Bonus",
-    "icon": "giftcard",
-    "color": "#000000",
-    "iconColor": "#FF66FF",
-    "destination": "DailyLoginView"
-  },
-  {
-    "id": "7",
-    "title": "Hall of Fame",
-    "icon": "trophy.fill",
-    "color": "#000000",
-    "iconColor": "#FFB800",
-    "destination": "HallOfFameView"
-  },
-  {
-    "id": "8",
-    "title": "Spirits",
-    "icon": "cube.transparent",
-    "color": "#000000",
-    "iconColor": "#0000FF",
-    "destination": "SpiritListView"
-  },
-  {
-    "id": "9",
-    "title": "Exchange",
-    "icon": "arrow.trianglehead.2.counterclockwise",
-    "color": "#000000",
-    "iconColor": "#00C8FF",
-    "destination": "ExchangeView"
-  },
-  {
-    "id": "10",
-    "title": "Inventory",
-    "icon": "bag",
-    "color": "#000000",
-    "iconColor": "#FF8C00",
-    "destination": "EventShopInventoryView"
-  },
-  {
-    "id": "11",
-    "title": "Settings",
-    "icon": "gear",
-    "color": "#000000",
-    "iconColor": "#8E8E93",
-    "destination": "SettingsView"
-  },
-  {
-    "id": "12",
-    "title": "Custom Builder",
-    "icon": "hammer.fill",
-    "color": "#000000",
-    "iconColor": "#C77DFF",
-    "destination": "CustomViewBuilder"
-  }
+    {
+        "id": "1",
+        "title": "Battle",
+        "icon": "arcade.stick.console",
+        "color": "#000000",
+        "iconColor": "#0096FF",
+        "destination": "SpiritGameView"
+    },
+    {
+        "id": "2",
+        "title": "Events",
+        "icon": "gamecontroller",
+        "color": "#000000",
+        "iconColor": "#FF4500",
+        "destination": "EventView"
+    },
+    {
+        "id": "3",
+        "title": "Spirits",
+        "icon": "cube.transparent",
+        "color": "#000000",
+        "iconColor": "#00E5FF",
+        "destination": "SpiritListView"
+    },
+    {
+        "id": "4",
+        "title": "Quests",
+        "icon": "list.bullet.rectangle.fill",
+        "color": "#000000",
+        "iconColor": "#7CFF4D",
+        "destination": "QuestView"
+    },
+    {
+        "id": "5",
+        "title": "Gifts",
+        "icon": "gift",
+        "color": "#000000",
+        "iconColor": "#00FF9C",
+        "destination": "GiftView"
+    },
+    {
+        "id": "6",
+        "title": "Daily Login Bonus",
+        "icon": "giftcard",
+        "color": "#000000",
+        "iconColor": "#FF66FF",
+        "destination": "DailyLoginView"
+    },
+    {
+        "id": "7",
+        "title": "Exchange",
+        "icon": "arrow.trianglehead.2.counterclockwise",
+        "color": "#000000",
+        "iconColor": "#00C8FF",
+        "destination": "ExchangeView"
+    },
+    {
+        "id": "8",
+        "title": "Inventory",
+        "icon": "bag",
+        "color": "#000000",
+        "iconColor": "#FF8C00",
+        "destination": "EventShopInventoryView"
+    },
+    {
+        "id": "9",
+        "title": "Custom Builder",
+        "icon": "hammer.fill",
+        "color": "#000000",
+        "iconColor": "#C77DFF",
+        "destination": "CustomViewBuilder"
+    },
+    {
+        "id": "10",
+        "title": "Settings",
+        "icon": "gear",
+        "color": "#000000",
+        "iconColor": "#8E8E93",
+        "destination": "SettingsView"
+    },
 ]
- 

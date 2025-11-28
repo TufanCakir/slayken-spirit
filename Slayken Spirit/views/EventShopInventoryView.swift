@@ -35,9 +35,9 @@ struct EventShopInventoryView: View {
     }
 }
 
-private extension EventShopInventoryView {
+extension EventShopInventoryView {
 
-    func inventoryCard(_ item: EventShopItem) -> some View {
+    fileprivate func inventoryCard(_ item: EventShopItem) -> some View {
 
         let stack = item.stack
         let required = item.required
@@ -50,10 +50,16 @@ private extension EventShopInventoryView {
                 .fill(.ultraThinMaterial)
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
-                        .stroke(active ? .green : .blue.opacity(0.5), lineWidth: 2)
+                        .stroke(
+                            active ? .green : .blue.opacity(0.5),
+                            lineWidth: 2
+                        )
                 )
-                .shadow(color: active ? .green.opacity(0.4) : .blue.opacity(0.2),
-                        radius: 8, y: 4)
+                .shadow(
+                    color: active ? .green.opacity(0.4) : .blue.opacity(0.2),
+                    radius: 8,
+                    y: 4
+                )
 
             HStack(spacing: 16) {
 

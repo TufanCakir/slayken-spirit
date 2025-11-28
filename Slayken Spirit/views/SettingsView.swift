@@ -28,7 +28,6 @@ struct SettingsView: View {
             ZStack {
                 SpiritGridBackground()
 
-
                 // MARK: - Content
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 32) {
@@ -42,11 +41,23 @@ struct SettingsView: View {
                         // MARK: Account
                         settingsSection(title: "Account Overview") {
                             HStack(spacing: 22) {
-                                StatBox(icon: "star.fill", title: "Level", value: "\(accountManager.level)", color: Color(hex: "#32CD32")
+                                StatBox(
+                                    icon: "star.fill",
+                                    title: "Level",
+                                    value: "\(accountManager.level)",
+                                    color: Color(hex: "#32CD32")
                                 )
-                                StatBox(icon: "suit.diamond.fill", title: "Crystals", value: "\(crystalManager.crystals)",  color: Color(hex: "#0096FF")
+                                StatBox(
+                                    icon: "suit.diamond.fill",
+                                    title: "Crystals",
+                                    value: "\(crystalManager.crystals)",
+                                    color: Color(hex: "#0096FF")
                                 )
-                                StatBox(icon: "circle.fill", title: "Coins", value: "\(coinManager.coins)",                                     color: Color(hex: "#FFEA00")
+                                StatBox(
+                                    icon: "circle.fill",
+                                    title: "Coins",
+                                    value: "\(coinManager.coins)",
+                                    color: Color(hex: "#FFEA00")
                                 )
                                 StatBox(
                                     icon: "hexagon.fill",
@@ -63,19 +74,24 @@ struct SettingsView: View {
                         // MARK: Data & Storage
                         settingsSection(title: "Data & Storage") {
                             Button {
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                withAnimation(
+                                    .spring(response: 0.4, dampingFraction: 0.8)
+                                ) {
                                     showResetAlert = true
                                 }
                             } label: {
-                                Label("Reset All Progress", systemImage: "trash.fill")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(.red.gradient.opacity(0.7))
-                                    .cornerRadius(16)
-                                    .shadow(color: .red.opacity(0.5), radius: 6)
-                                
+                                Label(
+                                    "Reset All Progress",
+                                    systemImage: "trash.fill"
+                                )
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(.red.gradient.opacity(0.7))
+                                .cornerRadius(16)
+                                .shadow(color: .red.opacity(0.5), radius: 6)
+
                             }
                             .padding(.horizontal, 8)
                             .shadow(color: .white, radius: 5)
@@ -94,7 +110,9 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) {}
                 Button("Reset", role: .destructive) { performReset() }
             } message: {
-                Text("This will permanently delete your progress, characters, skins, and shop data.")
+                Text(
+                    "This will permanently delete your progress, characters, skins, and shop data."
+                )
             }
             .overlay(resetConfirmationOverlay)
         }
@@ -130,50 +148,47 @@ extension SettingsView {
 // MARK: - Reset Logic
 extension SettingsView {
     private func performReset() {
-        
+
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
-        
+
         // Economy
         coinManager.reset()
         crystalManager.reset()
         accountManager.reset()
-        
+
         // Gameplay
         UpgradeManager.shared.reset()
         ArtefactInventoryManager.shared.reset()
         spiritGame.resetStats()
 
-        
         // Event Shop reset  ⬇️ NEU
         EventShopManager.shared.reset()
-        
+
         // Social / Daily
         DailyLoginManager.shared.reset()
         GiftManager.shared.reset()
-        
+
         // Quests
         QuestManager.shared.reset()
-        
+
         // Game Center Rewards zurücksetzen
         GameCenterRewardService.shared.reset()
-        
+
         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
             showResetConfirmation = true
             resetAnimation = true
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
             withAnimation {
                 showResetConfirmation = false
             }
         }
-        
+
         print("🧩 ALL game systems successfully reset.")
     }
 }
-
-
 
 // MARK: - Section Wrapper Component
 extension SettingsView {
@@ -207,18 +222,22 @@ struct MusicToggleButton: View {
                 iconScale = 1.2
             }
 
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.5).delay(0.1)) {
+            withAnimation(
+                .spring(response: 0.4, dampingFraction: 0.5).delay(0.1)
+            ) {
                 iconScale = 1.0
             }
 
         } label: {
             HStack(spacing: 12) {
-                Image(systemName: musicManager.isMusicOn
-                      ? "music.note"
-                      : "speaker.slash.fill")
-                    .font(.title3.bold())
-                    .foregroundColor(.blue)
-                    .scaleEffect(iconScale)
+                Image(
+                    systemName: musicManager.isMusicOn
+                        ? "music.note"
+                        : "speaker.slash.fill"
+                )
+                .font(.title3.bold())
+                .foregroundColor(.blue)
+                .scaleEffect(iconScale)
 
                 Text(musicManager.isMusicOn ? "Music On" : "Music Off")
                     .font(.headline)
@@ -231,7 +250,6 @@ struct MusicToggleButton: View {
         }
     }
 }
-
 
 // MARK: - Erweiterung für externen Music-Call
 extension MusicManager {

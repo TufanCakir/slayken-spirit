@@ -11,20 +11,54 @@ struct GiftView: View {
 
     // MARK: - Example Gifts
     private let gifts: [GiftItem] = [
-        GiftItem(id: "daily_1", title: "Tägliches Geschenk", description: "+100 Coins", image: "gift_icon_1", reward: .init(coins: 100, crystals: nil)),
-        GiftItem(id: "daily_2", title: "Bonus Geschenk", description: "+100 Crystals", image: "gift_icon_2", reward: .init(coins: nil, crystals: 100)),
-        GiftItem(id: "daily_3", title: "Tägliches Geschenk", description: "+200 Coins", image: "gift_icon_3", reward: .init(coins: 200, crystals: nil)),
-        GiftItem(id: "daily_4", title: "Bonus Geschenk", description: "+200 Crystals", image: "gift_icon_4", reward: .init(coins: nil, crystals: 200)),
-        GiftItem(id: "daily_5", title: "Tägliches Geschenk", description: "+300 Coins", image: "gift_icon_5", reward: .init(coins: 300, crystals: nil)),
-        GiftItem(id: "daily_6", title: "Bonus Geschenk", description: "+300 Crystals", image: "gift_icon_6", reward: .init(coins: nil, crystals: 300))
+        GiftItem(
+            id: "daily_1",
+            title: "Tägliches Geschenk",
+            description: "+100 Coins",
+            image: "gift_icon_1",
+            reward: .init(coins: 100, crystals: nil)
+        ),
+        GiftItem(
+            id: "daily_2",
+            title: "Bonus Geschenk",
+            description: "+100 Crystals",
+            image: "gift_icon_2",
+            reward: .init(coins: nil, crystals: 100)
+        ),
+        GiftItem(
+            id: "daily_3",
+            title: "Tägliches Geschenk",
+            description: "+200 Coins",
+            image: "gift_icon_3",
+            reward: .init(coins: 200, crystals: nil)
+        ),
+        GiftItem(
+            id: "daily_4",
+            title: "Bonus Geschenk",
+            description: "+200 Crystals",
+            image: "gift_icon_4",
+            reward: .init(coins: nil, crystals: 200)
+        ),
+        GiftItem(
+            id: "daily_5",
+            title: "Tägliches Geschenk",
+            description: "+300 Coins",
+            image: "gift_icon_5",
+            reward: .init(coins: 300, crystals: nil)
+        ),
+        GiftItem(
+            id: "daily_6",
+            title: "Bonus Geschenk",
+            description: "+300 Crystals",
+            image: "gift_icon_6",
+            reward: .init(coins: nil, crystals: 300)
+        ),
     ]
 
     // MARK: - Popup
     @State private var showPopup = false
     @State private var popupText = ""
 
-  
-    
     // MARK: - Unclaimed gifts
     private var unclaimedGifts: [GiftItem] {
         gifts.filter { !giftManager.isClaimed($0.id) }
@@ -40,7 +74,13 @@ struct GiftView: View {
 
                         // Title
                         Text("Geschenke")
-                            .font(.system(size: 32, weight: .bold, design: .rounded))
+                            .font(
+                                .system(
+                                    size: 32,
+                                    weight: .bold,
+                                    design: .rounded
+                                )
+                            )
                             .foregroundStyle(.white)
                             .padding(.top, 10)
 
@@ -73,8 +113,6 @@ struct GiftView: View {
         }
     }
 
-
-
     // MARK: - Collect ALL Button
     private var allCollectButton: some View {
         Button {
@@ -93,13 +131,15 @@ struct GiftView: View {
         } label: {
             Text("Alle abholen")
                 .font(.headline.bold())
-                .foregroundColor(.white )
+                .foregroundColor(.white)
                 .padding(.vertical, 10)
                 .padding(.horizontal, 28)
                 .background(
-                    LinearGradient(colors: [.blue, .blue, .blue],
-                                   startPoint: .topLeading,
-                                   endPoint: .bottomTrailing)
+                    LinearGradient(
+                        colors: [.blue, .blue, .blue],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
                 )
                 .cornerRadius(12)
         }
@@ -174,9 +214,11 @@ struct GiftView: View {
                 .padding(.vertical, 8)
                 .padding(.horizontal, 18)
                 .background(
-                    LinearGradient(colors: [.blue, .blue, .blue],
-                                   startPoint: .topLeading,
-                                   endPoint: .bottomTrailing)
+                    LinearGradient(
+                        colors: [.blue, .blue, .blue],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
                 )
                 .cornerRadius(10)
                 .shadow(color: .cyan.opacity(0.6), radius: 8, y: 3)

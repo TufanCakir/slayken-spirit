@@ -5,9 +5,9 @@
 //  Created by Tufan Cakir on 2025-10-30.
 //
 
+internal import Combine
 import Foundation
 import SwiftUI
-internal import Combine
 
 @MainActor
 final class CoinManager: ObservableObject {
@@ -51,7 +51,7 @@ final class CoinManager: ObservableObject {
     // MARK: - Auto Save mit Combine
     private func setupAutoSave() {
         $coins
-            .dropFirst() // Initialwert überspringen
+            .dropFirst()  // Initialwert überspringen
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .sink { [weak self] _ in self?.save() }
             .store(in: &cancellables)

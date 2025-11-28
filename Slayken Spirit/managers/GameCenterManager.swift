@@ -1,7 +1,6 @@
+internal import Combine
 import Foundation
 internal import GameKit
-import SwiftUI
-internal import Combine
 
 @MainActor
 final class GameCenterManager: NSObject, ObservableObject {
@@ -11,12 +10,9 @@ final class GameCenterManager: NSObject, ObservableObject {
     @Published var isAuthenticated = false
     @Published var playerName: String = "Not logged in"
 
-    private override init() { }
+    private override init() {}
 
-
-    // ------------------------------------------------------------
     // MARK: - AUTHENTICATION
-    // ------------------------------------------------------------
     func authenticate() {
         GKLocalPlayer.local.authenticateHandler = { [weak self] vc, error in
             guard let self else { return }
@@ -25,41 +21,34 @@ final class GameCenterManager: NSObject, ObservableObject {
                 print("❌ Game Center Error:", error.localizedDescription)
             }
 
-            // Falls Game Center ein Login-Fenster liefert → anzeigen
-            if let vc = vc {
-                self.present(vc)
+            // Falls Game Center ein Login-View liefert (UIKit), logge Hinweis, aber präsentiere nichts
+            if vc != nil {
+                print(
+                    "🔐 Login-UI wäre verfügbar, aber wird nicht automatisch gezeigt."
+                )
                 return
             }
 
-            // Erfolgreich eingeloggt
             if GKLocalPlayer.local.isAuthenticated {
                 self.isAuthenticated = true
                 self.playerName = GKLocalPlayer.local.displayName
-                print("🎮 Logged in as:", self.playerName)
+                print("🎮 Eingeloggt als:", self.playerName)
             } else {
-                // Nicht eingeloggt
                 self.isAuthenticated = false
-                print("❌ Auth failed")
+                print("❌ Authentifizierung fehlgeschlagen")
             }
         }
     }
 
-
-    // ------------------------------------------------------------
-    // MARK: - MANUELLES LOGIN „Öffnen“
-    // ------------------------------------------------------------
+    // MARK: - Login manuell triggern (aber keine UI)
     func openGameCenterLogin() {
-        // Dieses Login-Popup stammt IMMER aus authenticateHandler
         authenticate()
     }
 
-
-    // ------------------------------------------------------------
-    // MARK: - SCORE SUBMISSION (iOS 16+ modern)
-    // ------------------------------------------------------------
+    // MARK: - Score Submission (ohne UI)
     func submit(score: Int, leaderboardID: String) {
         guard isAuthenticated else {
-            print("⚠️ Cannot submit score — user not authenticated.")
+            print("⚠️ Kann Score nicht senden – nicht eingeloggt.")
             return
         }
 
@@ -70,70 +59,15 @@ final class GameCenterManager: NSObject, ObservableObject {
             leaderboardIDs: [leaderboardID]
         ) { error in
             if let error {
-                print("❌ Submit error:", error.localizedDescription)
+                print("❌ Fehler beim Senden:", error.localizedDescription)
             } else {
-                print("🏆 Score submitted:", score, "→", leaderboardID)
+                print(
+                    "🏆 Score erfolgreich gesendet →",
+                    leaderboardID,
+                    "Punkte:",
+                    score
+                )
             }
         }
-    }
-
-
-    // ------------------------------------------------------------
-    // MARK: - LEADERBOARD ÖFFNEN (iOS 26+ deep-link)
-    // ------------------------------------------------------------
-    func showLeaderboard(id: String) {
-
-        guard isAuthenticated else {
-            print("⚠️ Not authenticated → cannot open leaderboard.")
-            return
-        }
-
-        // Game Center URL-Schema (offiziell von Apple ab iOS 16+)
-        if let url = URL(string: "gamecenter:leaderboard?id=\(id)") {
-            UIApplication.shared.open(url)
-        }
-    }
-
-
-    // ------------------------------------------------------------
-    // MARK: - GAME CENTER DASHBOARD
-    // ------------------------------------------------------------
-    func showDashboard() {
-
-        guard isAuthenticated else {
-            print("⚠️ Not authenticated → cannot open dashboard.")
-            return
-        }
-
-        if let url = URL(string: "gamecenter:dashboard") {
-            UIApplication.shared.open(url)
-        }
-    }
-
-
-    // ------------------------------------------------------------
-    // MARK: - HELPER: TOP VIEW CONTROLLER
-    // ------------------------------------------------------------
-    private func present(_ vc: UIViewController) {
-        guard let top = topMostViewController() else {
-            print("❌ No root view controller found")
-            return
-        }
-        top.present(vc, animated: true)
-    }
-
-    private func topMostViewController() -> UIViewController? {
-
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = scene.windows.first(where: { $0.isKeyWindow }),
-              let root = window.rootViewController else {
-            return nil
-        }
-
-        var top = root
-        while let next = top.presentedViewController {
-            top = next
-        }
-        return top
     }
 }

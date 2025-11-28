@@ -19,7 +19,7 @@ struct FooterTabView: View {
                 Text("Home")
             }
             .tag(0)
-            
+
             NavigationStack {
                 UpgradeView()
             }
@@ -28,7 +28,7 @@ struct FooterTabView: View {
                 Text("Upgrade")
             }
             .tag(1)
-            
+
             NavigationStack {
                 ArtefactView()
             }

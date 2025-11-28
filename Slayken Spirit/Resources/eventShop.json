@@ -1,46 +1,46 @@
 [
-  {
-    "id": "tap1",
-    "name": "Tap Damage +5",
-    "description": "Erhöht deinen Tap Damage.",
-    "icon": "bolt.fill",
-    "price": 300,
-    "type": "tapDamage",
-    "required": 30,
-    "stack": 30,
-    "isActive": false
-  },
-  {
-    "id": "coin1",
-    "name": "Coin Boost +15%",
-    "description": "Mehr Coins aus Bossen.",
-    "icon": "bitcoinsign.circle.fill",
-    "price": 600,
-    "type": "coinBoost",
-    "required": 60,
-    "stack": 60,
-    "isActive": false
-  },
-  {
-    "id": "exp1",
-    "name": "EXP Boost +10%",
-    "description": "Erhöht EXP.",
-    "icon": "star.fill",
-    "price": 900,
-    "type": "expBoost",
-    "required": 90,
-    "stack": 90,
-    "isActive": false
-  },
-  {
-    "id": "loot1",
-    "name": "Loot Chance +7%",
-    "description": "Erhöht Loot-Drop Chance.",
-    "icon": "shippingbox.fill",
-    "price": 1200,
-    "type": "lootBoost",
-    "required": 120,
-    "stack": 120,
-    "isActive": false
-  }
+    {
+        "id": "tap1",
+        "name": "Tap Damage +5",
+        "description": "Erhöht deinen Tap Damage.",
+        "icon": "bolt.fill",
+        "price": 300,
+        "type": "tapDamage",
+        "required": 30,
+        "stack": 30,
+        "isActive": false
+    },
+    {
+        "id": "coin1",
+        "name": "Coin Boost +15%",
+        "description": "Mehr Coins aus Bossen.",
+        "icon": "bitcoinsign.circle.fill",
+        "price": 600,
+        "type": "coinBoost",
+        "required": 60,
+        "stack": 60,
+        "isActive": false
+    },
+    {
+        "id": "exp1",
+        "name": "EXP Boost +10%",
+        "description": "Erhöht EXP.",
+        "icon": "star.fill",
+        "price": 900,
+        "type": "expBoost",
+        "required": 90,
+        "stack": 90,
+        "isActive": false
+    },
+    {
+        "id": "loot1",
+        "name": "Loot Chance +7%",
+        "description": "Erhöht Loot-Drop Chance.",
+        "icon": "shippingbox.fill",
+        "price": 1200,
+        "type": "lootBoost",
+        "required": 120,
+        "stack": 120,
+        "isActive": false
+    }
 ]

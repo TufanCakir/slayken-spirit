@@ -6,13 +6,13 @@ import Foundation
 public struct Spirit: Identifiable, Codable, Hashable {
 
     // MARK: - Stable Identity
-    public let id: String            // Always present
-    public let name: String          // Always present
+    public let id: String  // Always present
+    public let name: String  // Always present
 
     // MARK: - Optional metadata
-    public let desc: String?         // Optional description
-    public let imageName: String?    // Optional icon
-    public let rarity: Rarity?       // Enum-based rarity (optional)
+    public let desc: String?  // Optional description
+    public let imageName: String?  // Optional icon
+    public let rarity: Rarity?  // Enum-based rarity (optional)
 
     // MARK: - Rarity Enum (Optional & Safe)
     public enum Rarity: String, Codable, CaseIterable {
@@ -49,14 +49,18 @@ public struct Spirit: Identifiable, Codable, Hashable {
         let name = try container.decode(String.self, forKey: .name)
 
         // Auto-generate ID if missing
-        let id = try container.decodeIfPresent(String.self, forKey: .id)
+        let id =
+            try container.decodeIfPresent(String.self, forKey: .id)
             ?? name
-                .lowercased()
-                .replacingOccurrences(of: " ", with: "_")
-                .replacingOccurrences(of: "-", with: "_")
+            .lowercased()
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
 
         let desc = try container.decodeIfPresent(String.self, forKey: .desc)
-        let imageName = try container.decodeIfPresent(String.self, forKey: .imageName)
+        let imageName = try container.decodeIfPresent(
+            String.self,
+            forKey: .imageName
+        )
 
         // Decode rarity safely (avoids crashes)
         let rarity = try? container.decode(Rarity.self, forKey: .rarity)

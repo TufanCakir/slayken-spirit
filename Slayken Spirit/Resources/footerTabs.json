@@ -1,30 +1,30 @@
 [
-  {
-    "id": "1",
-    "title": "Home",
-    "icon": "house.fill",
-    "color": "#FFFFFF",
-    "destination": "HomeView"
-  },
-  {
-    "id": "2",
-    "title": "Upgrades",
-    "icon": "arrow.up.circle.fill",
-    "color": "#FFFFFF",
-    "destination": "UpgradeView"
-  },
-  {
-    "id": "3",
-    "title": "Artefacts",
-    "icon": "sparkles",
-    "color": "#FFFFFF",
-    "destination": "ArtefactView"
-  },
-  {
-      "id": "4",
-      "title": "Event Shop",
-      "icon": "cart.fill",
-      "color": "#FFFFFF",
-      "destination": "EventShopView"
-  },
+    {
+        "id": "1",
+        "title": "Home",
+        "icon": "house.fill",
+        "color": "#FFFFFF",
+        "destination": "HomeView"
+    },
+    {
+        "id": "2",
+        "title": "Upgrades",
+        "icon": "arrow.up.circle.fill",
+        "color": "#FFFFFF",
+        "destination": "UpgradeView"
+    },
+    {
+        "id": "3",
+        "title": "Artefacts",
+        "icon": "sparkles",
+        "color": "#FFFFFF",
+        "destination": "ArtefactView"
+    },
+    {
+        "id": "4",
+        "title": "Event Shop",
+        "icon": "cart.fill",
+        "color": "#FFFFFF",
+        "destination": "EventShopView"
+    },
 ]

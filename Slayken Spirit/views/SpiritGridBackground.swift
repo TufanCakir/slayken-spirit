@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SpiritGridBackground: View {
     var glowColor: Color = .blue
-    var intensity: Double = 1.0       // <--- NEU
+    var intensity: Double = 1.0  // <--- NEU
 
     var body: some View {
         ZStack {
@@ -13,15 +13,17 @@ struct SpiritGridBackground: View {
 
                 let t = timeline.date.timeIntervalSinceReferenceDate
                 let offset = CGFloat(t.remainder(dividingBy: gridSize))
-                let slowOffset = CGFloat((t * 0.35).remainder(dividingBy: gridSize))
+                let slowOffset = CGFloat(
+                    (t * 0.35).remainder(dividingBy: gridSize)
+                )
 
                 Canvas { context, size in
 
                     // background
                     let bgGradient = Gradient(colors: [
                         .black,
-                        glowColor.opacity(0.15 * intensity),   // mehr Farbe!
-                        .black
+                        glowColor.opacity(0.15 * intensity),  // mehr Farbe!
+                        .black,
                     ])
 
                     context.fill(
@@ -54,18 +56,26 @@ struct SpiritGridBackground: View {
                     let strong = intensity
 
                     // Base Stroke
-                    context.stroke(path,
-                                   with: .color(glowColor.opacity(0.35 * strong)),
-                                   lineWidth: lineWidth)
+                    context.stroke(
+                        path,
+                        with: .color(glowColor.opacity(0.35 * strong)),
+                        lineWidth: lineWidth
+                    )
 
                     // Glow
-                    context.addFilter(.shadow(color: glowColor.opacity(0.9 * strong),
-                                               radius: 12 * strong))   // <--- starker Glow!
+                    context.addFilter(
+                        .shadow(
+                            color: glowColor.opacity(0.9 * strong),
+                            radius: 12 * strong
+                        )
+                    )  // <--- starker Glow!
 
                     context.drawLayer { layer in
-                        layer.stroke(path,
-                                     with: .color(glowColor.opacity(0.85 * strong)),
-                                     lineWidth: lineWidth)
+                        layer.stroke(
+                            path,
+                            with: .color(glowColor.opacity(0.85 * strong)),
+                            lineWidth: lineWidth
+                        )
                     }
                 }
             }
@@ -74,7 +84,6 @@ struct SpiritGridBackground: View {
         .background(Color.black)
     }
 }
-
 
 #Preview {
     SpiritGridBackground()

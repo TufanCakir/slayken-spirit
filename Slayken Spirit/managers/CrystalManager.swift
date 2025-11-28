@@ -3,9 +3,9 @@
 //  Slayken Fighter of Fists
 //
 
+internal import Combine
 import Foundation
 import SwiftUI
-internal import Combine
 
 @MainActor
 final class CrystalManager: ObservableObject {

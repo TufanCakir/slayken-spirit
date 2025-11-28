@@ -5,4 +5,3 @@ struct TutorialStep: Identifiable, Codable {
     let title: String
     let text: String
 }
-

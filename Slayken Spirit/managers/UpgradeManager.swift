@@ -3,9 +3,9 @@
 //  Slayken Spirit
 //
 
+internal import Combine
 import Foundation
 import SwiftUI
-internal import Combine
 
 @MainActor
 final class UpgradeManager: ObservableObject {

@@ -1,30 +1,26 @@
 import SwiftUI
 
 struct EventShopView: View {
-    
+
     @EnvironmentObject private var shop: EventShopManager
-    
+
     @State private var selectedItem: EventShopItem? = nil
     @State private var showPopup = false
     @State private var showNotEnough = false
-    
+
     var body: some View {
         ZStack {
-            
+
             SpiritGridBackground()
 
-            
             VStack(spacing: 26) {
-                
+
                 // MARK: - Titel
                 VStack(spacing: 6) {
-                
-                    
-                  
+
                 }
                 .padding(.top, 10)
-                
-                
+
                 // MARK: - Spirit Points
                 Text("Spirit Points: \(shop.spiritPoints)")
                     .font(.title2.bold())
@@ -33,8 +29,7 @@ struct EventShopView: View {
                     .padding(.vertical, 8)
                     .background(.ultraThinMaterial)
                     .clipShape(Capsule())
-                    
-                
+
                 // MARK: - Shop Items
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 20) {
@@ -47,8 +42,7 @@ struct EventShopView: View {
                         }
                     }
                 }
-                
-                
+
                 // MARK: - Inventory
                 NavigationLink("Inventory") {
                     EventShopInventoryView()
@@ -60,7 +54,7 @@ struct EventShopView: View {
                 .background(.ultraThinMaterial)
                 .clipShape(Capsule())
             }
-            
+
             // ⭐ POPUP ÜBER ALLEM
             if showPopup, let item = selectedItem {
                 BuyConfirmPopup(

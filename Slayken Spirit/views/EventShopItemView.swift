@@ -21,8 +21,10 @@ struct EventShopItemView: View {
                 .fill(.ultraThinMaterial)
                 .overlay(
                     RoundedRectangle(cornerRadius: 22)
-                        .stroke(active ? Color.green : Color.blue.opacity(0.5),
-                                lineWidth: active ? 2.5 : 1.5)
+                        .stroke(
+                            active ? Color.green : Color.blue.opacity(0.5),
+                            lineWidth: active ? 2.5 : 1.5
+                        )
                 )
 
             HStack(spacing: 16) {

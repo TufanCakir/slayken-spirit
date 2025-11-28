@@ -13,7 +13,11 @@ struct GameButton: Codable, Identifiable {
 
 extension Bundle {
     func loadGameButtons() -> [GameButton] {
-        guard let url = self.url(forResource: "gameButtons", withExtension: "json")
+        guard
+            let url = self.url(
+                forResource: "gameButtons",
+                withExtension: "json"
+            )
         else { fatalError("❌ gameButtons.json fehlt") }
 
         do {

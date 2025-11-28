@@ -2,16 +2,16 @@
 //  DailyLoginManager.swift
 //
 
+internal import Combine
 import Foundation
 import SwiftUI
-internal import Combine
 
 @MainActor
 final class DailyLoginManager: ObservableObject {
 
     static let shared = DailyLoginManager()
 
-    @Published private(set) var currentDay: Int = 1         // 1–7
+    @Published private(set) var currentDay: Int = 1  // 1–7
     @Published private(set) var claimedToday: Bool = false  // ob schon abgeholt
 
     private let dayKey = "login_current_day"
@@ -26,7 +26,8 @@ final class DailyLoginManager: ObservableObject {
     // MARK: - Prüfen ob neuer Tag
     private func evaluateNewDay() {
         if let savedDate = UserDefaults.standard.string(forKey: lastLoginKey),
-           let last = ISO8601DateFormatter().date(from: savedDate) {
+            let last = ISO8601DateFormatter().date(from: savedDate)
+        {
 
             if Calendar.current.isDateInToday(last) {
                 // gleicher Tag → alles ok
@@ -44,18 +45,17 @@ final class DailyLoginManager: ObservableObject {
 
         save()
     }
-    
+
     func reset() {
         currentDay = 1
         claimedToday = false
-        
+
         UserDefaults.standard.removeObject(forKey: dayKey)
         UserDefaults.standard.removeObject(forKey: claimedKey)
         UserDefaults.standard.removeObject(forKey: lastLoginKey)
-        
+
         print("🔄 DailyLoginManager reset!")
     }
-
 
     // MARK: - Claim Logik
     func claim(reward: DailyReward) -> Bool {

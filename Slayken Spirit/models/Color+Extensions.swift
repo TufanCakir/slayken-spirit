@@ -7,7 +7,9 @@ extension Color {
     /// Unterstützt auch Kurzformen wie `#FFF`.
     init(hex: String) {
         // 🔹 Nur alphanumerische Zeichen behalten (entfernt #, Leerzeichen etc.)
-        var sanitized = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var sanitized = hex.trimmingCharacters(
+            in: CharacterSet.alphanumerics.inverted
+        )
 
         // Unterstützt Kurzformen wie #FFF → #FFFFFF
         if sanitized.count == 3 {
@@ -23,7 +25,10 @@ extension Color {
         var value: UInt64 = 0
         Scanner(string: sanitized).scanHexInt64(&value)
 
-        let r, g, b, a: Double
+        let r: Double
+        let g: Double
+        let b: Double
+        let a: Double
         if sanitized.count == 6 {
             r = Double((value >> 16) & 0xFF) / 255.0
             g = Double((value >> 8) & 0xFF) / 255.0
@@ -42,38 +47,55 @@ extension Color {
     /// Gibt die Farbe als 32-Bit Float-Vektor zurück – ideal für Metal-Shader.
     var simd: SIMD4<Float> {
         #if canImport(UIKit)
-        let color = UIColor(self)
-        var r: CGFloat = 1, g: CGFloat = 1, b: CGFloat = 1, a: CGFloat = 1
-        color.getRed(&r, green: &g, blue: &b, alpha: &a)
+            let color = UIColor(self)
+            var r: CGFloat = 1
+            var g: CGFloat = 1
+            var b: CGFloat = 1
+            var a: CGFloat = 1
+            color.getRed(&r, green: &g, blue: &b, alpha: &a)
         #else
-        var r: Double = 1, g: Double = 1, b: Double = 1, a: Double = 1
-        NSColor(self).getRed(&r, green: &g, blue: &b, alpha: &a)
+            var r: Double = 1
+            var g: Double = 1
+            var b: Double = 1
+            var a: Double = 1
+            NSColor(self).getRed(&r, green: &g, blue: &b, alpha: &a)
         #endif
         return SIMD4(Float(r), Float(g), Float(b), Float(a))
     }
 
     /// Erstellt eine `Color` aus einem Metal-kompatiblen `SIMD4<Float>`-Vektor.
     init(simd vector: SIMD4<Float>) {
-        self.init(.sRGB,
-                  red: Double(vector.x),
-                  green: Double(vector.y),
-                  blue: Double(vector.z),
-                  opacity: Double(vector.w))
+        self.init(
+            .sRGB,
+            red: Double(vector.x),
+            green: Double(vector.y),
+            blue: Double(vector.z),
+            opacity: Double(vector.w)
+        )
     }
 
     /// Konvertiert eine `Color` in einen hexadezimalen String (`#RRGGBB`).
     func toHexString() -> String {
         #if canImport(UIKit)
-        let uiColor = UIColor(self)
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-        uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+            let uiColor = UIColor(self)
+            var r: CGFloat = 0
+            var g: CGFloat = 0
+            var b: CGFloat = 0
+            var a: CGFloat = 0
+            uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
         #else
-        let nsColor = NSColor(self)
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-        nsColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+            let nsColor = NSColor(self)
+            var r: CGFloat = 0
+            var g: CGFloat = 0
+            var b: CGFloat = 0
+            var a: CGFloat = 0
+            nsColor.getRed(&r, green: &g, blue: &b, alpha: &a)
         #endif
-        return String(format: "#%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255))
+        return String(
+            format: "#%02X%02X%02X",
+            Int(r * 255),
+            Int(g * 255),
+            Int(b * 255)
+        )
     }
 }
-
-

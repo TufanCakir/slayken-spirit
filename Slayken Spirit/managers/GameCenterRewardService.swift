@@ -1,8 +1,3 @@
-//
-//  GameCenterRewardService.swift
-//  Slayken Spirit
-//
-
 import Foundation
 
 final class GameCenterRewardService {
@@ -12,152 +7,101 @@ final class GameCenterRewardService {
 
     private let storage = UserDefaults.standard
 
-    // MARK: - Keys
+    // MARK: - Key Generator
     private func rewardGivenKey(for id: String, level: Int) -> String {
         return "reward_given_\(id)_\(level)"
     }
 
-    // MARK: - Stage Rewards
-    func rewardForStage(_ stage: Int) {
-
-        let id = GCHighestStage.leaderboardID
-        let key = rewardGivenKey(for: id, level: stage)
-        if storage.bool(forKey: key) { return }
-
-        switch stage {
-
-        case 50:
-            RewardManager.shared.give(.coins(300))
-
-        case 100:
-            RewardManager.shared.give(.crystals(300))
-
-
-        case 200:
-            RewardManager.shared.give(.exp(30))
-
-
-        case 500:
-            RewardManager.shared.give(.crystals(500))
-
-
-        default:
-            break
-        }
-
-        storage.set(true, forKey: key)
-    }
-    
+    // MARK: - Reset für Debug / Tests
     func reset() {
-        let defaults = UserDefaults.standard
-
-        for key in defaults.dictionaryRepresentation().keys {
+        for key in storage.dictionaryRepresentation().keys {
             if key.starts(with: "reward_given_") {
-                defaults.removeObject(forKey: key)
+                storage.removeObject(forKey: key)
             }
         }
-
-        print("🔄 GameCenterRewardService reset! Alle Belohnungs-Sperren gelöscht.")
+        print("🔄 GameCenterRewardService reset – alle Belohnungen freigegeben")
     }
 
+    // MARK: - STAGE Belohnung
+    func rewardForStage(_ stage: Int) {
+        let id = GCHighestStage.leaderboardID
+        checkAndGiveReward(id: id, level: stage) {
+            switch stage {
+            case 50: return RewardManager.coins(300)
+            case 100: return RewardManager.crystals(300)
+            case 200: return RewardManager.exp(30)
+            case 500: return RewardManager.crystals(500)
+            default: return nil
+            }
+        }
+    }
 
-    // MARK: - Artefact Rewards
+    // MARK: - ARTEFAKT Belohnung
     func rewardForArtefacts(_ total: Int) {
-
         let id = GCArtefacts.leaderboardID
-        let key = rewardGivenKey(for: id, level: total)
-        if storage.bool(forKey: key) { return }
-
-        switch total {
-        case 10:
-            RewardManager.shared.give(.crystals(3))
-
-        case 25:
-            RewardManager.shared.give(.exp(10))
-
-        case 50:
-            RewardManager.shared.give(.coins(30))
-
-
-        case 100:
-            RewardManager.shared.give(.crystals(30))
-
-
-        default:
-            break
+        checkAndGiveReward(id: id, level: total) {
+            switch total {
+            case 10: return RewardManager.crystals(3)
+            case 25: return RewardManager.exp(10)
+            case 50: return RewardManager.coins(30)
+            case 100: return RewardManager.crystals(30)
+            default: return nil
+            }
         }
-
-        storage.set(true, forKey: key)
     }
 
-    // MARK: - Quest Rewards
+    // MARK: - QUEST Belohnung
     func rewardForQuests(_ total: Int) {
-
         let id = GCQuests.leaderboardID
-        let key = rewardGivenKey(for: id, level: total)
-        if storage.bool(forKey: key) { return }
-
-        switch total {
-        case 5:
-            RewardManager.shared.give(.exp(30))
-
-        case 10:
-            RewardManager.shared.give(.coins(50))
-
-        case 20:
-            RewardManager.shared.give(.crystals(5))
-
-
-        default:
-            break
+        checkAndGiveReward(id: id, level: total) {
+            switch total {
+            case 5: return RewardManager.exp(30)
+            case 10: return RewardManager.coins(50)
+            case 20: return RewardManager.crystals(5)
+            default: return nil
+            }
         }
-
-        storage.set(true, forKey: key)
     }
 
-    // MARK: - Kill Rewards
+    // MARK: - KILL Belohnung
     func rewardForKills(_ kills: Int) {
-
         let id = GCKills.leaderboardID
-        let key = rewardGivenKey(for: id, level: kills)
-        if storage.bool(forKey: key) { return }
-
-        switch kills {
-        case 100:
-            RewardManager.shared.give(.exp(50))
-
-        case 500:
-            RewardManager.shared.give(.coins(300))
-
-        case 1000:
-            RewardManager.shared.give(.crystals(500))
-        default:
-            break
+        checkAndGiveReward(id: id, level: kills) {
+            switch kills {
+            case 100: return RewardManager.exp(50)
+            case 500: return RewardManager.coins(300)
+            case 1000: return RewardManager.crystals(500)
+            default: return nil
+            }
         }
-
-        storage.set(true, forKey: key)
     }
 
-    // MARK: - Playtime Rewards
+    // MARK: - SPIELZEIT Belohnung
     func rewardForPlaytime(_ minutes: Int) {
-
         let id = GCPlaytime.leaderboardID
-        let key = rewardGivenKey(for: id, level: minutes)
-        if storage.bool(forKey: key) { return }
-
-        switch minutes {
-        case 60:
-            RewardManager.shared.give(.exp(100))
-
-        case 300:
-            RewardManager.shared.give(.coins(500))
-
-        case 600:
-            RewardManager.shared.give(.crystals(300))
-        default:
-            break
+        checkAndGiveReward(id: id, level: minutes) {
+            switch minutes {
+            case 60: return RewardManager.exp(100)
+            case 300: return RewardManager.coins(500)
+            case 600: return RewardManager.crystals(300)
+            default: return nil
+            }
         }
+    }
 
-        storage.set(true, forKey: key)
+    // MARK: - Intern: Helper
+    private func checkAndGiveReward(
+        id: String,
+        level: Int,
+        reward: () -> RewardManager.Reward?
+    ) {
+        let key = rewardGivenKey(for: id, level: level)
+        guard !storage.bool(forKey: key) else { return }
+
+        if let reward = reward() {
+            RewardManager.shared.give(reward)
+            storage.set(true, forKey: key)
+            print("🎁 Belohnung vergeben für \(id) – Stufe \(level): \(reward)")
+        }
     }
 }

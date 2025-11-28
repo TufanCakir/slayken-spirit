@@ -186,10 +186,6 @@ struct CustomViewBuilder: View {
             DailyLoginView()
                 .frame(height: 500)
 
-        case .hallOfFameView:
-            HallOfFameView()
-                .frame(height: 500)
-
         case .spiritListView:
             SpiritListView()
                 .frame(height: 500)
@@ -201,11 +197,6 @@ struct CustomViewBuilder: View {
         case .eventShopInventoryView:
             EventShopInventoryView()
                 .frame(height: 500)
-
-        case .multiplayerView:
-            MultiplayerView()
-                .frame(height: 500)
-
         }
     }
 

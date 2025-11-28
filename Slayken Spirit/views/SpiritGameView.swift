@@ -1,5 +1,5 @@
-import SwiftUI
 import RealityKit
+import SwiftUI
 
 struct SpiritGameView: View {
 
@@ -17,8 +17,7 @@ struct SpiritGameView: View {
             // --- Hintergrund & 3D Ansicht ---
             SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
             NormalSpiritView(config: game.current)
-              
-          
+
             // --- Tap Attack ---
             Color.clear
                 .contentShape(Rectangle())
@@ -34,17 +33,13 @@ struct SpiritGameView: View {
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .upgrade:
-                UpgradeView().presentationDetents([ .medium, .large ])
+                UpgradeView().presentationDetents([.medium, .large])
             case .artefacts:
                 ArtefactView()
             }
         }
     }
 }
-
-
-
-
 
 // MARK: - Normal 3D Ansicht
 
@@ -57,9 +52,9 @@ struct NormalSpiritView: View {
 
 // MARK: - HUD (Top)
 
-private extension SpiritGameView {
+extension SpiritGameView {
 
-    var topHUD: some View {
+    fileprivate var topHUD: some View {
         VStack(spacing: 14) {
             HStack {
                 Spacer()
@@ -76,7 +71,7 @@ private extension SpiritGameView {
         .padding(.top, 0)
     }
 
-    var stageDisplay: some View {
+    fileprivate var stageDisplay: some View {
         Text("Stage \(game.stage)")
             .font(.system(size: 24, weight: .heavy, design: .rounded))
             .foregroundColor(.white)
@@ -95,7 +90,7 @@ private extension SpiritGameView {
             )
     }
 
-    var hpBar: some View {
+    fileprivate var hpBar: some View {
         let maxHP = max(game.current.hp, 1)
         let percent = CGFloat(game.currentHP) / CGFloat(maxHP)
 
@@ -129,8 +124,8 @@ private extension SpiritGameView {
 
 // MARK: - HUD (Bottom)
 
-private extension SpiritGameView {
-    var bottomHUD: some View {
+extension SpiritGameView {
+    fileprivate var bottomHUD: some View {
         HStack(spacing: 22) {
             footerButton(icon: "arrow.up.circle.fill", title: "Upgrade") {
                 activeSheet = .upgrade
@@ -142,7 +137,11 @@ private extension SpiritGameView {
         .padding(.bottom, 40)
     }
 
-    func footerButton(icon: String, title: String, action: @escaping () -> Void) -> some View {
+    fileprivate func footerButton(
+        icon: String,
+        title: String,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Image(systemName: icon).font(.title2)
@@ -159,8 +158,8 @@ private extension SpiritGameView {
 
 // MARK: - Game Buttons
 
-private extension SpiritGameView {
-    func gameButton(_ btn: GameButton) -> some View {
+extension SpiritGameView {
+    fileprivate func gameButton(_ btn: GameButton) -> some View {
         let isActive = (btn.type == "auto_battle" && game.isAutoBattle)
 
         return Button {
@@ -180,18 +179,27 @@ private extension SpiritGameView {
                 Capsule()
                     .fill(
                         isActive
-                        ? AnyShapeStyle(LinearGradient(colors: [.cyan, .blue], startPoint: .top, endPoint: .bottom))
-                        : AnyShapeStyle(Color.white.opacity(0.1))
+                            ? AnyShapeStyle(
+                                LinearGradient(
+                                    colors: [.cyan, .blue],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                            : AnyShapeStyle(Color.white.opacity(0.1))
                     )
             )
             .overlay(
-                Capsule().stroke(isActive ? .cyan : .white.opacity(0.3), lineWidth: 1.5)
+                Capsule().stroke(
+                    isActive ? .cyan : .white.opacity(0.3),
+                    lineWidth: 1.5
+                )
             )
             .shadow(color: .black.opacity(0.4), radius: 6, y: 3)
         }
     }
 
-    func handleGameButton(_ btn: GameButton) {
+    fileprivate func handleGameButton(_ btn: GameButton) {
         switch btn.type {
         case "auto_battle":
             game.toggleAutoBattle()

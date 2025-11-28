@@ -4,7 +4,6 @@ struct ArtefactView: View {
 
     @ObservedObject private var inventory = ArtefactInventoryManager.shared
 
-
     var body: some View {
         NavigationStack {
             ZStack {
@@ -126,10 +125,16 @@ extension ArtefactView {
             .padding(.horizontal, 22)
             .padding(.vertical, 10)
             .background(
-                LinearGradient(colors: [
-                    canUpgrade ? art.rarityColor : .gray,
-                    canUpgrade ? art.rarityColor.opacity(0.65) : .gray.opacity(0.65)
-                ], startPoint: .topLeading, endPoint: .bottomTrailing)
+                LinearGradient(
+                    colors: [
+                        canUpgrade ? art.rarityColor : .gray,
+                        canUpgrade
+                            ? art.rarityColor.opacity(0.65)
+                            : .gray.opacity(0.65),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
             )
             .clipShape(Capsule())
             .shadow(color: art.rarityColor.opacity(0.6), radius: 8)
@@ -137,8 +142,7 @@ extension ArtefactView {
         .disabled(!canUpgrade)  // ❗ verhindert nutzloses Drücken
     }
 
-    }
-
+}
 
 extension ArtefactView {
 
@@ -165,7 +169,6 @@ extension ArtefactView {
     }
 }
 
-
 #Preview {
- ArtefactView()
+    ArtefactView()
 }

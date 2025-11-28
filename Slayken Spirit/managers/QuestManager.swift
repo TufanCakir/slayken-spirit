@@ -1,5 +1,5 @@
-import Foundation
 internal import Combine
+import Foundation
 
 final class QuestManager: ObservableObject {
 
@@ -13,7 +13,9 @@ final class QuestManager: ObservableObject {
     @Published var completed: Set<String> = []
 
     private func load() {
-        if let saved = UserDefaults.standard.array(forKey: storageKey) as? [String] {
+        if let saved = UserDefaults.standard.array(forKey: storageKey)
+            as? [String]
+        {
             completed = Set(saved)
         }
     }
@@ -50,17 +52,22 @@ final class QuestManager: ObservableObject {
     func claim(_ quest: Quest) {
         guard !completed.contains(quest.id) else { return }
 
-        RewardManager.shared.give(.combine([
-            .coins(quest.reward.coins),
-            .crystals(quest.reward.crystals),
-            .exp(quest.reward.exp),
-            quest.reward.artefact != nil ? .artefact(quest.reward.artefact!) : nil
-        ].compactMap { $0 }))
+        RewardManager.shared.give(
+            .combine(
+                [
+                    .coins(quest.reward.coins),
+                    .crystals(quest.reward.crystals),
+                    .exp(quest.reward.exp),
+                    quest.reward.artefact != nil
+                        ? .artefact(quest.reward.artefact!) : nil,
+                ].compactMap { $0 }
+            )
+        )
 
         completed.insert(quest.id)
         save()
 
-        objectWillChange.send()   // <- 🟢 zwingt UI zu aktualisieren
+        objectWillChange.send()  // <- 🟢 zwingt UI zu aktualisieren
     }
 
     func reset() {
@@ -70,17 +77,17 @@ final class QuestManager: ObservableObject {
 
         print("🔄 QuestManager reset! Alle Quests zurückgesetzt.")
     }
-    
+
     // Lokalisierung
     func localizedTitle(for quest: Quest) -> String {
         Locale.current.language.languageCode?.identifier == "de"
-        ? quest.name_de
-        : quest.name_en
+            ? quest.name_de
+            : quest.name_en
     }
 
     func localizedDescription(for quest: Quest) -> String {
         Locale.current.language.languageCode?.identifier == "de"
-        ? quest.desc_de
-        : quest.desc_en
+            ? quest.desc_de
+            : quest.desc_en
     }
 }

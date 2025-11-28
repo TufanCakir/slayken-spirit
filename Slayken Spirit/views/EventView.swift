@@ -1,16 +1,15 @@
 import SwiftUI
 
-
 struct EventView: View {
-    
+
     @EnvironmentObject private var game: SpiritGameController
 
     @State private var events: [GameEvent] = []
     @State private var selectedEvent: GameEvent?
     @State private var showBattle: Bool = false
 
-    @State private var selectedCategory: EventCategory? = nil // nil = ALL
-    
+    @State private var selectedCategory: EventCategory? = nil  // nil = ALL
+
     init() {
         let decoded: [GameEvent]
         do {
@@ -20,12 +19,12 @@ struct EventView: View {
         }
         _events = State(initialValue: decoded)
     }
-    
+
     // 🔥 Kategorien für Leiste
     private var categories: [EventCategory] {
         EventCategory.allCases
     }
-    
+
     // 🔥 Gefilterte Events
     private var filteredEvents: [GameEvent] {
         if let cat = selectedCategory {
@@ -69,45 +68,40 @@ struct EventView: View {
     }
 }
 
-private extension EventView {
-    
-    func eventCard(_ event: GameEvent) -> some View {
+extension EventView {
+
+    fileprivate func eventCard(_ event: GameEvent) -> some View {
         ZStack {
             // 🔥 CARD-Grid — NICHT fullscreen!
             SpiritGridBackground(
                 glowColor: Color(hex: event.gridColor),
-                intensity: 2.0           // doppelte Stärke
+                intensity: 1.0  // doppelte Stärke
             )
             .shadow(color: Color(hex: event.gridColor).opacity(0.9), radius: 20)
 
-                 .clipShape(RoundedRectangle(cornerRadius: 20))
-                 .frame(height: 200)
-                 .overlay(
-                     RoundedRectangle(cornerRadius: 20)
-                         .stroke(Color(hex: event.gridColor), lineWidth: 3) // optional schöner
-                 )  // <- wichtig!!!
-                .frame(height: 200)                               // <- Card Größe
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(.blue, lineWidth: 3)
-                )
-            
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .frame(height: 200)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color(hex: event.gridColor), lineWidth: 3)  // optional schöner
+            )  // <- wichtig!!!
+            .frame(height: 200)  // <- Card Größe
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(.blue, lineWidth: 3)
+            )
+
             HStack {
                 VStack(alignment: .center, spacing: 6) {
-                    
+
                     Text(event.name)
-                        .font(.system(size: 45, weight: .black, design: .rounded))
+                        .font(
+                            .system(size: 45, weight: .black, design: .rounded)
+                        )
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                    
-                    /* Optional:
-                     Text(event.description)
-                     .font(.system(size: 16, weight: .medium))
-                     .foregroundColor(.white.opacity(0.8))
-                     .lineLimit(1)
-                     */
                 }
-                
+
                 Spacer()
             }
             .padding(.horizontal, 20)
@@ -116,9 +110,9 @@ private extension EventView {
     }
 }
 
-private extension EventView {
+extension EventView {
 
-    var categoryBar: some View {
+    fileprivate var categoryBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 14) {
 
@@ -146,7 +140,11 @@ private extension EventView {
     }
 
     // UI für einzelne Kategorie-Buttons
-    func categoryButton(title: String, isActive: Bool, action: @escaping () -> Void) -> some View {
+    fileprivate func categoryButton(
+        title: String,
+        isActive: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 18, weight: .bold))
@@ -156,18 +154,23 @@ private extension EventView {
                 .background(
                     Capsule().fill(
                         isActive
-                        ? Color.blue.opacity(0.8)
-                        : Color.white.opacity(0.15)
+                            ? Color.blue.opacity(0.8)
+                            : Color.white.opacity(0.15)
                     )
                 )
                 .overlay(
-                    Capsule().stroke(isActive ? Color.white : Color.white.opacity(0.3), lineWidth: 1)
+                    Capsule().stroke(
+                        isActive ? Color.white : Color.white.opacity(0.3),
+                        lineWidth: 1
+                    )
                 )
-                .shadow(color: isActive ? .blue.opacity(0.6) : .clear, radius: 8)
+                .shadow(
+                    color: isActive ? .blue.opacity(0.6) : .clear,
+                    radius: 8
+                )
         }
     }
 }
-
 
 struct EventDetailView: View {
     let event: GameEvent
@@ -178,24 +181,20 @@ struct EventDetailView: View {
     var body: some View {
         VStack(spacing: 20) {
 
-   
-
             // 🔥 CARD-Grid — NICHT fullscreen!
             SpiritGridBackground(
                 glowColor: Color(hex: event.gridColor),
-                intensity: 2.0           // doppelte Stärke
+                intensity: 1.0  // doppelte Stärke
             )
             .shadow(color: Color(hex: event.gridColor).opacity(0.9), radius: 20)
 
-                .clipShape(RoundedRectangle(cornerRadius: 20))   // <- wichtig!!!
-                .frame(height: 200)                               // <- Card Größe
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(.blue, lineWidth: 3)
-                )
-            
-            
-            
+            .clipShape(RoundedRectangle(cornerRadius: 20))  // <- wichtig!!!
+            .frame(height: 200)  // <- Card Größe
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(.blue, lineWidth: 3)
+            )
+
             Text(event.description)
                 .font(Font.body.italic())
                 .foregroundColor(.white)
@@ -222,10 +221,12 @@ struct EventDetailView: View {
         }
         .padding()
         .background(
-            LinearGradient(colors: [.black, .blue, .blue],
-                           startPoint: .top,
-                           endPoint: .bottom)
-                .ignoresSafeArea()
+            LinearGradient(
+                colors: [.black, .blue, .blue],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
         )
     }
 }

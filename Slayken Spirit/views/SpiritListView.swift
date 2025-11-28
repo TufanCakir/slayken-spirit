@@ -1,14 +1,14 @@
-import SwiftUI
 import SceneKit
+import SwiftUI
 
 struct SpiritCardView: View {
-    let spirit: ModelConfig   // ← richtig!
+    let spirit: ModelConfig  // ← richtig!
 
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
                 .fill(.ultraThinMaterial)
-              
+
             VStack(spacing: 12) {
 
                 Spirit3DMini(modelName: spirit.modelName)
@@ -21,16 +21,14 @@ struct SpiritCardView: View {
     }
 }
 
-
-
 struct Spirit3DMini: View {
     let modelName: String
 
     @State private var scene = SCNScene()
     @State private var modelNode: SCNNode?
 
-    @State private var rotX: Float = -0.1     // Pitch (oben/unten)
-    @State private var rotY: Float = 0.0      // Yaw (links/rechts)
+    @State private var rotX: Float = -0.1  // Pitch (oben/unten)
+    @State private var rotY: Float = 0.0  // Yaw (links/rechts)
 
     @State private var velX: Float = 0.0
     @State private var velY: Float = 0.0
@@ -58,12 +56,10 @@ struct Spirit3DMini: View {
     }
 }
 
-
-
 // MARK: - Gesture + Inertia Engine
-private extension Spirit3DMini {
+extension Spirit3DMini {
 
-    var dragGesture: some Gesture {
+    fileprivate var dragGesture: some Gesture {
         DragGesture()
             .onChanged { value in
                 let deltaX = value.translation.width - lastDragX
@@ -88,13 +84,13 @@ private extension Spirit3DMini {
                 lastDragY = 0
             }
     }
-    func applyRotation() {
+    fileprivate func applyRotation() {
         // Pitch clamping
         rotX = max(-0.8, min(0.8, rotX))
 
         modelNode?.eulerAngles = SCNVector3(rotX, rotY, 0)
     }
-    func setupInertia() {
+    fileprivate func setupInertia() {
         inertia.onUpdate = {
             guard abs(velX) > 0.0001 || abs(velY) > 0.0001 else { return }
 
@@ -108,15 +104,14 @@ private extension Spirit3DMini {
         }
     }
 
-    
-
     // MARK: Load Model
-    func loadModel() {
+    fileprivate func loadModel() {
         scene = SCNScene()
         scene.background.contents = UIColor.clear
 
         guard let modelScene = SCNScene(named: "\(modelName).usdz"),
-              let node = modelScene.rootNode.childNodes.first else {
+            let node = modelScene.rootNode.childNodes.first
+        else {
             print("❌ Modell fehlt:", modelName)
             return
         }
@@ -132,7 +127,7 @@ private extension Spirit3DMini {
     }
 
     // MARK: Camera
-    func defaultCamera() -> SCNNode {
+    fileprivate func defaultCamera() -> SCNNode {
         let cam = SCNNode()
         cam.camera = SCNCamera()
         cam.position = SCNVector3(0, 1.2, 3.2)
@@ -141,7 +136,7 @@ private extension Spirit3DMini {
     }
 
     // MARK: Lights
-    func addLights(to scene: SCNScene) {
+    fileprivate func addLights(to scene: SCNScene) {
         let key = SCNNode()
         key.light = SCNLight()
         key.light?.type = .directional
@@ -158,14 +153,15 @@ private extension Spirit3DMini {
     }
 }
 
-
 struct SpiritListView: View {
 
-    @State private var spirits: [ModelConfig] = Bundle.main.loadSpiritArray("spirits")
+    @State private var spirits: [ModelConfig] = Bundle.main.loadSpiritArray(
+        "spirits"
+    )
 
     private let columns = [
         GridItem(.flexible(), spacing: 18),
-        GridItem(.flexible(), spacing: 18)
+        GridItem(.flexible(), spacing: 18),
     ]
 
     var body: some View {

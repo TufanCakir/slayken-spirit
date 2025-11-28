@@ -1,100 +1,338 @@
 [
-  {
-    "id": "spirit_aquadrax",
-    "modelName": "spirit_aquadrax",
-    "gridColor": "#0077CC",
-    "facing": "right",
-    "scale": [1.0, 1.0, 1.0],
-    "position": [0.0, 0.2, 0.0],
-    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 420,
-    "next": "spirit_arc_lightning_wolf",
-    "reward": { "coins": 60, "crystals": 2, "exp": 35 },
-    "camera": { "position": [0.0, 1.2, 5.0], "lookAt": [0.0, 1.0, 0.0] },
-    "light": { "intensity": 6000, "position": [1.5, 2.5, 2.5] }
-  },
-  {
-    "id": "spirit_arc_lightning_wolf",
-    "modelName": "spirit_arc_lightning_wolf",
-    "gridColor": "#0066CC",
-    "facing": "right",
-    "scale": [1.0, 1.0, 1.0],
-    "position": [0.0, 0.2, 0.0],
-    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 450,
-    "next": "spirit_glacielion",
-    "reward": { "coins": 70, "crystals": 2, "exp": 40 },
-    "camera": { "position": [0.0, 1.2, 5.0], "lookAt": [0.0, 1.0, 0.0] },
-    "light": { "intensity": 6200, "position": [1.5, 2.5, 2.5] }
-  },
-  {
-    "id": "spirit_glacielion",
-    "modelName": "spirit_glacielion",
-    "gridColor": "#AEEBFF",
-    "facing": "right",
-    "scale": [1.0, 1.0, 1.0],
-    "position": [0.0, 0.2, 0.0],
-    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 500,
-    "next": "spirit_frostfang",
-    "reward": { "coins": 80, "crystals": 3, "exp": 45 },
-    "camera": { "position": [0.0, 1.2, 5.0], "lookAt": [0.0, 1.0, 0.0] },
-    "light": { "intensity": 6500, "position": [1.5, 2.5, 2.5] }
-  },
-  {
-    "id": "spirit_frostfang",
-    "modelName": "spirit_frostfang",
-    "gridColor": "#44A8FF",
-    "facing": "right",
-    "scale": [1.0, 1.0, 1.0],
-    "position": [0.0, 0.2, 0.0],
-    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 550,
-    "next": "spirit_wolfrider",
-    "reward": { "coins": 90, "crystals": 3, "exp": 50 },
-    "camera": { "position": [0.0, 1.2, 5.0], "lookAt": [0.0, 1.0, 0.0] },
-    "light": { "intensity": 6500, "position": [1.5, 2.5, 2.5] }
-  },
-  {
-    "id": "spirit_wolfrider",
-    "modelName": "spirit_wolfrider",
-    "gridColor": "#3FA6FF",
-    "facing": "right",
-    "scale": [1.0, 1.0, 1.0],
-    "position": [0.0, 0.2, 0.0],
-    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 600,
-    "next": "spirit_raptoroid",
-    "reward": { "coins": 100, "crystals": 4, "exp": 55 },
-    "camera": { "position": [0.0, 1.2, 5.0], "lookAt": [0.0, 1.0, 0.0] },
-    "light": { "intensity": 6800, "position": [1.5, 2.5, 2.5] }
-  },
-  {
-    "id": "spirit_raptoroid",
-    "modelName": "spirit_raptoroid",
-    "gridColor": "#00E6A0",
-    "facing": "right",
-    "scale": [1.0, 1.0, 1.0],
-    "position": [0.0, 0.2, 0.0],
-    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 650,
-    "next": "spirit_ethereal_blue_fox",
-    "reward": { "coins": 120, "crystals": 4, "exp": 60 },
-    "camera": { "position": [0.0, 1.2, 5.0], "lookAt": [0.0, 1.0, 0.0] },
-    "light": { "intensity": 7000, "position": [1.5, 2.5, 2.5] }
-  },
-  {
-    "id": "spirit_ethereal_blue_fox",
-    "modelName": "spirit_ethereal_blue_fox",
-    "gridColor": "#66E0FF",
-    "facing": "right",
-    "scale": [1.0, 1.0, 1.0],
-    "position": [0.0, 0.2, 0.0],
-    "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
-    "hp": 700,
-    "next": "spirit_aquadrax",
-    "reward": { "coins": 140, "crystals": 5, "exp": 70 },
-    "camera": { "position": [0.0, 1.2, 5.0], "lookAt": [0.0, 1.0, 0.0] },
-    "light": { "intensity": 7200, "position": [1.5, 2.5, 2.5] }
-  }
+    {
+        "id": "spirit_aquadrax",
+        "modelName": "spirit_aquadrax",
+        "gridColor": "#0077CC",
+        "facing": "right",
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "position": [
+            0.0,
+            0.2,
+            0.0
+        ],
+        "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "hp": 420,
+        "next": "spirit_arc_lightning_wolf",
+        "reward": {
+            "coins": 60,
+            "crystals": 2,
+            "exp": 35
+        },
+        "camera": {
+            "position": [
+                0.0,
+                1.2,
+                5.0
+            ],
+            "lookAt": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "light": {
+            "intensity": 6000,
+            "position": [
+                1.5,
+                2.5,
+                2.5
+            ]
+        }
+    },
+    {
+        "id": "spirit_arc_lightning_wolf",
+        "modelName": "spirit_arc_lightning_wolf",
+        "gridColor": "#0066CC",
+        "facing": "right",
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "position": [
+            0.0,
+            0.2,
+            0.0
+        ],
+        "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "hp": 450,
+        "next": "spirit_glacielion",
+        "reward": {
+            "coins": 70,
+            "crystals": 2,
+            "exp": 40
+        },
+        "camera": {
+            "position": [
+                0.0,
+                1.2,
+                5.0
+            ],
+            "lookAt": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "light": {
+            "intensity": 6200,
+            "position": [
+                1.5,
+                2.5,
+                2.5
+            ]
+        }
+    },
+    {
+        "id": "spirit_glacielion",
+        "modelName": "spirit_glacielion",
+        "gridColor": "#AEEBFF",
+        "facing": "right",
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "position": [
+            0.0,
+            0.2,
+            0.0
+        ],
+        "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "hp": 500,
+        "next": "spirit_frostfang",
+        "reward": {
+            "coins": 80,
+            "crystals": 3,
+            "exp": 45
+        },
+        "camera": {
+            "position": [
+                0.0,
+                1.2,
+                5.0
+            ],
+            "lookAt": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "light": {
+            "intensity": 6500,
+            "position": [
+                1.5,
+                2.5,
+                2.5
+            ]
+        }
+    },
+    {
+        "id": "spirit_frostfang",
+        "modelName": "spirit_frostfang",
+        "gridColor": "#44A8FF",
+        "facing": "right",
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "position": [
+            0.0,
+            0.2,
+            0.0
+        ],
+        "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "hp": 550,
+        "next": "spirit_wolfrider",
+        "reward": {
+            "coins": 90,
+            "crystals": 3,
+            "exp": 50
+        },
+        "camera": {
+            "position": [
+                0.0,
+                1.2,
+                5.0
+            ],
+            "lookAt": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "light": {
+            "intensity": 6500,
+            "position": [
+                1.5,
+                2.5,
+                2.5
+            ]
+        }
+    },
+    {
+        "id": "spirit_wolfrider",
+        "modelName": "spirit_wolfrider",
+        "gridColor": "#3FA6FF",
+        "facing": "right",
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "position": [
+            0.0,
+            0.2,
+            0.0
+        ],
+        "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "hp": 600,
+        "next": "spirit_raptoroid",
+        "reward": {
+            "coins": 100,
+            "crystals": 4,
+            "exp": 55
+        },
+        "camera": {
+            "position": [
+                0.0,
+                1.2,
+                5.0
+            ],
+            "lookAt": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "light": {
+            "intensity": 6800,
+            "position": [
+                1.5,
+                2.5,
+                2.5
+            ]
+        }
+    },
+    {
+        "id": "spirit_raptoroid",
+        "modelName": "spirit_raptoroid",
+        "gridColor": "#00E6A0",
+        "facing": "right",
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "position": [
+            0.0,
+            0.2,
+            0.0
+        ],
+        "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "hp": 650,
+        "next": "spirit_ethereal_blue_fox",
+        "reward": {
+            "coins": 120,
+            "crystals": 4,
+            "exp": 60
+        },
+        "camera": {
+            "position": [
+                0.0,
+                1.2,
+                5.0
+            ],
+            "lookAt": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "light": {
+            "intensity": 7000,
+            "position": [
+                1.5,
+                2.5,
+                2.5
+            ]
+        }
+    },
+    {
+        "id": "spirit_ethereal_blue_fox",
+        "modelName": "spirit_ethereal_blue_fox",
+        "gridColor": "#66E0FF",
+        "facing": "right",
+        "scale": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "position": [
+            0.0,
+            0.2,
+            0.0
+        ],
+        "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "hp": 700,
+        "next": "spirit_aquadrax",
+        "reward": {
+            "coins": 140,
+            "crystals": 5,
+            "exp": 70
+        },
+        "camera": {
+            "position": [
+                0.0,
+                1.2,
+                5.0
+            ],
+            "lookAt": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "light": {
+            "intensity": 7200,
+            "position": [
+                1.5,
+                2.5,
+                2.5
+            ]
+        }
+    }
 ]

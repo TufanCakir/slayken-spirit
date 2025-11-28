@@ -15,7 +15,6 @@ enum EventCategory: String, Codable, CaseIterable {
     case special
 }
 
-
 struct EventBoss: Codable, Identifiable {
     var id: String { modelNames.joined(separator: "_") }
 

@@ -54,10 +54,12 @@ struct EventGameView: View {
 
 // MARK: - RENDER
 
-private extension EventGameView {
-    var renderLayer: some View {
+extension EventGameView {
+    fileprivate var renderLayer: some View {
         ZStack {
-            SpiritGridBackground(glowColor: Color(hex: game.currentEventGridColor))
+            SpiritGridBackground(
+                glowColor: Color(hex: game.currentEventGridColor)
+            )
             SpiritView(config: game.current)
                 .id(game.current.id + "_event")
         }
@@ -67,8 +69,8 @@ private extension EventGameView {
 
 // MARK: - TAP
 
-private extension EventGameView {
-    var attackLayer: some View {
+extension EventGameView {
+    fileprivate var attackLayer: some View {
         Color.clear
             .contentShape(Rectangle())
             .onTapGesture { game.tapAttack() }
@@ -78,8 +80,8 @@ private extension EventGameView {
 
 // MARK: - HUD
 
-private extension EventGameView {
-    var hudLayer: some View {
+extension EventGameView {
+    fileprivate var hudLayer: some View {
         VStack {
             topHUD
             Spacer()
@@ -89,7 +91,7 @@ private extension EventGameView {
         .padding(.top, 20)
     }
 
-    var topHUD: some View {
+    fileprivate var topHUD: some View {
         VStack(spacing: 14) {
 
             // Buttons oben rechts
@@ -110,9 +112,11 @@ private extension EventGameView {
                 .padding(.horizontal, 26)
                 .padding(.vertical, 6)
                 .background(
-                    LinearGradient(colors: [.cyan, .blue, .black],
-                                   startPoint: .leading,
-                                   endPoint: .trailing)
+                    LinearGradient(
+                        colors: [.cyan, .blue, .black],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
                 )
                 .clipShape(Capsule())
                 .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
@@ -122,7 +126,7 @@ private extension EventGameView {
         }
     }
 
-    var hpBar: some View {
+    fileprivate var hpBar: some View {
         let maxHP = max(game.current.hp, 1)
         let percent = CGFloat(game.currentHP) / CGFloat(maxHP)
 
@@ -131,9 +135,13 @@ private extension EventGameView {
                 .fill(Color.white.opacity(0.1))
 
             Capsule()
-                .fill(LinearGradient(colors: [.cyan, .blue, .black],
-                                     startPoint: .leading,
-                                     endPoint: .trailing))
+                .fill(
+                    LinearGradient(
+                        colors: [.cyan, .blue, .black],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
                 .frame(width: 260 * percent)
                 .animation(.easeInOut(duration: 0.3), value: game.currentHP)
 
@@ -146,7 +154,7 @@ private extension EventGameView {
         .clipShape(Capsule())
     }
 
-    var bottomHUD: some View {
+    fileprivate var bottomHUD: some View {
         HStack(spacing: 22) {
             footerButton(icon: "arrow.up.circle.fill", title: "Upgrade") {
                 activeSheet = .upgrade
@@ -159,7 +167,11 @@ private extension EventGameView {
     }
 
     @ViewBuilder
-    func footerButton(icon: String, title: String, action: @escaping () -> Void) -> some View {
+    fileprivate func footerButton(
+        icon: String,
+        title: String,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             HStack(spacing: 8) {
                 Image(systemName: icon).font(.headline)
@@ -179,8 +191,8 @@ private extension EventGameView {
 
 // MARK: - Buttons
 
-private extension EventGameView {
-    func gameButton(_ btn: EventGameButton) -> some View {
+extension EventGameView {
+    fileprivate func gameButton(_ btn: EventGameButton) -> some View {
         let active = (btn.type == "auto_battle" && game.isAutoBattle)
 
         return Button {
@@ -198,18 +210,27 @@ private extension EventGameView {
             .background(
                 Capsule().fill(
                     active
-                    ? AnyShapeStyle(LinearGradient(colors: [.cyan, .blue], startPoint: .top, endPoint: .bottom))
-                    : AnyShapeStyle(Color.white.opacity(0.1))
+                        ? AnyShapeStyle(
+                            LinearGradient(
+                                colors: [.cyan, .blue],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        : AnyShapeStyle(Color.white.opacity(0.1))
                 )
             )
             .overlay(
-                Capsule().stroke(active ? .cyan : .white.opacity(0.3), lineWidth: 1.5)
+                Capsule().stroke(
+                    active ? .cyan : .white.opacity(0.3),
+                    lineWidth: 1.5
+                )
             )
             .shadow(color: .black.opacity(0.5), radius: 5, y: 3)
         }
     }
 
-    func handleGameButton(_ btn: EventGameButton) {
+    fileprivate func handleGameButton(_ btn: EventGameButton) {
         switch btn.type {
         case "auto_battle":
             game.toggleAutoBattle()
@@ -229,7 +250,7 @@ private struct EventGameButton: Identifiable {
 }
 
 private let eventButtons: [EventGameButton] = [
-    EventGameButton(type: "auto_battle", icon: "bolt.fill", title: "Auto"),
+    EventGameButton(type: "auto_battle", icon: "bolt.fill", title: "Auto")
 ]
 
 // MARK: - Preview

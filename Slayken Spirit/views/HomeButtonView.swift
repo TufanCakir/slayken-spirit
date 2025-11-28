@@ -2,17 +2,23 @@ import SwiftUI
 
 struct HomeButtonView: View {
     let button: HomeButton
+    var action: (() -> Void)? = nil
+
     @State private var isPressed = false
     @State private var glowPulse = false
 
     var body: some View {
         VStack(spacing: 10) {
 
-            // MARK: - Icon
+            // MARK: - Icon mit Glow-Effekt
             ZStack {
                 Circle()
-                    .fill(Color(hex: button.color)) // Hintergrundfarbe aus JSON
-                    .shadow(color: Color(hex: button.iconColor).opacity(0.6), radius: 14)
+                    .fill(Color(hex: button.color))
+                    .frame(width: 80, height: 80)
+                    .shadow(
+                        color: Color(hex: button.iconColor).opacity(0.6),
+                        radius: 14
+                    )
                     .shadow(color: .white.opacity(0.15), radius: 4)
                     .scaleEffect(glowPulse ? 1.05 : 1.0)
                     .animation(
@@ -24,12 +30,16 @@ struct HomeButtonView: View {
                 Image(systemName: button.icon)
                     .font(.system(size: 38, weight: .semibold))
                     .foregroundColor(Color(hex: button.iconColor))
-                    .shadow(color: Color(hex: button.iconColor).opacity(0.4), radius: 6)
+                    .shadow(
+                        color: Color(hex: button.iconColor).opacity(0.4),
+                        radius: 6
+                    )
             }
-            .frame(width: 80, height: 80)
-            .scaleEffect(isPressed ? 0.9 : 1.0)
-            .animation(.spring(response: 0.35, dampingFraction: 0.7), value: isPressed)
-            .onAppear { glowPulse = true }
+            .scaleEffect(isPressed ? 0.92 : 1.0)
+            .animation(
+                .spring(response: 0.3, dampingFraction: 0.7),
+                value: isPressed
+            )
 
             // MARK: - Titel
             Text(button.title)
@@ -40,12 +50,26 @@ struct HomeButtonView: View {
         .frame(maxWidth: .infinity, minHeight: 130)
         .padding()
         .scaleEffect(isPressed ? 0.96 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressed)
-        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
-            withAnimation(.easeInOut(duration: 0.15)) {
-                isPressed = pressing
-            }
-        }, perform: {})
+        .animation(
+            .spring(response: 0.3, dampingFraction: 0.7),
+            value: isPressed
+        )
+        .onAppear {
+            glowPulse = true
+        }
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        isPressed = true
+                    }
+                }
+                .onEnded { _ in
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        isPressed = false
+                    }
+                    action?()
+                }
+        )
     }
 }
-

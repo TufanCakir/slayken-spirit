@@ -4,9 +4,12 @@ import SwiftUI
 @main
 struct Slayken_SpiritApp: App {
 
-    // MARK: - Game State + Manager (Singletons via .shared)
+    // MARK: - Hauptzustände und Manager
     @StateObject private var spiritGame = SpiritGameController()
+    @StateObject private var musicManager = MusicManager()
     @StateObject private var internet = InternetMonitor()
+
+    // MARK: - Singleton-Manager
     @StateObject private var coinManager = CoinManager.shared
     @StateObject private var crystalManager = CrystalManager.shared
     @StateObject private var accountManager = AccountLevelManager.shared
@@ -16,26 +19,25 @@ struct Slayken_SpiritApp: App {
     @StateObject private var artefactInventoryManager = ArtefactInventoryManager
         .shared
     @StateObject private var questManager = QuestManager.shared
-    @StateObject private var musicManager = MusicManager()
     @StateObject private var eventShopManager = EventShopManager.shared
 
-    // MARK: - Init Setup
+    // MARK: - Initialisierung
     init() {
-        // Übergibt GameController an ScreenFactory
-        ScreenFactory.shared.setGameController(spiritGame)
-
-        // Game Center Login (automatisch bei App-Start)
-        GameCenterManager.shared.authenticate()
+        setupGame()
     }
 
-    // MARK: - Main Scene
+    private func setupGame() {
+        GameCenterManager.shared.authenticate()
+        ScreenFactory.shared.setGameController(spiritGame)
+        musicManager.configureAudioSession()
+    }
+
+    // MARK: - Hauptszene
     var body: some Scene {
         WindowGroup {
             rootView
-                .onAppear {
-                    musicManager.configureAudioSession()
-                }
                 .environmentObject(spiritGame)
+                .environmentObject(musicManager)
                 .environmentObject(internet)
                 .environmentObject(coinManager)
                 .environmentObject(crystalManager)
@@ -46,11 +48,10 @@ struct Slayken_SpiritApp: App {
                 .environmentObject(artefactInventoryManager)
                 .environmentObject(questManager)
                 .environmentObject(eventShopManager)
-                .environmentObject(musicManager)
         }
     }
 
-    // MARK: - Root View Switcher (Online vs Offline)
+    // MARK: - Root View Auswahl (Online / Offline)
     @ViewBuilder
     private var rootView: some View {
         if internet.isConnected {

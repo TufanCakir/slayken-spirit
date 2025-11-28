@@ -15,7 +15,9 @@ struct QuestView: View {
 
                     // MARK: Header
                     Text("Quests")
-                        .font(.system(size: 40, weight: .black, design: .rounded))
+                        .font(
+                            .system(size: 40, weight: .black, design: .rounded)
+                        )
                         .foregroundStyle(.white)
                         .shadow(radius: 10)
                         .padding(.top, 20)
@@ -38,9 +40,9 @@ struct QuestView: View {
     }
 }
 
-private extension QuestView {
+extension QuestView {
 
-    func questCard(_ quest: Quest) -> some View {
+    fileprivate func questCard(_ quest: Quest) -> some View {
 
         let progress = questManager.progress(for: quest)
         let ratio = min(1.0, Double(progress) / Double(quest.target))
@@ -64,7 +66,9 @@ private extension QuestView {
                 // MARK: Header Row
                 HStack {
                     Text(QuestManager.shared.localizedTitle(for: quest))
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .font(
+                            .system(size: 22, weight: .bold, design: .rounded)
+                        )
                         .foregroundColor(.white)
 
                     Spacer()
@@ -75,7 +79,7 @@ private extension QuestView {
                         Image(systemName: "info.circle.fill")
                             .font(.title2)
                             .foregroundColor(.white)
-                           
+
                     }
                 }
 
@@ -97,12 +101,22 @@ private extension QuestView {
                         GeometryReader { geo in
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(
-                                    LinearGradient(colors: [.yellow, .orange.opacity(0.8)],
-                                                   startPoint: .leading,
-                                                   endPoint: .trailing)
+                                    LinearGradient(
+                                        colors: [
+                                            .yellow, .orange.opacity(0.8),
+                                        ],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
                                 )
-                                .frame(width: geo.size.width * 0.70 * ratio, alignment: .leading)
-                                .animation(.easeInOut(duration: 0.25), value: ratio)
+                                .frame(
+                                    width: geo.size.width * 0.70 * ratio,
+                                    alignment: .leading
+                                )
+                                .animation(
+                                    .easeInOut(duration: 0.25),
+                                    value: ratio
+                                )
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -118,8 +132,10 @@ private extension QuestView {
                     questManager.claim(quest)
                 } label: {
                     Text(
-                        isClaimed ? "Erhalten" :
-                        (isDone ? "Belohnung abholen" : "Noch nicht erfüllt")
+                        isClaimed
+                            ? "Erhalten"
+                            : (isDone
+                                ? "Belohnung abholen" : "Noch nicht erfüllt")
                     )
                     .font(.headline.bold())
                     .foregroundColor(.white)
@@ -128,14 +144,19 @@ private extension QuestView {
                     .background(
                         RoundedRectangle(cornerRadius: 16)
                             .fill(
-                                isClaimed ?
-                                    AnyShapeStyle(Color.green.opacity(0.25)) :
-                                (isDone ?
-                                    AnyShapeStyle(LinearGradient(colors: [.yellow, .orange],
-                                                                 startPoint: .top,
-                                                                 endPoint: .bottom)) :
-                                    AnyShapeStyle(Color.gray.opacity(0.35))
-                                )
+                                isClaimed
+                                    ? AnyShapeStyle(Color.green.opacity(0.25))
+                                    : (isDone
+                                        ? AnyShapeStyle(
+                                            LinearGradient(
+                                                colors: [.yellow, .orange],
+                                                startPoint: .top,
+                                                endPoint: .bottom
+                                            )
+                                        )
+                                        : AnyShapeStyle(
+                                            Color.gray.opacity(0.35)
+                                        ))
                             )
                     )
                     .overlay(
@@ -150,7 +171,6 @@ private extension QuestView {
         }
     }
 }
-
 
 #Preview {
     QuestView()

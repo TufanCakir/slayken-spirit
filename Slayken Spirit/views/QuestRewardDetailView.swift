@@ -14,11 +14,19 @@ struct QuestRewardDetailView: View {
             VStack(spacing: 14) {
 
                 if quest.reward.coins > 0 {
-                    rewardRow("Coins", value: quest.reward.coins, icon: "dollarsign.circle.fill")
+                    rewardRow(
+                        "Coins",
+                        value: quest.reward.coins,
+                        icon: "dollarsign.circle.fill"
+                    )
                 }
 
                 if quest.reward.crystals > 0 {
-                    rewardRow("Crystals", value: quest.reward.crystals, icon: "diamond.fill")
+                    rewardRow(
+                        "Crystals",
+                        value: quest.reward.crystals,
+                        icon: "diamond.fill"
+                    )
                 }
 
                 if quest.reward.exp > 0 {
@@ -35,9 +43,12 @@ struct QuestRewardDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .background(
-            LinearGradient(colors: [.black, .blue.opacity(0.4), .black],
-                           startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
+            LinearGradient(
+                colors: [.black, .blue.opacity(0.4), .black],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
         )
     }
 

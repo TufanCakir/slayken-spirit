@@ -63,7 +63,7 @@ struct BuyConfirmPopup: View {
             .padding(.vertical, 24)
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-         
+
             .shadow(color: .black.opacity(0.45), radius: 25, y: 6)
             .padding(.horizontal, 40)
             .scaleEffect(animate ? 1 : 0.7)
