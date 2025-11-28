@@ -63,11 +63,11 @@ private extension EventGameView {
     var renderLayer: some View {
         Group {
             if isARMode {
-                ARSpiritBattleView(config: game.current)
+                ARViewRepresentable()
                     .ignoresSafeArea()
             } else {
                 ZStack {
-                    SpiritGridBackground(glowColor: Color(hex: game.currentEventGridColor))
+                    SpiritGridBackground(glowColor: Color(game.currentEventGridColor) ?? .cyan)
                         .ignoresSafeArea()
 
                     SpiritView(config: game.current)

@@ -1,112 +1,120 @@
-import SwiftUI
 import RealityKit
 import ARKit
+import SwiftUI
 
-struct ARSpiritBattleView: UIViewRepresentable {
-
-    @ObservedObject var matchManager = MatchManager.shared
-    let config: ModelConfig
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(config: config)
-    }
-
+// MARK: - AR View Wrapper für SwiftUI
+struct ARViewRepresentable: UIViewRepresentable {
+    
+    // Die ModelConfig vom GameController wird benötigt,
+    // um das 3D-Modell im AR-Modus zu laden.
+    @EnvironmentObject private var game: SpiritGameController
+    
     func makeUIView(context: Context) -> ARView {
+        // Erstellen und Konfigurieren der ARView
         let arView = ARView(frame: .zero)
-
-        // MARK: - AR Session Setup
-        let sessionConfig = ARWorldTrackingConfiguration()
-        sessionConfig.planeDetection = [.horizontal]
-        sessionConfig.environmentTexturing = .automatic
-        sessionConfig.sceneReconstruction = .mesh
-        arView.session.run(sessionConfig, options: [.resetTracking, .removeExistingAnchors])
-
-        // MARK: - Tap Gesture
-        let tapGesture = UITapGestureRecognizer(
-            target: context.coordinator,
-            action: #selector(Coordinator.handleTap(_:))
-        )
-        arView.addGestureRecognizer(tapGesture)
-
+        
+        // Führen Sie die Standard-AR-Session-Konfiguration aus
+        let config = ARWorldTrackingConfiguration()
+        config.planeDetection = [.horizontal, .vertical] // Optional: Ebenenerkennung aktivieren
+        arView.session.run(config)
+        
+        // Kontext-Koordinator einrichten, um Updates vom GameController zu empfangen
         context.coordinator.arView = arView
+        
+        // Fügen Sie einen Gesten-Recognizer hinzu, um das 3D-Modell zu platzieren
+        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap))
+        arView.addGestureRecognizer(tapGesture)
+        
         return arView
     }
-
-    func updateUIView(_ uiView: ARView, context: Context) {}
-}
-
-
-// MARK: - Coordinator
-class Coordinator: NSObject {
-
-    weak var arView: ARView?
-    let config: ModelConfig
-    private var placedOnce = false     // verhindert mehrfaches Spawn
-
-    init(config: ModelConfig) {
-        self.config = config
+    
+    func updateUIView(_ uiView: ARView, context: Context) {
+        // Hier können Sie auf Änderungen im GameController reagieren
+        // z.B. das Spirit-Modell aktualisieren oder entfernen
+        context.coordinator.config = game.current
     }
-
-    // MARK: - Place Model
-    @objc func handleTap(_ gesture: UITapGestureRecognizer) {
-        guard let view = arView else { return }
-
-        let location = gesture.location(in: view)
-
-        // MARK: - Raycast
-        guard let result = view.raycast(
-            from: location,
-            allowing: .estimatedPlane,
-            alignment: .horizontal
-        ).first else {
-            print("❌ Kein Boden gefunden")
-            return
+    
+    // MARK: - Coordinator
+    
+    // Der Coordinator wird benötigt, um UIKit-Aktionen (wie Taps)
+    // zu verarbeiten und UI-Updates in SwiftUI zurückzugeben (optional),
+    // sowie, um RealityKit-spezifische Logik zu kapseln.
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+    
+    class Coordinator: NSObject {
+        var parent: ARViewRepresentable
+        weak var arView: ARView?
+        var entity: Entity? // Die aktuell platzierte Entität (das Spirit-Modell)
+        var config: ModelConfig? // Aktuelle Konfiguration
+        
+        init(parent: ARViewRepresentable) {
+            self.parent = parent
         }
-
-        // Nur einmal platzieren
-        if placedOnce { return }
-        placedOnce = true
-
-        placeModel(at: result.worldTransform, in: view)
-    }
-
-    // MARK: - Place entity
-    private func placeModel(at transform: simd_float4x4, in view: ARView) {
-
-        let anchor = AnchorEntity(world: transform)
-
-        Task {
-            do {
-                let model = try await Entity(named: config.modelName)
-
-                // MARK: - Auto-Leveling (damit nie im Boden versinkt)
-                let bounds = model.visualBounds(relativeTo: nil)
-                model.position.y -= bounds.min.y
-
-                // MARK: - Scale
-                model.scale = SIMD3<Float>(config.scale)
-
-                // MARK: - Optional: Animation starten
-                if let anim = model.availableAnimations.first {
-                    model.playAnimation(anim.repeat())
+        
+        // Wird bei einer Tap-Geste aufgerufen
+        @objc func handleTap(_ recognizer: UITapGestureRecognizer) {
+            guard let arView = arView else { return }
+            
+            // 1. Treffer-Erkennung (Raycasting)
+            let location = recognizer.location(in: arView)
+            
+            // Finde eine Trefferfläche (z.B. eine erkannte Ebene)
+            let hits = arView.raycast(from: location, allowing: .existingPlaneGeometry, alignment: .horizontal)
+            
+            // Wenn eine Ebene getroffen wurde
+            if let firstHit = hits.first {
+                
+                // 2. Anker erstellen und hinzufügen
+                let anchor = AnchorEntity(raycastResult: firstHit)
+                
+                // 3. 3D-Modell (Entity) erstellen
+                // **HINWEIS:** Hier müssen Sie Ihr 3D-Modell laden.
+                // Ersetzen Sie "SpiritModel.usdz" durch den tatsächlichen Namen Ihres Modells,
+                // das sich in Ihrem Xcode-Projekt befinden muss (z.B. in einem .rcproject).
+                
+                guard let modelConfig = config else { return }
+                
+                // Das ist ein Platzhalter. Im echten Projekt müssten Sie Ihr Modell
+                // basierend auf der Konfiguration laden und anpassen.
+                // Zum Beispiel:
+                // let spiritEntity = try? Entity.load(named: modelConfig.modelName)
+                
+                // Verwenden wir eine einfache Box als Platzhalter, falls kein 3D-Modell vorhanden ist
+                let boxMesh = MeshResource.generateBox(size: 0.1) // 10 cm Würfel
+                let material = SimpleMaterial(color: UIColor(named: modelConfig.gridColor) ?? .cyan, isMetallic: false)
+                let spiritEntity = ModelEntity(mesh: boxMesh, materials: [material])
+                
+                // Optional: Füge eine Collider-Komponente hinzu, damit es auf Taps reagiert
+                spiritEntity.generateCollisionShapes(recursive: true)
+                
+                // Entferne das alte Modell und platziere das neue
+                entity?.removeFromParent()
+                entity = spiritEntity
+                
+                anchor.addChild(spiritEntity)
+                arView.scene.addAnchor(anchor)
+                
+                // Optional: Ausrichtung an der Kamera (Blickrichtung)
+                if let cameraTransform = arView.session.currentFrame?.camera.transform {
+                    let matrix = simd_float4x4(
+                        [1, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 1, 0],
+                        [firstHit.worldTransform.columns.3.x, firstHit.worldTransform.columns.3.y, firstHit.worldTransform.columns.3.z, 1]
+                    )
+                    
+                    // Drehe die Entität so, dass sie von der Kamera weg zeigt
+                    spiritEntity.transform.rotation = simd_quatf(matrix)
                 }
-
-                // MARK: - Add to anchor
-                anchor.addChild(model)
-
-                // MARK: - Scene Light
-                let sun = DirectionalLight()
-                sun.light.intensity = config.light.intensity
-                sun.light.color = .white
-                sun.orientation = simd_quatf(angle: -.pi / 3, axis: [1, 0, 0])
-                anchor.addChild(sun)
-
-                view.scene.addAnchor(anchor)
-                print("🔥 AR Boss platziert → \(config.modelName)")
-
-            } catch {
-                print("❌ Konnte Modell nicht laden: \(error.localizedDescription)")
+                
+                // Hier könnten Sie auch den game.tapAttack() Call auslösen,
+                // wenn der Tap auf das platzierte 3D-Modell geht.
             }
         }
     }
 }
+
+// HINWEIS: Sie benötigen auch eine Erweiterung für UIColor/Color, um Hex-Farben zu verarbeiten,
+// da 'Color(hex: ...)' im Originalcode verwendet wird.

@@ -18,7 +18,7 @@ struct SpiritGameView: View {
 
             // --- 1. MODE SWITCH (AR / 3D) ---
             if isARMode {
-                ARSpiritBattleView(config: game.current)
+                ARViewRepresentable() // <--- DURCH DIES ERSETZEN
                     .ignoresSafeArea()
             } else {
                 SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
