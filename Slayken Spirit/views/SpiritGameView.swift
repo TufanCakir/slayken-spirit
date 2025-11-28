@@ -1,4 +1,5 @@
 import SwiftUI
+import RealityKit // Notwendig für die ARViewRepresentable
 
 struct SpiritGameView: View {
 
@@ -18,7 +19,7 @@ struct SpiritGameView: View {
 
             // --- 1. MODE SWITCH (AR / 3D) ---
             if isARMode {
-                ARViewRepresentable() // <--- DURCH DIES ERSETZEN
+                ARViewRepresentable() // Die AR-Ansicht
                     .ignoresSafeArea()
             } else {
                 SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
@@ -58,6 +59,10 @@ struct SpiritGameView: View {
     }
 }
 
+// ------------------------------------------------------------------
+// MARK: - ZUSÄTZLICHE VIEWS (Wiederhergestellt)
+// ------------------------------------------------------------------
+
 struct SpiritSceneView: View {
     let config: ModelConfig
     var body: some View {
@@ -77,6 +82,9 @@ struct NormalSpiritView: View {
     }
 }
 
+// ------------------------------------------------------------------
+// MARK: - PRIVATE EXTENSIONS (Wiederhergestellt)
+// ------------------------------------------------------------------
 
 private extension SpiritGameView {
 
@@ -91,9 +99,9 @@ private extension SpiritGameView {
                         gameButton(btn)
                     }
                 }
-                .padding(.trailing, 110)   // Abstand vom rechten Rand
+                .padding(.trailing, 110)
             }
-            .padding(.top, 0)            // Abstand nach oben
+            .padding(.top, 0)
             stageDisplay
             hpBar
             }
@@ -187,7 +195,7 @@ private extension SpiritGameView {
                 Text(btn.title)
                     .font(.system(size: 18, weight: .heavy))
             }
-           
+            
             .foregroundColor(.white)
             .padding(.horizontal, 26)
             .padding(.vertical, 8)
@@ -225,36 +233,43 @@ private extension SpiritGameView {
 
 private extension SpiritGameView {
 
-        var arToggleLayer: some View {
-            VStack {
-                HStack {
-                    Spacer()
-                    Button {
-                        withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-                            isARMode.toggle()
-                        }
-                    } label: {
-                        Image(systemName: isARMode ? "arkit" : "arkit.badge.xmark")
-                            .font(.system(size: 30, weight: .bold))
-                            .foregroundColor(.cyan)
-                            .padding(14)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
-                            .shadow(color: .cyan.opacity(0.8), radius: 8)
-                    }
-                    .padding()
-                }
+    var arToggleLayer: some View {
+        VStack {
+            HStack {
                 Spacer()
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+                        isARMode.toggle()
+                    }
+                } label: {
+                    Image(systemName: isARMode ? "arkit" : "arkit.badge.xmark")
+                        .font(.system(size: 30, weight: .bold))
+                        .foregroundColor(.cyan)
+                        .padding(14)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                        .shadow(color: .cyan.opacity(0.8), radius: 8)
+                }
+                .padding()
             }
+            Spacer()
         }
     }
+}
 
-private extension SpiritGameView { func handleGameButton(_ btn: GameButton) { switch btn.type { case "auto_battle": game.toggleAutoBattle() default: print("⚠️ Unbekannter Button-Typ:", btn.type) } } }
-
+private extension SpiritGameView {
+    func handleGameButton(_ btn: GameButton) {
+        switch btn.type {
+        case "auto_battle":
+            game.toggleAutoBattle()
+        default:
+            print("⚠️ Unbekannter Button-Typ:", btn.type)
+        }
+    }
+}
 
 
 #Preview {
     SpiritGameView()
         .environmentObject(SpiritGameController())
 }
-

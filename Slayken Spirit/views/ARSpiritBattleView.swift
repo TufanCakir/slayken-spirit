@@ -97,7 +97,7 @@ struct ARViewRepresentable: UIViewRepresentable {
                 arView.scene.addAnchor(anchor)
                 
                 // Optional: Ausrichtung an der Kamera (Blickrichtung)
-                if let cameraTransform = arView.session.currentFrame?.camera.transform {
+                if arView.session.currentFrame?.camera.transform != nil {
                     let matrix = simd_float4x4(
                         [1, 0, 0, 0],
                         [0, 1, 0, 0],
@@ -118,3 +118,4 @@ struct ARViewRepresentable: UIViewRepresentable {
 
 // HINWEIS: Sie benötigen auch eine Erweiterung für UIColor/Color, um Hex-Farben zu verarbeiten,
 // da 'Color(hex: ...)' im Originalcode verwendet wird.
+

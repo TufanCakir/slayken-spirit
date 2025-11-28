@@ -66,15 +66,13 @@ private extension EventGameView {
                 ARViewRepresentable()
                     .ignoresSafeArea()
             } else {
-                ZStack {
-                    SpiritGridBackground(glowColor: Color(game.currentEventGridColor) ?? .cyan)
-                        .ignoresSafeArea()
-
-                    SpiritView(config: game.current)
-                        .id(game.current.id + "_event")
+                        ZStack {
+                            SpiritGridBackground(glowColor: Color(hex: game.currentEventGridColor))
+                            SpiritView(config: game.current)
+                                .id(game.current.id + "_event")
+                        }
+                    }
                 }
-            }
-        }
     }
 }
 
