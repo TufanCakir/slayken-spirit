@@ -56,6 +56,15 @@ final class SpiritGameController: ObservableObject {
     @Published var eventBossIndex: Int = 0
     @Published var currentEventGridColor: String = "#00AACC"
 
+    @Published var currentEvent: MultiplayerEvent?
+    @Published var currentBosses: [MultiplayerBoss] = []
+    @Published var currentMultiplayerIndex: Int = 0
+    @Published var isInMultiplayerMode: Bool = false
+    @Published var currentGridColor: String = "#00AACC"
+    @Published var totalMultiplayerWins: Int = UserDefaults.standard.integer(forKey: "totalMPWins")
+    @Published var multiplayerWon: Bool = false
+    @Published var     showVictoryOverlay: Bool = false
+
     private var autoBattleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
     
@@ -64,7 +73,6 @@ final class SpiritGameController: ObservableObject {
         UserDefaults.standard.set(totalQuests, forKey: "totalQuests")
         UserDefaults.standard.set(playtimeMinutes, forKey: "playtimeMinutes")
     }
-    
     // MARK: - Data
     private let all: [ModelConfig]
     
@@ -159,8 +167,65 @@ final class SpiritGameController: ObservableObject {
         )
     }
 
+    func startMultiplayer(_ event: MultiplayerEvent) {
+        self.currentEvent = event
+        self.currentGridColor = event.gridColor
+        self.currentBosses = event.bosses
+        self.isInMultiplayerMode = true
+        
+        loadMultiplayerBoss(index: 0)
+        
+        if multiplayerWon {
+            showVictoryOverlay
+        }
+    }
 
+    
+    
+    func loadMultiplayerBoss(index: Int = 0) {
+        guard let event = currentEvent else { return }
+        guard index < event.bosses.count else { return }
 
+        let data = event.bosses[index]
+        let modelID = data.modelNames.first ?? "default_id"
+        let model = all.first(where: { $0.id == modelID })
+
+        currentHP = data.hp.value(at: index) + ArtefactInventoryManager.shared.bonusHP
+
+        current = ModelConfig(
+            id: modelID,
+            modelName: model?.modelName ?? "spirit_fire",
+            gridColor: currentEvent?.gridColor ?? "#00AACC",
+            scale: model?.scale ?? [1,1,1],
+            position: model?.position ?? [0,0.2,0],
+            rotation: model?.rotation ?? .init(x:0,y:0,z:0),
+            camera: model?.camera ?? .init(position: [0,1.2,5], lookAt: [0,1,0]),
+            light: model?.light ?? .init(intensity: 5000, position: [1,2,2]),
+            facing: model?.facing ?? "right",
+            hp: currentHP,
+            next: nil,
+            reward: .init(
+                coins: data.coins.value(at: index),
+                crystals: data.crystals.value(at: index),
+                exp: data.exp.value(at: index)
+            )
+        )
+    }
+
+    func submitMultiplayerWin() {
+        totalMultiplayerWins += 1
+        UserDefaults.standard.set(totalMultiplayerWins, forKey: "totalMPWins")
+        GCMPWins.submit(totalMultiplayerWins)
+    }
+    
+    func showMultiplayerLeaderboard() {
+        let viewController = GKGameCenterViewController(leaderboardID: "spirit_multiplayer_wins", playerScope: .global, timeScope: .allTime)
+        viewController.gameCenterDelegate = GameCenterManager.shared as! any GKGameCenterControllerDelegate
+
+        if let rootVC = UIApplication.shared.windows.first?.rootViewController {
+            rootVC.present(viewController, animated: true)
+        }
+    }
         
     private func handleDefeat() {
         // MULTI-BOSS HANDLING
@@ -250,6 +315,19 @@ final class SpiritGameController: ObservableObject {
     // IN SpiritGameController.swift
     // NEU: Separate Defeat-Funktion für Multiplayer, die keine Rewards gibt
     private func handleMultiplayerDefeat() {
+        
+        currentMultiplayerIndex += 1
+
+        if currentMultiplayerIndex < currentBosses.count {
+            loadMultiplayerBoss(index: currentMultiplayerIndex)
+        } else {
+            // Multiplayer-Event abgeschlossen
+            isInMultiplayerMode = false
+            currentMultiplayerIndex = 0
+            print("🏆 Multiplayer Event abgeschlossen!")
+            // Optional: Siegesanzeige, Punkte etc.
+        }
+
         // Hier können visuelle Effekte für den Sieg im Multiplayer hinzugefügt werden
         print("🎉 SYNCHRONISIERTER MP-SIEG! Wechsle zur nächsten Stage.")
         

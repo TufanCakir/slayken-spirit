@@ -1,0 +1,114 @@
+[
+  {
+    "id": "multiplayer_aquadrax_raid",
+    "name": "AquaDrax Depth Raid",
+    "description": "Ein uralter Wasserdrache prüft deine Stärke in einem tobenden Ozean.",
+    "gridColor": "#0077CC",
+    "category": "raid",
+    "bosses": [
+      {
+        "modelNames": ["spirit_aquadrax", "spirit_glacielion", "spirit_frostfang"],
+        "hp": [5, 5, 5],
+        "coins": [70, 95, 130],
+        "crystals": [3, 5, 7],
+        "exp": [55, 70, 90]
+      }
+    ]
+  },
+  {
+    "id": "multiplayer_arc_lightning_trial",
+    "name": "Arc Lightning Wolf Trial",
+    "description": "Der Blitzwolf entfesselt elektrische Stürme gegen jeden Herausforderer.",
+    "gridColor": "#0066CC",
+    "category": "trial",
+    "bosses": [
+      {
+        "modelNames": ["spirit_arc_lightning_wolf"],
+        "hp": 5,
+        "coins": 90,
+        "crystals": 3,
+        "exp": 60
+      }
+    ]
+  },
+  {
+    "id": "multiplayer_glacier_breach",
+    "name": "Glacier Breach",
+    "description": "Drei frostige Bestien brechen aus den Eisfeldern hervor.",
+    "gridColor": "#AEEBFF",
+    "category": "raid",
+    "bosses": [
+      {
+        "modelNames": ["spirit_glacielion", "spirit_frostfang", "spirit_wolfrider"],
+        "hp": [5, 5, 5],
+        "coins": [80, 105, 150],
+        "crystals": [3, 5, 7],
+        "exp": [55, 75, 95]
+      }
+    ]
+  },
+  {
+    "id": "multiplayer_frostfang_elite",
+    "name": "Frostfang Elite Trial",
+    "description": "Frostfang wartet auf den nächsten würdigen Herausforderer.",
+    "gridColor": "#44A8FF",
+    "category": "trial",
+    "bosses": [
+      {
+        "modelNames": ["spirit_frostfang"],
+        "hp": 5,
+        "coins": 100,
+        "crystals": 4,
+        "exp": 70
+      }
+    ]
+  },
+  {
+    "id": "multiplayer_wolfrider_skirmish",
+    "name": "Wolfrider Skirmish",
+    "description": "Ein berüchtigter Wolfsreiter stellt sich dir in einem direkten Duell.",
+    "gridColor": "#3FA6FF",
+    "category": "special",
+    "bosses": [
+      {
+        "modelNames": ["spirit_wolfrider"],
+        "hp": 5,
+        "coins": 110,
+        "crystals": 4,
+        "exp": 75
+      }
+    ]
+  },
+  {
+    "id": "multiplayer_raptoroid_rampage",
+    "name": "Raptoroid Rampage",
+    "description": "Der technoide Dino-Spirit rastet völlig aus!",
+    "gridColor": "#00E6A0",
+    "category": "special",
+    "bosses": [
+      {
+        "modelNames": ["spirit_raptoroid"],
+        "hp": 5,
+        "coins": 130,
+        "crystals": 5,
+        "exp": 85
+      }
+    ]
+  },
+  {
+    "id": "multiplayer_ethereal_blue_awakening",
+    "name": "Ethereal Blue Awakening",
+    "description": "Der mystische himmelblaue Fox-Spirit erwacht aus uraltem Schlaf.",
+    "gridColor": "#66E0FF",
+    "category": "trial",
+    "bosses": [
+      {
+        "modelNames": ["spirit_ethereal_blue_fox"],
+        "hp": 5,
+        "coins": 140,
+        "crystals": 5,
+        "exp": 95
+      }
+    ]
+  }
+]
