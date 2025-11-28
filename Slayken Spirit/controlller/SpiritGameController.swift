@@ -23,6 +23,7 @@ struct GameAction: Codable {
 // MARK: - Notification Name
 extension Notification.Name {
     static let multiplayerDidReceiveAction = Notification.Name("MultiplayerDidReceiveAction")
+    static let multiplayerDidFinish = Notification.Name("MultiplayerDidFinish")
 }
 
 @MainActor
@@ -315,27 +316,29 @@ final class SpiritGameController: ObservableObject {
     // IN SpiritGameController.swift
     // NEU: Separate Defeat-Funktion für Multiplayer, die keine Rewards gibt
     private func handleMultiplayerDefeat() {
-        
         currentMultiplayerIndex += 1
 
         if currentMultiplayerIndex < currentBosses.count {
+            // 👉 Weiterer Boss vorhanden → Nächster Boss laden
             loadMultiplayerBoss(index: currentMultiplayerIndex)
         } else {
-            // Multiplayer-Event abgeschlossen
+            // 👉 ALLE Bosse besiegt → Event abgeschlossen
             isInMultiplayerMode = false
             currentMultiplayerIndex = 0
             print("🏆 Multiplayer Event abgeschlossen!")
-            // Optional: Siegesanzeige, Punkte etc.
+
+            // ✅ NUR HIER zurücknavigieren!
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                NotificationCenter.default.post(name: .multiplayerDidFinish, object: nil)
+            }
         }
 
-        // Hier können visuelle Effekte für den Sieg im Multiplayer hinzugefügt werden
         print("🎉 SYNCHRONISIERTER MP-SIEG! Wechsle zur nächsten Stage.")
-        
-        // Die Rewards (Coins, Exp etc.) MÜSSEN im MP-Modus anders behandelt werden,
-        // um Duplikate zu vermeiden. Vorerst nur die Spielfortschritt-Logik:
-        rollArtefactDrop() // Artefakte sind lokal und können fallen
+
+        rollArtefactDrop()
         goToNext()
     }
+
 
     // MARK: - Player Tap
     func tapAttack() {
@@ -499,3 +502,4 @@ final class SpiritGameController: ObservableObject {
         recalculateHP()
     }
 }
+
