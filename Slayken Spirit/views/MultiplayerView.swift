@@ -1,3 +1,4 @@
+// MultiplayerView.swift
 import SwiftUI
 internal import GameKit
 
@@ -13,38 +14,31 @@ private enum Route: Hashable, Identifiable {
 }
 
 struct MultiplayerView: View {
-
     @ObservedObject var gameCenterManager = GameCenterManager.shared
     @ObservedObject var matchManager = MatchManager.shared
-    
     @StateObject private var game = SpiritGameController()
-
-    @State private var isShowingMatchmaker = false
-    @State private var matchmakerParams: (min: Int, max: Int)? = nil
+    
     @State private var multiplayerEvents: [MultiplayerEvent] = []
     @State private var selectedEvent: MultiplayerEvent?
-
     @State private var navPath = NavigationPath()
-
+    
     init() {
         if let loaded: [MultiplayerEvent] = try? Bundle.main.decodeSafe("multiplayer.json") {
             _multiplayerEvents = State(initialValue: loaded)
         }
     }
-
-    var body: some View {
-        Spacer()
     
+    var body: some View {
         NavigationStack(path: $navPath) {
             ZStack {
                 SpiritGridBackground(glowColor: Color(hex: selectedEvent?.gridColor ?? "#00BFFF"))
-
+                
                 VStack(spacing: 20) {
                     Text("Wähle deinen Spielmodus")
                         .font(.system(size: 28, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
                         .padding(.top, 40)
-
+                    
                     TabView {
                         modeCard(title: "1v1 Echtzeit", icon: "bolt.fill", iconColor: .yellow, gradient: [.cyan, .blue, .black], players: (2, 2))
                         modeCard(title: "2-4 Spieler Match", icon: "person.3.fill", iconColor: .green, gradient: [.blue, .black], players: (2, 4))
@@ -54,47 +48,16 @@ struct MultiplayerView: View {
                     .tabViewStyle(.page)
                     .frame(height: 200)
                     .padding(.horizontal, 10)
+                    
                     MultiplayerChatOverlay()
                         .padding(.bottom, 0)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                         .background(.black)
+                    
                     Spacer()
                     
-
                     if matchManager.isMatchActive {
-                        VStack(spacing: 12) {
-                            Text("🟢 \(matchManager.matchStateText)")
-                                .font(.headline)
-                                .foregroundColor(.green)
-
-                            VStack(alignment: .leading) {
-                                Text("Teilnehmer:")
-                                    .foregroundColor(.white)
-                                    .bold()
-
-                                ForEach(matchManager.connectedPlayers, id: \ .gamePlayerID) { player in
-                                    HStack {
-                                        Image(systemName: "person.fill")
-                                            .foregroundColor(.cyan)
-                                        Text(player.displayName)
-                                            .foregroundColor(.white)
-                                    }
-                                }
-                            }
-
-                            Button("❌ Match verlassen") {
-                                matchManager.leaveMatch()
-                            }
-                            .padding(.vertical, 10)
-                            .frame(maxWidth: .infinity)
-                            .background(Color.red.opacity(0.3))
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                        }
-                        .padding()
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(20)
-                        .padding(.horizontal)
+                        activeMatchInfo
                     }
                 }
                 .navigationDestination(for: Route.self) { route in
@@ -108,17 +71,58 @@ struct MultiplayerView: View {
                             Text("Event nicht gefunden").foregroundStyle(.red)
                         }
                     case .game:
-                        SpiritGameView().environmentObject(game)
-
+                        if game.isInMultiplayerMode {
+                            SpiritGameView()
+                                .environmentObject(game)
+                                .environmentObject(matchManager)
+                        } else {
+                            ProgressView("Lade Spiel ...").foregroundColor(.white)
+                        }
                     }
                 }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .multiplayerDidFinish)) { _ in
             DispatchQueue.main.async {
-                navPath = .init() // 🏁 zurück zur Startansicht
+                navPath = NavigationPath()
             }
         }
+    }
+
+    private var activeMatchInfo: some View {
+        VStack(spacing: 12) {
+            Text("🟢 \(matchManager.matchStateText)")
+                .font(.headline)
+                .foregroundColor(.green)
+
+            VStack(alignment: .leading) {
+                Text("Teilnehmer:")
+                    .foregroundColor(.white)
+                    .bold()
+
+                ForEach(matchManager.connectedPlayers, id: \ .gamePlayerID) { player in
+                    HStack {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(.cyan)
+                        Text(player.displayName)
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+
+            Button("❌ Match verlassen") {
+                matchManager.leaveMatch()
+            }
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
+            .background(Color.red.opacity(0.3))
+            .foregroundColor(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+        }
+        .padding()
+        .background(.ultraThinMaterial)
+        .cornerRadius(20)
+        .padding(.horizontal)
     }
 
     @ViewBuilder
@@ -172,33 +176,37 @@ struct MultiplayerView: View {
 struct MultiplayerBossListView: View {
     let event: MultiplayerEvent
     @Binding var navPath: NavigationPath
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var game: SpiritGameController
     @EnvironmentObject var matchManager: MatchManager
 
     var body: some View {
-
-        
-        List(event.bosses.indices, id: \.self) { index in
-            let boss = event.bosses[index]
-            Button {
-                game.startMultiplayer(event)
-                navPath.append(Route.game) // 🔁 reicht völlig aus
-            } label: {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(event.name).font(.title3.bold()).foregroundColor(.white)
-                    Text(event.description).font(.subheadline).foregroundColor(.white.opacity(0.8))
-                    Text("Phase \(index + 1):").font(.subheadline.bold()).foregroundColor(.orange)
-                    Text("• Models: \(boss.modelNames.joined(separator: ", "))").foregroundColor(.cyan)
-                    Text("HP: \(boss.hp.value(at: 0))").foregroundColor(.white)
-                    Text("Coins: \(boss.coins.value(at: 0))").foregroundColor(.yellow)
-                    Text("Crystals: \(boss.crystals.value(at: 0))").foregroundColor(.mint)
-                    Text("EXP: \(boss.exp.value(at: 0))").foregroundColor(.orange)
+        ScrollView {
+            VStack(spacing: 20) {
+                ForEach(event.bosses.indices, id: \.self) { index in
+                    let boss = event.bosses[index]
+                    Button {
+                        print("🔥 Start Multiplayer für: \(event.name)")
+                        game.startMultiplayer(event)
+                        navPath.append(Route.game)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(event.name).font(.title3.bold()).foregroundColor(.white)
+                            Text(event.description).font(.subheadline).foregroundColor(.white.opacity(0.8))
+                            Text("Phase \(index + 1):").font(.subheadline.bold()).foregroundColor(.orange)
+                            Text("• Models: \(boss.modelNames.joined(separator: ", "))").foregroundColor(.cyan)
+                            Text("HP: \(boss.hp.value(at: 0))").foregroundColor(.white)
+                            Text("Coins: \(boss.coins.value(at: 0))").foregroundColor(.yellow)
+                            Text("Crystals: \(boss.crystals.value(at: 0))").foregroundColor(.mint)
+                            Text("EXP: \(boss.exp.value(at: 0))").foregroundColor(.orange)
+                        }
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(14)
+                    }
                 }
-                .padding(.vertical, 8)
             }
+            .padding()
         }
-        .scrollContentBackground(.hidden)
         .background(Color.black)
         .navigationTitle("Wähle einen Boss")
     }
