@@ -16,47 +16,37 @@ struct SpiritGameView: View {
     var body: some View {
         ZStack {
 
-            // ---------------------------------------------------
-            // 🔥 1. MODE SWITCH (AR / 3D)
-            // ---------------------------------------------------
-            Group {
-                if isARMode {
-                    ARSpiritBattleView(config: game.current)
-                        .ignoresSafeArea()
-                } else {
-                    SpiritSceneView(config: game.current)
-                }
+            // --- 1. MODE SWITCH (AR / 3D) ---
+            if isARMode {
+                ARSpiritBattleView(config: game.current)
+                    .ignoresSafeArea()
+            } else {
+                SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
+                NormalSpiritView(config: game.current)
             }
-            
-            // 2. TAP-LAYER FÜR ANGRIFFE
-             Color.clear
-                 .contentShape(Rectangle())
-                 .onTapGesture {
-                     game.tapAttack()
-                 }
 
-            // ---------------------------------------------------
-            // 🔥 2. HUD
-            // ---------------------------------------------------
+            // --- 2. TAP ATTACK LAYER ---
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture { game.tapAttack() }
+
+            // --- 3. HUD ---
             VStack {
                 topHUD
                 Spacer()
                 bottomHUD
             }
-            .padding(.horizontal)
-            .padding(.top, 25)
 
-            // ---------------------------------------------------
-            // 🔥 3. AR TOGGLE BUTTON
-            // ---------------------------------------------------
+            // --- 4. AR Toggle Button ---
             VStack {
                 HStack {
                     Spacer()
-                    ARSwitch
+                    arToggleLayer
                 }
                 Spacer()
             }
         }
+
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .upgrade:
@@ -101,9 +91,9 @@ private extension SpiritGameView {
                         gameButton(btn)
                     }
                 }
-                .padding(.trailing, 89)   // Abstand vom rechten Rand
+                .padding(.trailing, 110)   // Abstand vom rechten Rand
             }
-            .padding(.top, 10)            // Abstand nach oben
+            .padding(.top, 0)            // Abstand nach oben
             stageDisplay
             hpBar
             }
@@ -234,63 +224,32 @@ private extension SpiritGameView {
 }
 
 private extension SpiritGameView {
-    var ARSwitch: some View {
-        Button {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-                isARMode.toggle()
-            }
-        } label: {
-            Image(systemName: isARMode ? "arkit" : "arkit.badge.xmark")
-                .font(.system(size: 30, weight: .bold))
-                .foregroundColor(.cyan)
-                .padding(14)
-                .background(.ultraThinMaterial)
-                .clipShape(Circle())
-                .shadow(color: .cyan.opacity(0.8), radius: 8)
-        }
-        .padding()
-    }
-}
 
-private extension SpiritGameView {
-    func handleGameButton(_ btn: GameButton) {
-        switch btn.type {
-        case "auto_battle":
-            // Toggle auto-battle mode on the game controller
-            game.isAutoBattle.toggle()
-        case "restart":
-            // Prefer a controller API if available to reset state
-            if let restart = (game as AnyObject) as? (any NSObjectProtocol), restart.responds(to: Selector(("restart"))) {
-                // If the controller implements a @objc restart method
-                _ = (game as AnyObject).perform(Selector(("restart")))
-            } else {
-                // Post an intent/notification that the controller can observe to perform restart safely
-                NotificationCenter.default.post(name: Notification.Name("SpiritGameController.requestRestart"), object: nil)
+        var arToggleLayer: some View {
+            VStack {
+                HStack {
+                    Spacer()
+                    Button {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+                            isARMode.toggle()
+                        }
+                    } label: {
+                        Image(systemName: isARMode ? "arkit" : "arkit.badge.xmark")
+                            .font(.system(size: 30, weight: .bold))
+                            .foregroundColor(.cyan)
+                            .padding(14)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
+                            .shadow(color: .cyan.opacity(0.8), radius: 8)
+                    }
+                    .padding()
+                }
+                Spacer()
             }
-        case "next_stage":
-            // Ask controller to advance stage (avoids direct mutation when setter is private)
-            if let advance = (game as AnyObject) as? (any NSObjectProtocol), advance.responds(to: Selector(("nextStage"))) {
-                _ = (game as AnyObject).perform(Selector(("nextStage")))
-            } else {
-                NotificationCenter.default.post(name: Notification.Name("SpiritGameController.requestNextStage"), object: nil)
-            }
-        case "prev_stage":
-            // Ask controller to go to previous stage
-            if let back = (game as AnyObject) as? (any NSObjectProtocol), back.responds(to: Selector(("previousStage"))) {
-                _ = (game as AnyObject).perform(Selector(("previousStage")))
-            } else {
-                NotificationCenter.default.post(name: Notification.Name("SpiritGameController.requestPreviousStage"), object: nil)
-            }
-        case "open_upgrade":
-            activeSheet = .upgrade
-        case "open_artefacts":
-            activeSheet = .artefacts
-        default:
-            // Unknown type: no-op for now
-            break
         }
     }
-}
+
+private extension SpiritGameView { func handleGameButton(_ btn: GameButton) { switch btn.type { case "auto_battle": game.toggleAutoBattle() default: print("⚠️ Unbekannter Button-Typ:", btn.type) } } }
 
 
 
