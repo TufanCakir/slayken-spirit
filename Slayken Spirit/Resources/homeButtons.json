@@ -4,7 +4,7 @@
     "title": "Battle",
     "icon": "arcade.stick.console",
     "color": "#000000",
-    "iconColor": "#0000ff",
+    "iconColor": "#0000FF",
     "destination": "SpiritGameView"
   },
   {
@@ -86,5 +86,14 @@
     "color": "#000000",
     "iconColor": "#8E8E93",
     "destination": "SettingsView"
+  },
+  {
+    "id": "12",
+    "title": "Custom Builder",
+    "icon": "hammer.fill",
+    "color": "#000000",
+    "iconColor": "#C77DFF",
+    "destination": "CustomViewBuilder"
   }
 ]
+ 

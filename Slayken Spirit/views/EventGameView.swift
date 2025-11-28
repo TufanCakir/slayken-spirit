@@ -5,7 +5,6 @@ struct EventGameView: View {
     @EnvironmentObject private var game: SpiritGameController
     @Environment(\.dismiss) private var dismiss
 
-    @State private var isARMode: Bool = false
     @State private var activeSheet: ActiveSheet?
 
     enum ActiveSheet: Identifiable {
@@ -17,7 +16,7 @@ struct EventGameView: View {
         ZStack {
 
             // ---------------------------------------------------
-            // 🔥 1. RENDER (AR vs NORMAL)
+            // 🔥 1. RENDER (nur 3D Ansicht)
             // ---------------------------------------------------
             renderLayer
 
@@ -30,11 +29,6 @@ struct EventGameView: View {
             // 🔥 3. HUD (Top + Bottom)
             // ---------------------------------------------------
             hudLayer
-
-            // ---------------------------------------------------
-            // 🔥 4. AR SWITCH
-            // ---------------------------------------------------
-            arToggleLayer
         }
 
         // → Event abgeschlossen → zurück
@@ -58,23 +52,20 @@ struct EventGameView: View {
     }
 }
 
-private extension EventGameView {
+// MARK: - RENDER
 
+private extension EventGameView {
     var renderLayer: some View {
-        Group {
-            if isARMode {
-                ARViewRepresentable()
-                    .ignoresSafeArea()
-            } else {
-                        ZStack {
-                            SpiritGridBackground(glowColor: Color(hex: game.currentEventGridColor))
-                            SpiritView(config: game.current)
-                                .id(game.current.id + "_event")
-                        }
-                    }
-                }
+        ZStack {
+            SpiritGridBackground(glowColor: Color(hex: game.currentEventGridColor))
+            SpiritView(config: game.current)
+                .id(game.current.id + "_event")
+        }
+        .ignoresSafeArea()
     }
 }
+
+// MARK: - TAP
 
 private extension EventGameView {
     var attackLayer: some View {
@@ -85,8 +76,9 @@ private extension EventGameView {
     }
 }
 
-private extension EventGameView {
+// MARK: - HUD
 
+private extension EventGameView {
     var hudLayer: some View {
         VStack {
             topHUD
@@ -96,9 +88,6 @@ private extension EventGameView {
         .padding(.horizontal)
         .padding(.top, 20)
     }
-}
-
-private extension EventGameView {
 
     var topHUD: some View {
         VStack(spacing: 14) {
@@ -111,11 +100,9 @@ private extension EventGameView {
                         gameButton(btn)
                     }
                 }
-                .padding(.trailing, 120)   // Abstand vom rechten Rand
+                .padding(.trailing, 120)
             }
-            .padding(.top, 0)            // Abstand nach oben
-       
-            
+
             // Spirit Points
             Text("Spirit Points: \(EventShopManager.shared.spiritPoints)")
                 .font(.system(size: 24, weight: .heavy, design: .rounded))
@@ -134,9 +121,30 @@ private extension EventGameView {
             hpBar
         }
     }
-}
 
-private extension EventGameView {
+    var hpBar: some View {
+        let maxHP = max(game.current.hp, 1)
+        let percent = CGFloat(game.currentHP) / CGFloat(maxHP)
+
+        return ZStack(alignment: .leading) {
+            Capsule()
+                .fill(Color.white.opacity(0.1))
+
+            Capsule()
+                .fill(LinearGradient(colors: [.cyan, .blue, .black],
+                                     startPoint: .leading,
+                                     endPoint: .trailing))
+                .frame(width: 260 * percent)
+                .animation(.easeInOut(duration: 0.3), value: game.currentHP)
+
+            Text("\(game.currentHP) / \(maxHP)")
+                .foregroundColor(.white)
+                .font(.system(size: 18, weight: .heavy))
+                .frame(maxWidth: .infinity)
+        }
+        .frame(width: 265, height: 26)
+        .clipShape(Capsule())
+    }
 
     var bottomHUD: some View {
         HStack(spacing: 22) {
@@ -149,37 +157,29 @@ private extension EventGameView {
         }
         .padding(.bottom, 40)
     }
-}
 
-private extension EventGameView {
-
-    var arToggleLayer: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-                        isARMode.toggle()
-                    }
-                } label: {
-                    Image(systemName: isARMode ? "arkit" : "arkit.badge.xmark")
-                        .font(.system(size: 30, weight: .bold))
-                        .foregroundColor(.cyan)
-                        .padding(14)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Circle())
-                        .shadow(color: .cyan.opacity(0.8), radius: 8)
-                }
-                .padding()
+    @ViewBuilder
+    func footerButton(icon: String, title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Image(systemName: icon).font(.headline)
+                Text(title).font(.headline)
             }
-            Spacer()
+            .foregroundColor(.white)
+            .padding(.horizontal, 28)
+            .padding(.vertical, 12)
+            .background(.ultraThinMaterial)
+            .clipShape(Capsule())
+            .overlay(
+                Capsule().stroke(Color.white.opacity(0.7), lineWidth: 1)
+            )
         }
     }
 }
 
+// MARK: - Buttons
 
 private extension EventGameView {
-
     func gameButton(_ btn: EventGameButton) -> some View {
         let active = (btn.type == "auto_battle" && game.isAutoBattle)
 
@@ -208,68 +208,18 @@ private extension EventGameView {
             .shadow(color: .black.opacity(0.5), radius: 5, y: 3)
         }
     }
-}
-
-private extension EventGameView {
-
-    var hpBar: some View {
-        let maxHP = max(game.current.hp, 1)
-        let percent = CGFloat(game.currentHP) / CGFloat(maxHP)
-
-        return ZStack(alignment: .leading) {
-
-            Capsule()
-                .fill(Color.white.opacity(0.1))
-
-            Capsule()
-                .fill(LinearGradient(colors: [.cyan, .blue, .black],
-                                     startPoint: .leading,
-                                     endPoint: .trailing))
-                .frame(width: 260 * percent)
-                .animation(.easeInOut(duration: 0.3), value: game.currentHP)
-
-            Text("\(game.currentHP) / \(maxHP)")
-                .foregroundColor(.white)
-                .font(.system(size: 18, weight: .heavy))
-                .frame(maxWidth: .infinity)
-        }
-        .frame(width: 265, height: 26)
-        .clipShape(Capsule())
-    }
-}
-
-private extension EventGameView {
-
-    @ViewBuilder
-    func footerButton(icon: String, title: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 8) {
-                Image(systemName: icon).font(.headline)
-                Text(title).font(.headline)
-            }
-            .foregroundColor(.white)
-            .padding(.horizontal, 28)
-            .padding(.vertical, 12)
-            .background(.ultraThinMaterial)
-            .clipShape(Capsule())
-            .overlay(
-                Capsule().stroke(Color.white.opacity(0.7), lineWidth: 1)
-            )
-        }
-    }
-}
-
-private extension EventGameView {
 
     func handleGameButton(_ btn: EventGameButton) {
         switch btn.type {
-        case "auto_battle": game.toggleAutoBattle()
+        case "auto_battle":
+            game.toggleAutoBattle()
         default:
             print("⚠️ Unbekannter Button:", btn.type)
         }
     }
 }
 
+// MARK: - Button Model
 
 private struct EventGameButton: Identifiable {
     let id = UUID()
@@ -281,6 +231,8 @@ private struct EventGameButton: Identifiable {
 private let eventButtons: [EventGameButton] = [
     EventGameButton(type: "auto_battle", icon: "bolt.fill", title: "Auto"),
 ]
+
+// MARK: - Preview
 
 #Preview {
     EventGameView()

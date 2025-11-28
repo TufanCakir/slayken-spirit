@@ -1,11 +1,9 @@
 import SwiftUI
-import RealityKit // Notwendig für die ARViewRepresentable
+import RealityKit
 
 struct SpiritGameView: View {
 
     @EnvironmentObject private var game: SpiritGameController
-
-    @State private var isARMode = false
     @State private var activeSheet: ActiveSheet?
     @State private var gameButtons: [GameButton] = Bundle.main.loadGameButtons()
 
@@ -16,38 +14,22 @@ struct SpiritGameView: View {
 
     var body: some View {
         ZStack {
+            // --- Hintergrund & 3D Ansicht ---
+            SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
+            NormalSpiritView(config: game.current)
 
-            // --- 1. MODE SWITCH (AR / 3D) ---
-            if isARMode {
-                ARViewRepresentable() // Die AR-Ansicht
-                    .ignoresSafeArea()
-            } else {
-                SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
-                NormalSpiritView(config: game.current)
-            }
-
-            // --- 2. TAP ATTACK LAYER ---
+            // --- Tap Attack ---
             Color.clear
                 .contentShape(Rectangle())
                 .onTapGesture { game.tapAttack() }
 
-            // --- 3. HUD ---
+            // --- HUD ---
             VStack {
                 topHUD
                 Spacer()
                 bottomHUD
             }
-
-            // --- 4. AR Toggle Button ---
-            VStack {
-                HStack {
-                    Spacer()
-                    arToggleLayer
-                }
-                Spacer()
-            }
         }
-
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .upgrade:
@@ -59,39 +41,25 @@ struct SpiritGameView: View {
     }
 }
 
-// ------------------------------------------------------------------
-// MARK: - ZUSÄTZLICHE VIEWS (Wiederhergestellt)
-// ------------------------------------------------------------------
 
-struct SpiritSceneView: View {
-    let config: ModelConfig
-    var body: some View {
-        ZStack {
-            SpiritGridBackground(glowColor: Color(hex: config.gridColor))
-            NormalSpiritView(config: config)
-        }
-        .ignoresSafeArea()
-    }
-}
+
+
+
+// MARK: - Normal 3D Ansicht
 
 struct NormalSpiritView: View {
     let config: ModelConfig
-
     var body: some View {
         SpiritView(config: config)
     }
 }
 
-// ------------------------------------------------------------------
-// MARK: - PRIVATE EXTENSIONS (Wiederhergestellt)
-// ------------------------------------------------------------------
+// MARK: - HUD (Top)
 
 private extension SpiritGameView {
 
     var topHUD: some View {
         VStack(spacing: 14) {
-
-            // Buttons oben rechts
             HStack {
                 Spacer()
                 HStack(spacing: 12) {
@@ -101,15 +69,12 @@ private extension SpiritGameView {
                 }
                 .padding(.trailing, 110)
             }
-            .padding(.top, 0)
             stageDisplay
             hpBar
-            }
         }
+        .padding(.top, 0)
     }
 
-
-private extension SpiritGameView {
     var stageDisplay: some View {
         Text("Stage \(game.stage)")
             .font(.system(size: 24, weight: .heavy, design: .rounded))
@@ -128,17 +93,12 @@ private extension SpiritGameView {
                 Capsule().stroke(Color.white.opacity(0.7), lineWidth: 1.5)
             )
     }
-}
 
-
-private extension SpiritGameView {
     var hpBar: some View {
-
         let maxHP = max(game.current.hp, 1)
         let percent = CGFloat(game.currentHP) / CGFloat(maxHP)
 
         return ZStack(alignment: .leading) {
-
             Capsule()
                 .fill(Color.white.opacity(0.12))
 
@@ -166,6 +126,8 @@ private extension SpiritGameView {
     }
 }
 
+// MARK: - HUD (Bottom)
+
 private extension SpiritGameView {
     var bottomHUD: some View {
         HStack(spacing: 22) {
@@ -178,10 +140,25 @@ private extension SpiritGameView {
         }
         .padding(.bottom, 40)
     }
+
+    func footerButton(icon: String, title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                Image(systemName: icon).font(.title2)
+                Text(title).font(.headline)
+            }
+            .foregroundColor(.white)
+            .padding(.horizontal, 28)
+            .padding(.vertical, 12)
+            .background(.ultraThinMaterial)
+            .clipShape(Capsule())
+        }
+    }
 }
 
-private extension SpiritGameView {
+// MARK: - Game Buttons
 
+private extension SpiritGameView {
     func gameButton(_ btn: GameButton) -> some View {
         let isActive = (btn.type == "auto_battle" && game.isAutoBattle)
 
@@ -195,7 +172,6 @@ private extension SpiritGameView {
                 Text(btn.title)
                     .font(.system(size: 18, weight: .heavy))
             }
-            
             .foregroundColor(.white)
             .padding(.horizontal, 26)
             .padding(.vertical, 8)
@@ -213,51 +189,7 @@ private extension SpiritGameView {
             .shadow(color: .black.opacity(0.4), radius: 6, y: 3)
         }
     }
-}
 
-private extension SpiritGameView {
-    func footerButton(icon: String, title: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 10) {
-                Image(systemName: icon).font(.title2)
-                Text(title).font(.headline)
-            }
-            .foregroundColor(.white)
-            .padding(.horizontal, 28)
-            .padding(.vertical, 12)
-            .background(.ultraThinMaterial)
-            .clipShape(Capsule())
-        }
-    }
-}
-
-private extension SpiritGameView {
-
-    var arToggleLayer: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-                        isARMode.toggle()
-                    }
-                } label: {
-                    Image(systemName: isARMode ? "arkit" : "arkit.badge.xmark")
-                        .font(.system(size: 30, weight: .bold))
-                        .foregroundColor(.cyan)
-                        .padding(14)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Circle())
-                        .shadow(color: .cyan.opacity(0.8), radius: 8)
-                }
-                .padding()
-            }
-            Spacer()
-        }
-    }
-}
-
-private extension SpiritGameView {
     func handleGameButton(_ btn: GameButton) {
         switch btn.type {
         case "auto_battle":
@@ -268,6 +200,7 @@ private extension SpiritGameView {
     }
 }
 
+// MARK: - Preview
 
 #Preview {
     SpiritGameView()

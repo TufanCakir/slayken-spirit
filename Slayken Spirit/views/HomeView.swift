@@ -72,6 +72,7 @@ struct HomeBackgroundView: View {
         .environmentObject(CrystalManager.shared)
         .environmentObject(AccountLevelManager.shared)
         .environmentObject(ArtefactInventoryManager.shared)
+        .environmentObject(EventShopManager.shared)
         .preferredColorScheme(.dark)
         .environmentObject(SpiritGameController())
 }

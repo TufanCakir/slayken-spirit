@@ -44,6 +44,7 @@ final class ScreenFactory {
         case "EventShopInventoryView": return AnyView(EventShopInventoryView())
         case "QuestView": return AnyView(QuestView())
         case "MultiplayerView": return AnyView(MultiplayerView())
+        case "CustomViewBuilder": return AnyView(CustomViewBuilder())
         case "SpiritListView":
             return AnyView(SpiritListView())
         case "EventView":

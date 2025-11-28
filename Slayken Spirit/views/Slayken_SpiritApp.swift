@@ -1,5 +1,5 @@
-import SwiftUI
 internal import GameKit
+import SwiftUI
 
 @main
 struct Slayken_SpiritApp: App {
@@ -13,28 +13,21 @@ struct Slayken_SpiritApp: App {
     @StateObject private var giftManager = GiftManager.shared
     @StateObject private var dailyLoginManager = DailyLoginManager.shared
     @StateObject private var upgradeManager = UpgradeManager.shared
-    @StateObject private var artefactInventoryManager = ArtefactInventoryManager.shared
+    @StateObject private var artefactInventoryManager = ArtefactInventoryManager
+        .shared
     @StateObject private var spiritGame = SpiritGameController()
     @StateObject private var questManager = QuestManager.shared
     @StateObject private var musicManager = MusicManager()
     @StateObject private var eventShopManager = EventShopManager.shared
 
-    
     // MARK: - Init (App Setup)
     init() {
         // Übergibt GameController an Factory
         ScreenFactory.shared.setGameController(spiritGame)
-        
-        // Game Center floating bubble
-        GKAccessPoint.shared.isActive = true
-        GKAccessPoint.shared.location = .topLeading
-        
-        // Game Center Login bei Start
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            GameCenterManager.shared.authenticate()
-        }
-    }
 
+        // Game Center Login bei Start
+        GameCenterManager.shared.authenticate()
+    }
 
     // MARK: - Body
     var body: some Scene {
