@@ -22,7 +22,7 @@ struct MultiplayerView: View {
             }
         }
     }
-    @State private var route: Route?
+    @State private var navPath = NavigationPath()
     @State private var selectedBosses: [MultiplayerBoss] = []
     
     @State private var multiplayerBosses: [MultiplayerBoss] = []
@@ -90,7 +90,8 @@ struct MultiplayerView: View {
                     .padding(.bottom, 300)
                     
                     // Hidden value-based navigation trigger
-                    NavigationLink(value: route) { EmptyView() }
+                    NavigationStack(path: $navPath) {
+ EmptyView() }
                         .hidden()
                     
                     Spacer()
@@ -170,7 +171,7 @@ struct MultiplayerView: View {
                 let events = filteredEvents(for: players)
                 if let first = events.first {
                     selectedEvent = first
-                    route = .bossList(eventID: first.id)
+                    navPath.append(Route.bossList(eventID: first.id)) // ✅ Navigation triggert
                 }
             }
         } label: {
