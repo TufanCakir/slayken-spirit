@@ -18,6 +18,16 @@ struct SpiritGameView: View {
             SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
             NormalSpiritView(config: game.current)
 
+            // 🗨️ Chat unten links
+              VStack {
+                  Spacer()
+                  HStack {
+                      MultiplayerChatOverlay()
+                          .frame(width: 280)
+                      Spacer()
+                  }
+              }
+          
             // --- Tap Attack ---
             Color.clear
                 .contentShape(Rectangle())

@@ -1,108 +1,100 @@
-// MARK: - MatchManager
+// MARK: - MatchManager.swift
 
+import SwiftUI
 internal import Combine
 internal import GameKit
 
+@MainActor
 final class MatchManager: NSObject, ObservableObject, GKMatchDelegate {
+
     static let shared = MatchManager()
-    
-    // Veröffentlichte Variablen für die SwiftUI-Anzeige
-    @Published var currentMatch: GKMatch? = nil
+
+    // MARK: - Published States für SwiftUI
+    @Published var currentMatch: GKMatch?
     @Published var isMatchActive = false
     @Published var connectedPlayers: [GKPlayer] = []
-    
-    // Speichert den Match-Status
     @Published var matchStateText: String = "Kein aktives Match"
 
-    // ------------------------------------------------------------------
-    // MARK: - START/BEENDEN
-    // ------------------------------------------------------------------
     
-    // Wird vom MatchmakerModalView.Coordinator aufgerufen
+    let incomingMessages = PassthroughSubject<MultiplayerMessage, Never>()
+
+    private override init() {
+        super.init()
+    }
+
+    // MARK: - Match starten
     func startMatch(_ match: GKMatch) {
         self.currentMatch = match
-        self.currentMatch?.delegate = self // Wichtig: Match-Delegate setzen!
-        
-        // Füge den lokalen Spieler sofort hinzu
+        self.currentMatch?.delegate = self
+
+        // Lokalen Spieler + Remote-Spieler kombinieren
         var players = match.players
         players.append(GKLocalPlayer.local)
-        
+
         self.connectedPlayers = players.sorted { $0.displayName < $1.displayName }
         self.isMatchActive = true
         self.matchStateText = "Match gefunden. Bereit zum Start!"
-        
-        // HIER würde der Navigationsschritt zu deiner SpiritGameView erfolgen,
-        // die das MatchManager.shared Objekt nutzt.
     }
-    
-    // Die Funktion zum Verlassen des Matches
+
+    // MARK: - Match beenden
     func leaveMatch() {
-        currentMatch?.disconnect() // Verbindung trennen
-        
-        // Zustände zurücksetzen
+        currentMatch?.disconnect()
+
         currentMatch = nil
         isMatchActive = false
         connectedPlayers = []
         matchStateText = "Kein aktives Match"
-        
-        // Hier müsste die Navigation ZURÜCK ins Hauptmenü/MultiplayerView erfolgen
     }
-    
-    // ------------------------------------------------------------------
-    // MARK: - GKMatchDelegate (Wird vom Match-Objekt aufgerufen)
-    // ------------------------------------------------------------------
-    
-    // Spieler verbindet/trennt die Verbindung
+
+    // MARK: - GKMatchDelegate
+
+    func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
+        // Versuche, eine Chat-Nachricht zu decodieren
+        if let message = try? JSONDecoder().decode(MultiplayerMessage.self, from: data) {
+            DispatchQueue.main.async {
+                self.incomingMessages.send(message)
+            }
+            return
+        }
+    }
+
     func match(_ match: GKMatch, player: GKPlayer, didChange state: GKPlayerConnectionState) {
-        
         switch state {
         case .connected:
-            if !connectedPlayers.contains(player) {
+            if !connectedPlayers.contains(where: { $0.gamePlayerID == player.gamePlayerID }) {
                 connectedPlayers.append(player)
                 connectedPlayers.sort { $0.displayName < $1.displayName }
-                matchStateText = "\(player.displayName) ist beigetreten."
             }
+            matchStateText = "\(player.displayName) ist beigetreten."
+
         case .disconnected:
-            connectedPlayers.removeAll { $0.playerID == player.playerID }
-            matchStateText = "\(player.displayName) hat den Kampf verlassen."
-            
-            // Wenn der letzte verbleibende Spieler geht, Match beenden
+            connectedPlayers.removeAll { $0.gamePlayerID == player.gamePlayerID }
+            matchStateText = "\(player.displayName) hat das Match verlassen."
             if connectedPlayers.count <= 1 {
                 leaveMatch()
             }
-            
+
         case .unknown:
-            break
+            // Optional: handle any transient/indeterminate state explicitly
+            matchStateText = "Verbindungsstatus von \(player.displayName) ist unbekannt."
+
         @unknown default:
-            break
+            // Future-proofing for any new states Apple might add
+            matchStateText = "Unbekannter Verbindungsstatus von \(player.displayName)."
         }
     }
-    
-    // Daten von einem anderen Spieler empfangen (Kampf, Farmen, Grinden)
-    func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
-        // HIER WIRD DIE SPIEL-LOGIK EINGEFÜHRT (Z.B. Angriffssynchronisation)
-        print("📥 Daten empfangen von \(player.displayName).")
-        
-        // Beispiel: Daten deserialisieren und Aktionen ausführen
-        // if let action = try? JSONDecoder().decode(GameAction.self, from: data) { ... }
-    }
-    
-    // Fehler während des Matches
+
     func match(_ match: GKMatch, didFailWithError error: Error?) {
-        print("❌ Match-Fehler: \(error?.localizedDescription ?? "Unbekannt")")
+        print("❌ Match-Fehler: \(error?.localizedDescription ?? "Unbekannter Fehler")")
         leaveMatch()
     }
-    
-    // ------------------------------------------------------------------
-    // MARK: - DATEN SENDEN (Kampf/Farmen)
-    // ------------------------------------------------------------------
 
+    // MARK: - Daten senden (z. B. Angriffe, Position, Skills)
     func sendActionData<T: Codable>(_ object: T, mode: GKMatch.SendDataMode = .reliable) {
         guard let match = currentMatch else { return }
-        
+
         do {
             let data = try JSONEncoder().encode(object)
-            // Send to all currently connected remote players
             try match.send(data, to: match.players, dataMode: mode)
         } catch {
             print("❌ Fehler beim Senden von Daten: \(error.localizedDescription)")
