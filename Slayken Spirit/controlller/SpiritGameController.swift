@@ -12,10 +12,8 @@ final class SpiritGameController: ObservableObject {
     // MARK: - Published: UI States
     @Published private(set) var current: ModelConfig
     @Published private(set) var currentHP: Int
-    @Published private(set) var stage: Int = {
-        let saved = UserDefaults.standard.integer(forKey: "savedStage")
-        return max(saved, 1)
-    }()
+    @Published var stage: Int = 1
+
     @Published private(set) var point: Int = {
         let saved = UserDefaults.standard.integer(forKey: "savedPoint")
         return max(saved, 1)
@@ -59,6 +57,10 @@ final class SpiritGameController: ObservableObject {
         self.current = first
         self.currentHP = first.hp + ArtefactInventoryManager.shared.bonusHP
 
+        // Load stage from UserDefaults
+        let saved = UserDefaults.standard.integer(forKey: "savedStage")
+        self.stage = max(saved, 1)
+        
         setupArtefactListener()
     }
 
@@ -126,6 +128,12 @@ final class SpiritGameController: ObservableObject {
             )
         )
     }
+    
+    func resetStage() {
+        stage = 1
+        UserDefaults.standard.set(1, forKey: "savedStage")
+    }
+
 
     // MARK: - Player Tap
     func tapAttack() {
@@ -144,6 +152,11 @@ final class SpiritGameController: ObservableObject {
     }
 
     private func handleDefeat() {
+
+        // 1. ARTEFAKT-DROP IMMER
+        rollArtefactDrop()
+
+        // 2. EVENT
         if isInEvent {
             if let event = activeEvent {
                 if eventBossIndex + 1 < eventBossList.count {
@@ -158,17 +171,12 @@ final class SpiritGameController: ObservableObject {
                     handleEventVictory()
                     return
                 }
-            } else {
-                isInEvent = false
-                eventWon = true
-                handleEventVictory()
-                return
             }
-        } else {
-            giveReward()
-            rollArtefactDrop()
-            goToNext()
         }
+
+        // 3. NORMALER MODUS
+        giveReward()
+        goToNext()
     }
 
     func handleEventVictory() {

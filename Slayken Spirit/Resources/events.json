@@ -6,6 +6,7 @@
             "Ein uralter Wasserdrache prüft deine Stärke in einem tobenden Ozean.",
         "gridColor": "#0077CC",
         "category": "raid",
+        "musicIndex": 1,
         "bosses": [
             {
                 "modelNames": [
@@ -14,9 +15,9 @@
                     "spirit_frostfang"
                 ],
                 "hp": [
-                    5,
-                    5,
-                    5
+                    120,
+                    220,
+                    320
                 ],
                 "coins": [
                     70,
@@ -43,12 +44,13 @@
             "Der Blitzwolf entfesselt elektrische Stürme gegen jeden Herausforderer.",
         "gridColor": "#0066CC",
         "category": "trial",
+        "musicIndex": 2,
         "bosses": [
             {
                 "modelNames": [
                     "spirit_arc_lightning_wolf"
                 ],
-                "hp": 5,
+                "hp": 350,
                 "coins": 90,
                 "crystals": 3,
                 "exp": 60
@@ -62,6 +64,7 @@
             "Drei frostige Bestien brechen aus den Eisfeldern hervor.",
         "gridColor": "#AEEBFF",
         "category": "raid",
+        "musicIndex": 3,
         "bosses": [
             {
                 "modelNames": [
@@ -70,9 +73,9 @@
                     "spirit_wolfrider"
                 ],
                 "hp": [
-                    5,
-                    5,
-                    5
+                    400,
+                    450,
+                    500
                 ],
                 "coins": [
                     80,
@@ -99,12 +102,13 @@
             "Frostfang wartet auf den nächsten würdigen Herausforderer.",
         "gridColor": "#44A8FF",
         "category": "trial",
+        "musicIndex": 4,
         "bosses": [
             {
                 "modelNames": [
                     "spirit_frostfang"
                 ],
-                "hp": 5,
+                "hp": 550,
                 "coins": 100,
                 "crystals": 4,
                 "exp": 70
@@ -118,12 +122,13 @@
             "Ein berüchtigter Wolfsreiter stellt sich dir in einem direkten Duell.",
         "gridColor": "#3FA6FF",
         "category": "special",
+        "musicIndex": 5,
         "bosses": [
             {
                 "modelNames": [
                     "spirit_wolfrider"
                 ],
-                "hp": 5,
+                "hp": 600,
                 "coins": 110,
                 "crystals": 4,
                 "exp": 75
@@ -136,12 +141,13 @@
         "description": "Der technoide Dino-Spirit rastet völlig aus!",
         "gridColor": "#00E6A0",
         "category": "special",
+        "musicIndex": 6,
         "bosses": [
             {
                 "modelNames": [
                     "spirit_raptoroid"
                 ],
-                "hp": 5,
+                "hp": 550,
                 "coins": 130,
                 "crystals": 5,
                 "exp": 85
@@ -155,12 +161,13 @@
             "Der mystische himmelblaue Fox-Spirit erwacht aus uraltem Schlaf.",
         "gridColor": "#66E0FF",
         "category": "trial",
+        "musicIndex": 7,
         "bosses": [
             {
                 "modelNames": [
                     "spirit_ethereal_blue_fox"
                 ],
-                "hp": 5,
+                "hp": 700,
                 "coins": 140,
                 "crystals": 5,
                 "exp": 95

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    
+    @EnvironmentObject var musicManager: MusicManager
 
     @State private var buttons: [HomeButton] = Bundle.main.decode(
         "homeButtons.json"
@@ -20,8 +22,6 @@ struct HomeView: View {
                 VStack(spacing: 0) {
 
                     HeaderView()
-                        .padding(.top, 12)
-                        .padding(.bottom, 8)
 
                     ScrollView(showsIndicators: false) {
                         LazyVGrid(columns: columns, spacing: 24) {
@@ -69,4 +69,5 @@ struct HomeBackgroundView: View {
         .environmentObject(EventShopManager.shared)
         .preferredColorScheme(.dark)
         .environmentObject(SpiritGameController())
+        .environmentObject(MusicManager())
 }

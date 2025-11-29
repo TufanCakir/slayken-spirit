@@ -13,7 +13,7 @@
     {
         "id": "coin1",
         "name": "Coin Boost +15%",
-        "description": "Mehr Coins aus Bossen.",
+        "description": "Mehr Coins aus Kämmpfen.",
         "icon": "bitcoinsign.circle.fill",
         "price": 600,
         "type": "coinBoost",

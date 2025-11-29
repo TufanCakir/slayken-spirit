@@ -1,8 +1,36 @@
 {
     "songs": [
         {
-            "title": "Fists of Destiny",
-            "fileName": "Fists of Destiny"
+            "title": "Shadows and Screams",
+            "fileName": "shadows_and_screams"
+        },
+        {
+            "title": "Rise of the Eternal Flame",
+            "fileName": "rise_of_the_eternal_flame"
+        },
+        {
+            "title": "Rise of the Eternal Flame 2",
+            "fileName": "rise_of_the_eternal_flame_2"
+        },
+        {
+            "title": "Rise_of_the_Eternal_Flame_3",
+            "fileName": "rise_of_the_eternal_flame_3"
+        },
+        {
+            "title": "Shadows and Screams 2",
+            "fileName": "shadows_and_screams_2"
+        },
+        {
+            "title": "Shadows and Screams 3",
+            "fileName": "shadows_and_screams_3"
+        },
+        {
+            "title": "Rise of the Slayken Spirit",
+            "fileName": "rise_of_the_slayken_spirit"
+        },
+        {
+            "title": "Rise of the Slayken Spirit 2",
+            "fileName": "rise_of_the_slayken_spirit_2"
         }
     ]
 }

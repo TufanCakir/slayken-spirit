@@ -222,16 +222,18 @@ struct MusicToggleButton: View {
                 iconScale = 1.2
             }
 
-            withAnimation(
-                .spring(response: 0.4, dampingFraction: 0.5).delay(0.1)
-            ) {
-                iconScale = 1.0
+            Task {
+                if musicManager.isMusicOn {
+                    await musicManager.forcePlaySong(index: 0)
+                }
             }
 
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.5).delay(0.1)) {
+                iconScale = 1.0
+            }
         } label: {
             HStack(spacing: 12) {
-                Image(
-                    systemName: musicManager.isMusicOn
+                Image(systemName: musicManager.isMusicOn
                         ? "music.note"
                         : "speaker.slash.fill"
                 )
@@ -251,13 +253,8 @@ struct MusicToggleButton: View {
     }
 }
 
-// MARK: - Erweiterung für externen Music-Call
-extension MusicManager {
-    @MainActor
-    func handleMusicToggleExternally() async {
-        await handleMusicToggle()
-    }
-}
+
+
 
 // MARK: - StatBox Component
 private struct StatBox: View {

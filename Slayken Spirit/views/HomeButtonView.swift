@@ -2,19 +2,16 @@ import SwiftUI
 
 struct HomeButtonView: View {
     let button: HomeButton
-    var action: (() -> Void)? = nil
-
     @State private var isPressed = false
     @State private var glowPulse = false
 
     var body: some View {
         VStack(spacing: 10) {
 
-            // MARK: - Icon mit Glow-Effekt
+            // MARK: - Icon
             ZStack {
                 Circle()
-                    .fill(Color(hex: button.color))
-                    .frame(width: 80, height: 80)
+                    .fill(Color(hex: button.color))  // Hintergrundfarbe aus JSON
                     .shadow(
                         color: Color(hex: button.iconColor).opacity(0.6),
                         radius: 14
@@ -35,11 +32,13 @@ struct HomeButtonView: View {
                         radius: 6
                     )
             }
-            .scaleEffect(isPressed ? 0.92 : 1.0)
+            .frame(width: 80, height: 80)
+            .scaleEffect(isPressed ? 0.9 : 1.0)
             .animation(
-                .spring(response: 0.3, dampingFraction: 0.7),
+                .spring(response: 0.35, dampingFraction: 0.7),
                 value: isPressed
             )
+            .onAppear { glowPulse = true }
 
             // MARK: - Titel
             Text(button.title)
@@ -54,22 +53,14 @@ struct HomeButtonView: View {
             .spring(response: 0.3, dampingFraction: 0.7),
             value: isPressed
         )
-        .onAppear {
-            glowPulse = true
-        }
-        .gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in
-                    withAnimation(.easeInOut(duration: 0.15)) {
-                        isPressed = true
-                    }
+        .onLongPressGesture(
+            minimumDuration: .infinity,
+            pressing: { pressing in
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    isPressed = pressing
                 }
-                .onEnded { _ in
-                    withAnimation(.easeInOut(duration: 0.15)) {
-                        isPressed = false
-                    }
-                    action?()
-                }
+            },
+            perform: {}
         )
     }
-}
+} 

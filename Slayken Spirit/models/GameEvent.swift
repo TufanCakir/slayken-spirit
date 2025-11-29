@@ -7,6 +7,7 @@ struct GameEvent: Codable, Identifiable {
     let gridColor: String
     let bosses: [EventBoss]
     let category: EventCategory
+    let musicIndex: Int?      // 👈 NEU
 }
 
 enum EventCategory: String, Codable, CaseIterable {

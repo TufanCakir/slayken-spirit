@@ -14,7 +14,7 @@ final class EventShopManager: ObservableObject {
 
     private let saveKey = "eventShopInventory"
 
-    private init() {
+    init() {
         loadShop()
         loadInventory()
     }

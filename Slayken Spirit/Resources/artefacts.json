@@ -14,7 +14,7 @@
         "icon": "flame.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 30
     },
     {
         "id": "artifact_ice_crystal",
@@ -31,7 +31,7 @@
         "icon": "snowflake",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 60
     },
     {
         "id": "artifact_void_fragment",
@@ -48,7 +48,7 @@
         "icon": "sparkles",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 90
     },
     {
         "id": "artifact_blazing_shard",
@@ -65,7 +65,7 @@
         "icon": "flame",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 120
     },
     {
         "id": "artifact_frost_heart",
@@ -82,7 +82,7 @@
         "icon": "snowflake.circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 140
     },
     {
         "id": "artifact_void_eye",
@@ -99,7 +99,7 @@
         "icon": "eye.circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 160
     },
     {
         "id": "artifact_dragon_scale",
@@ -116,7 +116,7 @@
         "icon": "shield.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 190
     },
     {
         "id": "artifact_celestial_feather",
@@ -133,7 +133,7 @@
         "icon": "wind",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 220
     },
     {
         "id": "artifact_shadow_core",
@@ -150,7 +150,7 @@
         "icon": "moon.stars.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 240
     },
     {
         "id": "artifact_golden_fang",
@@ -167,7 +167,7 @@
         "icon": "bolt.circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 270
     },
     {
         "id": "artifact_storm_core",
@@ -184,7 +184,7 @@
         "icon": "cloud.bolt",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 300
     },
     {
         "id": "artifact_ember_orb",
@@ -201,7 +201,7 @@
         "icon": "circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 330
     },
     {
         "id": "artifact_glacier_shard",
@@ -218,7 +218,7 @@
         "icon": "snowflake.circle",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 360
     },
     {
         "id": "artifact_shadow_feather",
@@ -235,7 +235,7 @@
         "icon": "moon.dust.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 390
     },
     {
         "id": "artifact_magma_heart",
@@ -252,7 +252,7 @@
         "icon": "flame.circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 420
     },
     {
         "id": "artifact_arcane_rune",
@@ -269,7 +269,7 @@
         "icon": "sparkles.rectangle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 440
     },
     {
         "id": "artifact_wind_spirit",
@@ -286,7 +286,7 @@
         "icon": "wind.circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 470
     },
     {
         "id": "artifact_starlight_seed",
@@ -303,7 +303,7 @@
         "icon": "star.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 500
     },
     {
         "id": "artifact_titan_bone",
@@ -320,7 +320,7 @@
         "icon": "shield.lefthalf.filled",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 530
     },
     {
         "id": "artifact_void_star",
@@ -337,7 +337,7 @@
         "icon": "star.circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 560
     },
     {
         "id": "artifact_phantom_orb",
@@ -354,7 +354,7 @@
         "icon": "moon.circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 590
     },
     {
         "id": "artifact_sunflare_core",
@@ -371,7 +371,7 @@
         "icon": "sun.max.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 620
     },
     {
         "id": "artifact_crystal_leaf",
@@ -388,7 +388,7 @@
         "icon": "leaf.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 640
     },
     {
         "id": "artifact_thunder_spike",
@@ -405,7 +405,7 @@
         "icon": "bolt.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 670
     },
     {
         "id": "artifact_shadow_sigil",
@@ -422,7 +422,7 @@
         "icon": "seal.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 700
     },
     {
         "id": "artifact_gale_fragment",
@@ -439,7 +439,7 @@
         "icon": "wind.snow",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 730
     },
     {
         "id": "artifact_twilight_focus",
@@ -456,7 +456,7 @@
         "icon": "sunset.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 760
     },
     {
         "id": "artifact_eternal_seed",
@@ -473,7 +473,7 @@
         "icon": "leaf.circle.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 20
+        "shardsForNextLevel": 790
     },
     {
         "id": "artifact_meteor_fragment",
@@ -490,7 +490,7 @@
         "icon": "hare.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 80
+        "shardsForNextLevel": 820
     },
     {
         "id": "artifact_crystal_vein",
@@ -507,6 +507,6 @@
         "icon": "cube.transparent.fill",
         "level": 1,
         "shards": 0,
-        "shardsForNextLevel": 40
+        "shardsForNextLevel": 840
     }
 ]

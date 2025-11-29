@@ -19,7 +19,7 @@
             "y": 0.0,
             "z": 0.0
         },
-        "hp": 420,
+        "hp": 30,
         "next": "spirit_arc_lightning_wolf",
         "reward": {
             "coins": 60,

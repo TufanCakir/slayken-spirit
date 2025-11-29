@@ -6,7 +6,8 @@ struct EventShopInventoryView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+                SpiritGridBackground()
+
 
             VStack(spacing: 20) {
 
@@ -111,4 +112,9 @@ extension EventShopInventoryView {
             .padding(16)
         }
     }
+}
+
+#Preview {
+    EventShopInventoryView()
+        .environmentObject(EventShopManager())
 }
