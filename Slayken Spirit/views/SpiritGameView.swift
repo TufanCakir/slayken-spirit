@@ -18,10 +18,19 @@ struct SpiritGameView: View {
             // --- Hintergrund & 3D Ansicht ---
             SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
             NormalSpiritView(config: game.current)
+                .id(game.current.id)  // <- WICHTIG!
+
       
 
             // --- Tap Attack ---
-            Color.clear
+            // DEBUG: Spirit logging
+                     Color.clear
+                         .onAppear {
+                             print("👀 SpiritGameView appeared → currentSpirit = \(game.current.id)")
+                         }
+                         .onChange(of: game.current.id, initial: false) { oldID, newID in
+                             print("🔄 Spirit changed from → \(oldID) to → \(newID)")
+                         }
                 .contentShape(Rectangle())
                 .onTapGesture { game.tapAttack() }
 
@@ -221,3 +230,4 @@ extension SpiritGameView {
         .environmentObject(SpiritGameController())
         .environmentObject(MusicManager())
 }
+

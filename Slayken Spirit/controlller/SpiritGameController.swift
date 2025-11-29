@@ -12,7 +12,11 @@ final class SpiritGameController: ObservableObject {
     // MARK: - Published: UI States
     @Published private(set) var current: ModelConfig
     @Published private(set) var currentHP: Int
-    @Published var stage: Int = 1
+    @Published private(set) var stage: Int = {
+        // Load stage from UserDefaults
+        let saved = UserDefaults.standard.integer(forKey: "savedStage")
+        return max(saved, 1)
+    }()
 
     @Published private(set) var point: Int = {
         let saved = UserDefaults.standard.integer(forKey: "savedPoint")
@@ -57,9 +61,7 @@ final class SpiritGameController: ObservableObject {
         self.current = first
         self.currentHP = first.hp + ArtefactInventoryManager.shared.bonusHP
 
-        // Load stage from UserDefaults
-        let saved = UserDefaults.standard.integer(forKey: "savedStage")
-        self.stage = max(saved, 1)
+     
         
         setupArtefactListener()
     }
