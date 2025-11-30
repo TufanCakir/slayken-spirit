@@ -16,26 +16,26 @@ struct Slayken_SpiritApp: App {
     @StateObject private var giftManager = GiftManager.shared
     @StateObject private var dailyLoginManager = DailyLoginManager.shared
     @StateObject private var upgradeManager = UpgradeManager.shared
-    @StateObject private var artefactInventoryManager = ArtefactInventoryManager
-        .shared
+    @StateObject private var artefactInventoryManager = ArtefactInventoryManager.shared
     @StateObject private var questManager = QuestManager.shared
     @StateObject private var eventShopManager = EventShopManager.shared
 
-    // MARK: - Initialisierung
+    // MARK: - Initialisierung (wichtig für PREVIEW)
     init() {
-        setupGame()
-    }
-
-    private func setupGame() {
-        GameCenterManager.shared.authenticate()
+        // 💡 Preview verwendet dieses Setup!
         ScreenFactory.shared.setGameController(spiritGame)
-        musicManager.configureAudioSession()
     }
 
     // MARK: - Hauptszene
     var body: some Scene {
         WindowGroup {
             rootView
+                .onAppear {
+                    // 💡 Echte App verwendet dieses Setup!
+                    ScreenFactory.shared.setGameController(spiritGame)
+                    GameCenterManager.shared.authenticate()
+                    musicManager.configureAudioSession()
+                }
                 .environmentObject(spiritGame)
                 .environmentObject(musicManager)
                 .environmentObject(internet)
@@ -51,7 +51,6 @@ struct Slayken_SpiritApp: App {
         }
     }
 
-    // MARK: - Root View Auswahl (Online / Offline)
     @ViewBuilder
     private var rootView: some View {
         if internet.isConnected {

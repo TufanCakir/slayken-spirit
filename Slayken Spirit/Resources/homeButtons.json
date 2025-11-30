@@ -72,15 +72,7 @@
         "destination": "CustomViewBuilder"
     },
     {
-      "id": "10",
-      "title": "Leaderboard",
-      "icon": "trophy.fill",
-      "color": "#000000",
-      "iconColor": "#FFD700",
-      "destination": "LeaderboardView"
-    },
-    {
-        "id": "11",
+        "id": "10",
         "title": "Settings",
         "icon": "gear",
         "color": "#000000",

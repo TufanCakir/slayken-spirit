@@ -50,6 +50,7 @@ struct SpiritGameView: View {
             }
         }
         .onAppear {
+            print("VIEW CONTROLLER:", Unmanaged.passUnretained(game).toOpaque())
             Task {
                 await musicManager.forcePlaySong(index: 1)
             }

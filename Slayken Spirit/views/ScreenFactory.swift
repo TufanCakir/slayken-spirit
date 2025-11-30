@@ -1,106 +1,86 @@
 //
 //  ScreenFactory.swift
-//  Slayken Fighter of Fists
-//
-//  Created by Tufan Cakir on 2025-10-30.
 //
 
 import SwiftUI
 
-// MARK: - 🧭 ScreenFactory
 @MainActor
 final class ScreenFactory {
 
     static let shared = ScreenFactory()
 
+    // MARK: - Injected Global Controllers (aus App)
     private var game: SpiritGameController?
+    private var environmentObjects: [AnyObject] = []
 
+    // MARK: - Setup aus App
     func setGameController(_ controller: SpiritGameController) {
         self.game = controller
     }
 
-    // MARK: Public API
+ 
+    // MARK: - Public API
     func make(_ name: String) -> AnyView {
-        switch name {
-
-        // MARK: ⚙️ Core Screens
-        case "SettingsView": return AnyView(SettingsView())
-
-        // MARK: 🎁 Gifts / Daily
-        case "GiftView": return AnyView(GiftView())
-        case "DailyLoginView": return AnyView(DailyLoginView())
-        case "SpiritGameView":
-            guard let game = game else {
-                fatalError(
-                    "❌ SpiritGameController fehlt in ScreenFactory! setGameController zuerst aufrufen."
-                )
-            }
-            return AnyView(SpiritGameView().environmentObject(game))
-
-        case "UpgradeView": return AnyView(UpgradeView())
-        case "ExchangeView": return AnyView(ExchangeView())
-        case "ArtefactView": return AnyView(ArtefactView())
-        case "EventShopInventoryView": return AnyView(EventShopInventoryView())
-        case "QuestView": return AnyView(QuestView())
-        case "CustomViewBuilder": return AnyView(CustomViewBuilder())
-        case "LeaderboardView": return AnyView(LeaderboardView())
-        case "SpiritListView":
-            return AnyView(SpiritListView())
-        case "EventView":
-            guard let game = game else {
-                fatalError(
-                    "❌ SpiritGameController fehlt in ScreenFactory! setGameController zuerst aufrufen."
-                )
-            }
-            return AnyView(EventView().environmentObject(game))
-
-        // MARK: 🧩 Fallback
-        default:
-            return AnyView(ScreenFactory.fallbackView(for: name))
+        guard game != nil else {
+            return AnyView(missingGameControllerView())
         }
+
+        let view: AnyView = switch name {
+
+        // Core
+        case "SettingsView": AnyView(SettingsView())
+        case "SpiritGameView": AnyView(SpiritGameView())
+
+        // Gifts / Daily
+        case "GiftView": AnyView(GiftView())
+        case "DailyLoginView": AnyView(DailyLoginView())
+
+        // Game
+        case "UpgradeView": AnyView(UpgradeView())
+        case "ExchangeView": AnyView(ExchangeView())
+        case "ArtefactView": AnyView(ArtefactView())
+        case "QuestView": AnyView(QuestView())
+        case "SpiritListView": AnyView(SpiritListView())
+        case "EventShopInventoryView": AnyView(EventShopInventoryView())
+        case "CustomViewBuilder": AnyView(CustomViewBuilder())
+
+        case "EventView":
+            AnyView(EventView())
+
+        // Default fallback
+        default:
+            AnyView(fallbackView(for: name))
+        }
+
+        return injectAllEnvironmentObjects(into: view)
     }
 }
 
-// MARK: - 🔧 Erweiterungen
 extension ScreenFactory {
 
-    /// Erstellt eine SpiritGameView basierend auf JSON-Daten.
-    fileprivate static func makeSpiritGameView() -> AnyView {
-        do {
-            let allSpirits: [Spirit] = try Bundle.main.decodeSafe(
-                "spirits.json"
-            )
+    // MARK: - Fehlender GameController
+    private func missingGameControllerView() -> some View {
+        VStack {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundColor(.yellow)
+                .font(.system(size: 60))
 
-            guard allSpirits.first != nil else {
-                return AnyView(
-                    fallbackView(for: "SpiritGameView – keine Spirit-Daten")
-                )
-            }
+            Text("❌ SpiritGameController fehlt!")
+                .foregroundColor(.white)
+                .font(.title2.bold())
+                .padding(.top, 8)
 
-            // 🔥 Manager
-            let coin = CoinManager.shared
-            let crystal = CrystalManager.shared
-            let account = AccountLevelManager.shared
-
-            // 👑 View erzeugen
-            let view = SpiritGameView()
-                .environmentObjects(coin, crystal, account)
-
-            return AnyView(view)
-
-        } catch {
-            print(
-                "⚠️ [ScreenFactory] Fehler beim Laden von spirits.json:",
-                error
-            )
-            return AnyView(fallbackView(for: "SpiritGameView (JSON-Fehler)"))
+            Text("ScreenFactory.setGameController(_:) wurde nicht aufgerufen.")
+                .foregroundColor(.white.opacity(0.6))
+                .multilineTextAlignment(.center)
+                .padding()
         }
+        .padding()
     }
 
-    // MARK: Fallback
-    fileprivate static func fallbackView(for name: String) -> some View {
+    // MARK: - Fallback Screen
+    fileprivate func fallbackView(for name: String) -> some View {
         VStack(spacing: 18) {
-
             Image(systemName: "questionmark.app.fill")
                 .font(.system(size: 66))
                 .symbolRenderingMode(.palette)
@@ -110,38 +90,66 @@ extension ScreenFactory {
                 .font(.system(size: 22, weight: .semibold, design: .rounded))
                 .foregroundColor(.white)
 
-            Text(
-                "Dieser Screen ist noch nicht in der ScreenFactory registriert."
-            )
-            .font(.subheadline)
-            .foregroundColor(.white.opacity(0.65))
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 30)
-
-            Divider()
-                .background(Color.white.opacity(0.25))
-                .padding(.vertical, 8)
-
-            Button {
-                print("🐞 Debug: Screen '\(name)' fehlt in ScreenFactory.make()")
-            } label: {
-                Label("Debug-Log anzeigen", systemImage: "ladybug.fill")
-                    .font(.headline)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Capsule())
-            }
+            Text("Dieser Screen ist noch nicht in der ScreenFactory registriert.")
+                .font(.subheadline)
+                .foregroundColor(.white.opacity(0.65))
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 30)
         }
         .padding(32)
         .background(
             RoundedRectangle(cornerRadius: 22)
                 .fill(Color.black.opacity(0.55))
-                .shadow(color: .black.opacity(0.6), radius: 10, y: 4)
         )
         .padding()
     }
+
+    // MARK: - Environment Injection
+    private func injectAllEnvironmentObjects(into view: AnyView) -> AnyView {
+        var modified = AnyView(view)
+
+        for object in environmentObjects {
+            switch object {
+
+            case let coin as CoinManager:
+                modified = AnyView(modified.environmentObject(coin))
+
+            case let crystal as CrystalManager:
+                modified = AnyView(modified.environmentObject(crystal))
+
+            case let account as AccountLevelManager:
+                modified = AnyView(modified.environmentObject(account))
+
+            case let gifts as GiftManager:
+                modified = AnyView(modified.environmentObject(gifts))
+
+            case let daily as DailyLoginManager:
+                modified = AnyView(modified.environmentObject(daily))
+
+            case let upgrades as UpgradeManager:
+                modified = AnyView(modified.environmentObject(upgrades))
+
+            case let artefacts as ArtefactInventoryManager:
+                modified = AnyView(modified.environmentObject(artefacts))
+
+            case let quests as QuestManager:
+                modified = AnyView(modified.environmentObject(quests))
+
+            case let events as EventShopManager:
+                modified = AnyView(modified.environmentObject(events))
+
+            case let music as MusicManager:
+                modified = AnyView(modified.environmentObject(music))
+
+            default:
+                continue
+            }
+        }
+
+        return modified
+    }
 }
+
 
 // MARK: - 🧰 Bundle Helper
 extension Bundle {

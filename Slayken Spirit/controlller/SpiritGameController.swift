@@ -239,8 +239,15 @@ final class SpiritGameController: ObservableObject {
         UserDefaults.standard.set(0, forKey: "totalQuests")
         UserDefaults.standard.set(0, forKey: "playtimeMinutes")
         UserDefaults.standard.set(1, forKey: "savedStage")
+        print("RESET CONTROLLER:", Unmanaged.passUnretained(self).toOpaque())
 
         stage = 1
+        // 🔥 SPIRIT ZURÜCKSETZEN
+        if let first = all.first {
+            current = first               // neuer Spirit
+            currentHP = first.hp          // HP auf Start setzen
+        }
+        
         print("🔄 SpiritGame Stats reset!")
     }
 
