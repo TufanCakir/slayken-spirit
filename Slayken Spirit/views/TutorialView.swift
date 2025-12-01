@@ -2,24 +2,26 @@ import SwiftUI
 
 struct TutorialView: View {
 
-    @State private var steps: [TutorialStep] = Bundle.main.decode(
-        "tutorial.json"
-    )
+    // MARK: - State
+    @State private var steps: [TutorialStep] = Bundle.main.decode("tutorial.json")
     @State private var currentIndex = 0
 
     @State private var showTitle = false
     @State private var showText = false
     @State private var showHint = false
-
+    
     @State private var showWelcome = false
+    
+    // Pulse effects
+    @StateObject private var pulse = PulseManager()
 
+    // MARK: - View
     var body: some View {
         ZStack {
             SpiritGridBackground()
-
+            
             VStack {
                 Spacer()
-
                 Group {
                     if currentIndex < steps.count {
                         stepContent
@@ -27,15 +29,14 @@ struct TutorialView: View {
                         finishedContent
                     }
                 }
-                .animation(.easeInOut(duration: 0.4), value: currentIndex)
-
                 Spacer()
-
-                progressIndicator
-                    .padding(.bottom, 40)
+                progressIndicator.padding(.bottom, 40)
             }
             .padding(.horizontal, 20)
+            
+            pulseLayer   // ← RICHTIG: Ganz oben über allem!
         }
+        .gesture(touchPulseGesture)
         .onAppear { startStepAnimations() }
         .fullScreenCover(isPresented: $showWelcome) {
             FooterTabView()
@@ -44,13 +45,17 @@ struct TutorialView: View {
     }
 }
 
-//
-// MARK: - Step Content
-//
+private extension TutorialView {
+    var touchPulseGesture: some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in spawnPulse(at: value.location) }
+            .onEnded { value in spawnPulse(at: value.location) }
+    }
+}
 
-extension TutorialView {
+private extension TutorialView {
 
-    fileprivate var stepContent: some View {
+    var stepContent: some View {
         let step = steps[currentIndex]
 
         return VStack(spacing: 24) {
@@ -77,31 +82,22 @@ extension TutorialView {
                     .font(.headline.bold())
                     .foregroundColor(.white)
                     .opacity(showHint ? 1 : 0.3)
-                    .animation(
-                        .easeInOut(duration: 1).repeatForever(
-                            autoreverses: true
-                        ),
-                        value: showHint
-                    )
+                    .animation(.easeInOut(duration: 1).repeatForever(), value: showHint)
             }
         }
         .onTapGesture { nextStep() }
     }
+}
 
-    fileprivate var finishedContent: some View {
+private extension TutorialView {
+    var finishedContent: some View {
         VStack(spacing: 20) {
             Text("You're ready!")
                 .font(.system(size: 48, weight: .black, design: .rounded))
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [.white, .white, .white],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
+                .foregroundColor(.white)
 
             Text("Tap to begin your journey.")
-                .font(.title.weight(.bold))
+                .font(.title.bold())
                 .foregroundColor(.white)
         }
         .onTapGesture {
@@ -112,12 +108,8 @@ extension TutorialView {
     }
 }
 
-//
-// MARK: - Progress Indicator
-//
-
-extension TutorialView {
-    fileprivate var progressIndicator: some View {
+private extension TutorialView {
+    var progressIndicator: some View {
         HStack(spacing: 10) {
             ForEach(0..<steps.count, id: \.self) { index in
                 let isActive = index == currentIndex
@@ -125,43 +117,29 @@ extension TutorialView {
                 Circle()
                     .fill(
                         isActive
-                            ? AnyShapeStyle(
-                                LinearGradient(
-                                    colors: [.black, .white, .black],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                            : AnyShapeStyle(Color.white.opacity(0.25))
+                        ? AnyShapeStyle(LinearGradient(colors: [.black, .white, .black],
+                                                       startPoint: .topLeading,
+                                                       endPoint: .bottomTrailing))
+                        : AnyShapeStyle(Color.white.opacity(0.25))
                     )
-                    .frame(
-                        width: isActive ? 14 : 8,
-                        height: isActive ? 14 : 8
-                    )
+                    .frame(width: isActive ? 14 : 8, height: isActive ? 14 : 8)
                     .shadow(color: isActive ? .white : .clear, radius: 6)
                     .scaleEffect(isActive ? 1.3 : 1.0)
-                    .animation(
-                        .spring(response: 0.4, dampingFraction: 0.8),
-                        value: currentIndex
-                    )
+                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: currentIndex)
             }
         }
     }
 }
 
-//
-// MARK: - Step Transition
-//
+private extension TutorialView {
 
-extension TutorialView {
-
-    fileprivate func startStepAnimations() {
+    func startStepAnimations() {
         withAnimation(.easeOut(duration: 0.8)) { showTitle = true }
         withAnimation(.easeOut(duration: 1.0).delay(0.3)) { showText = true }
         withAnimation(.easeIn(duration: 1.5).delay(1.0)) { showHint = true }
     }
 
-    fileprivate func nextStep() {
+    func nextStep() {
         showTitle = false
         showText = false
         showHint = false
@@ -175,6 +153,16 @@ extension TutorialView {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             startStepAnimations()
         }
+    }
+}
+
+private extension TutorialView {
+    var pulseLayer: some View {
+        PulseLayer(pulses: pulse.pulses)
+    }
+
+    func spawnPulse(at point: CGPoint) {
+        pulse.spawnPulse(at: point)
     }
 }
 

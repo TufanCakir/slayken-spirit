@@ -2,52 +2,52 @@ import RealityKit
 import SwiftUI
 
 struct SpiritGameView: View {
-
+    
     @EnvironmentObject private var game: SpiritGameController
     @EnvironmentObject private var musicManager: MusicManager
     @State private var activeSheet: ActiveSheet?
     @State private var gameButtons: [GameButton] = Bundle.main.loadGameButtons()
-    @State private var pulses: [PulseEffect] = []
-
+    @StateObject private var pulse = PulseManager()
+    
     enum ActiveSheet: Identifiable {
         case upgrade, artefacts
         var id: Int { hashValue }
     }
-
+    
     var body: some View {
         ZStack {
-                SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
-
-            // Touch Effekte (rotierende Quadrate)
-            ForEach(pulses) { pulse in
-                Rectangle()
-                    .stroke(pulse.color, lineWidth: 3)
-                    .frame(width: pulse.size, height: pulse.size)
-                    .rotationEffect(.degrees(pulse.rotation))
-                    .position(pulse.position)
-                    .opacity(pulse.opacity)
-                    .animation(.easeOut(duration: 0.8), value: pulse.opacity)
-                }
-
-                NormalSpiritView(config: game.current)
-                    .id(game.current.id)
-
-            // --- Tap Attack ---
-            // DEBUG: Spirit logging
+            SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
+            
+            
+            // GLOBAL pulse layer
+            PulseLayer(pulses: pulse.pulses)
+            
+            NormalSpiritView(config: game.current)
+                .id(game.current.id)
+            
             Color.clear
                 .contentShape(Rectangle())
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { value in
-                            let color = Color(hex: game.current.gridColor)
-                            spawnPulse(at: value.location, color: color)
+                            // Pulse Effekt
+                            pulse.spawnPulse(at: value.location)
+
+                            // Attack während Drag
                             game.tapAttack()
                         }
                         .onEnded { value in
-                            let faded = Color(hex: game.current.gridColor).opacity(0.4)
-                            spawnPulse(at: value.location, color: faded)
+                            pulse.spawnPulse(at: value.location)
                         }
                 )
+                // Tap funktioniert auch weiterhin
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        game.tapAttack()
+                    }
+                )
+
+
 
                          .onAppear {
                              print("👀 SpiritGameView appeared → currentSpirit = \(game.current.id)")
@@ -257,32 +257,3 @@ extension SpiritGameView {
         .environmentObject(MusicManager())
 }
 
-extension SpiritGameView {
-
-    func spawnPulse(at point: CGPoint, color: Color) {
-
-        let newPulse = PulseEffect(
-            position: point,
-            opacity: 1,
-            rotation: 0,
-            color: color,
-            size: CGFloat.random(in: 35...55)
-        )
-
-        let id = newPulse.id
-        pulses.append(newPulse)
-
-        // Animation
-        DispatchQueue.main.async {
-            if let index = pulses.firstIndex(where: { $0.id == id }) {
-                pulses[index].rotation = 180
-                pulses[index].opacity = 0
-            }
-        }
-
-        // Remove
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            pulses.removeAll { $0.id == id }
-        }
-    }
-}
