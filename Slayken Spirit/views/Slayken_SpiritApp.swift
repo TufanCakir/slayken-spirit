@@ -54,7 +54,7 @@ struct Slayken_SpiritApp: App {
     @ViewBuilder
     private var rootView: some View {
         if internet.isConnected {
-            TutorialView()
+            WelcomeView()
         } else {
             OfflineScreen()
         }

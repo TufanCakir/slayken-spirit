@@ -7,6 +7,7 @@ struct SpiritGameView: View {
     @EnvironmentObject private var musicManager: MusicManager
     @State private var activeSheet: ActiveSheet?
     @State private var gameButtons: [GameButton] = Bundle.main.loadGameButtons()
+    @State private var pulses: [PulseEffect] = []
 
     enum ActiveSheet: Identifiable {
         case upgrade, artefacts
@@ -15,16 +16,39 @@ struct SpiritGameView: View {
 
     var body: some View {
         ZStack {
-            // --- Hintergrund & 3D Ansicht ---
-            SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
-            NormalSpiritView(config: game.current)
-                .id(game.current.id)  // <- WICHTIG!
+                SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
 
-      
+            // Touch Effekte (rotierende Quadrate)
+            ForEach(pulses) { pulse in
+                Rectangle()
+                    .stroke(pulse.color, lineWidth: 3)
+                    .frame(width: pulse.size, height: pulse.size)
+                    .rotationEffect(.degrees(pulse.rotation))
+                    .position(pulse.position)
+                    .opacity(pulse.opacity)
+                    .animation(.easeOut(duration: 0.8), value: pulse.opacity)
+                }
+
+                NormalSpiritView(config: game.current)
+                    .id(game.current.id)
 
             // --- Tap Attack ---
             // DEBUG: Spirit logging
-                     Color.clear
+            Color.clear
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let color = Color(hex: game.current.gridColor)
+                            spawnPulse(at: value.location, color: color)
+                            game.tapAttack()
+                        }
+                        .onEnded { value in
+                            let faded = Color(hex: game.current.gridColor).opacity(0.4)
+                            spawnPulse(at: value.location, color: faded)
+                        }
+                )
+
                          .onAppear {
                              print("👀 SpiritGameView appeared → currentSpirit = \(game.current.id)")
                          }
@@ -57,6 +81,7 @@ struct SpiritGameView: View {
         }
     }
 }
+
 
 // MARK: - Normal 3D Ansicht
 
@@ -232,3 +257,32 @@ extension SpiritGameView {
         .environmentObject(MusicManager())
 }
 
+extension SpiritGameView {
+
+    func spawnPulse(at point: CGPoint, color: Color) {
+
+        let newPulse = PulseEffect(
+            position: point,
+            opacity: 1,
+            rotation: 0,
+            color: color,
+            size: CGFloat.random(in: 35...55)
+        )
+
+        let id = newPulse.id
+        pulses.append(newPulse)
+
+        // Animation
+        DispatchQueue.main.async {
+            if let index = pulses.firstIndex(where: { $0.id == id }) {
+                pulses[index].rotation = 180
+                pulses[index].opacity = 0
+            }
+        }
+
+        // Remove
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            pulses.removeAll { $0.id == id }
+        }
+    }
+}

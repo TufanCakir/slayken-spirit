@@ -6,6 +6,7 @@ struct EventGameView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var activeSheet: ActiveSheet?
+    @State private var pulses: [PulseEffect] = []
 
     enum ActiveSheet: Identifiable {
         case upgrade, artefacts
@@ -23,12 +24,13 @@ struct EventGameView: View {
             // ---------------------------------------------------
             // 🔥 2. TAP ATTACK
             // ---------------------------------------------------
-            attackLayer
+            hudLayer
+
 
             // ---------------------------------------------------
             // 🔥 3. HUD (Top + Bottom)
             // ---------------------------------------------------
-            hudLayer
+            attackLayer
         }
 
         // → Event abgeschlossen → zurück
@@ -57,23 +59,50 @@ struct EventGameView: View {
 extension EventGameView {
     fileprivate var renderLayer: some View {
         ZStack {
+            
+            // Background Grid
             SpiritGridBackground(
                 glowColor: Color(hex: game.currentEventGridColor)
             )
+            
+            // 3D Spirit immer direkt über dem Background
             SpiritView(config: game.current)
                 .id(game.current.id + "_event")
+
+            ForEach(pulses) { pulse in
+                Rectangle()
+                    .stroke(pulse.color, lineWidth: 3)
+                    .frame(width: pulse.size, height: pulse.size)
+                    .rotationEffect(.degrees(pulse.rotation))
+                    .position(pulse.position)
+                    .opacity(pulse.opacity)
+                    .animation(.easeOut(duration: 0.8), value: pulse.opacity)
+            }
         }
         .ignoresSafeArea()
     }
 }
-
 // MARK: - TAP
 
 extension EventGameView {
     fileprivate var attackLayer: some View {
         Color.clear
             .contentShape(Rectangle())
-            .onTapGesture { game.tapAttack() }
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        let color = Color(hex: game.currentEventGridColor)
+                        spawnPulse(at: value.location, color: color)
+                        
+                        // gleichzeitig den Boss hitten
+                        game.tapAttack()
+                    }
+                    .onEnded { value in
+                        let endColor = Color(hex: game.currentEventGridColor)
+                            .opacity(0.5)
+                        spawnPulse(at: value.location, color: endColor)
+                    }
+            )
             .ignoresSafeArea()
     }
 }
@@ -258,4 +287,35 @@ private let eventButtons: [EventGameButton] = [
 #Preview {
     EventGameView()
         .environmentObject(SpiritGameController())
+}
+
+
+extension EventGameView {
+    
+    func spawnPulse(at point: CGPoint, color: Color) {
+
+        let newPulse = PulseEffect(
+            position: point,
+            opacity: 1,
+            rotation: 0,
+            color: color,
+            size: CGFloat.random(in: 35...55)
+        )
+
+        let id = newPulse.id
+        pulses.append(newPulse)
+
+        // Animation
+        DispatchQueue.main.async {
+            if let index = pulses.firstIndex(where: { $0.id == id }) {
+                pulses[index].rotation = 180
+                pulses[index].opacity = 0
+            }
+        }
+
+        // Remove
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            pulses.removeAll { $0.id == id }
+        }
+    }
 }
