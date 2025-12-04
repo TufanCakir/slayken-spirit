@@ -42,9 +42,9 @@ vertex VertexOut vertexShader(VertexIn in [[stage_in]],
 }
 
 fragment float4 fragmentShader(VertexOut in [[stage_in]],
-                               texture2d<half> colorMap [[texture(TextureIndexColor)]])
+                               texture2d<half> ice_realm [[texture(TextureIndexColor)]])
 {
     constexpr sampler s(mag_filter::linear, min_filter::linear);
-    half4 c = colorMap.sample(s, in.texCoord);
+    half4 c = ice_realm.sample(s, in.texCoord);
     return float4(c);
 }

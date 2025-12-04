@@ -2,29 +2,28 @@ import RealityKit
 import SwiftUI
 
 struct SpiritGameView: View {
-    
+
     @EnvironmentObject private var game: SpiritGameController
     @EnvironmentObject private var musicManager: MusicManager
     @State private var activeSheet: ActiveSheet?
     @State private var gameButtons: [GameButton] = Bundle.main.loadGameButtons()
     @StateObject private var pulse = PulseManager()
-    
+
     enum ActiveSheet: Identifiable {
         case upgrade, artefacts
         var id: Int { hashValue }
     }
-    
+
     var body: some View {
         ZStack {
             SpiritGridBackground(glowColor: Color(hex: game.current.gridColor))
-            
-            
+
             // GLOBAL pulse layer
             PulseLayer(pulses: pulse.pulses)
-            
+
             NormalSpiritView(config: game.current)
                 .id(game.current.id)
-            
+
             Color.clear
                 .contentShape(Rectangle())
                 .gesture(
@@ -47,14 +46,14 @@ struct SpiritGameView: View {
                     }
                 )
 
-
-
-                         .onAppear {
-                             print("👀 SpiritGameView appeared → currentSpirit = \(game.current.id)")
-                         }
-                         .onChange(of: game.current.id, initial: false) { oldID, newID in
-                             print("🔄 Spirit changed from → \(oldID) to → \(newID)")
-                         }
+                .onAppear {
+                    print(
+                        "👀 SpiritGameView appeared → currentSpirit = \(game.current.id)"
+                    )
+                }
+                .onChange(of: game.current.id, initial: false) { oldID, newID in
+                    print("🔄 Spirit changed from → \(oldID) to → \(newID)")
+                }
                 .contentShape(Rectangle())
                 .onTapGesture { game.tapAttack() }
 
@@ -82,7 +81,6 @@ struct SpiritGameView: View {
     }
 }
 
-
 // MARK: - Normal 3D Ansicht
 
 struct NormalSpiritView: View {
@@ -95,7 +93,7 @@ struct NormalSpiritView: View {
 // MARK: - HUD (Top)
 
 extension SpiritGameView {
-    
+
     fileprivate var topHUD: some View {
         VStack(spacing: 14) {
             HStack {
@@ -112,7 +110,7 @@ extension SpiritGameView {
         }
         .padding(.top, 0)
     }
-    
+
     fileprivate var stageDisplay: some View {
         Text("Stage \(game.stage)")
             .font(.system(size: 24, weight: .heavy, design: .rounded))
@@ -131,15 +129,15 @@ extension SpiritGameView {
                 Capsule().stroke(Color.white.opacity(0.7), lineWidth: 1.5)
             )
     }
-    
+
     fileprivate var hpBar: some View {
         let maxHP = max(game.current.hp, 1)
         let percent = CGFloat(game.currentHP) / CGFloat(maxHP)
-        
+
         return ZStack(alignment: .leading) {
             Capsule()
                 .fill(Color.white.opacity(0.1))
-            
+
             Capsule()
                 .fill(
                     LinearGradient(
@@ -150,7 +148,7 @@ extension SpiritGameView {
                 )
                 .frame(width: 260 * percent)
                 .animation(.easeInOut(duration: 0.3), value: game.currentHP)
-            
+
             Text("\(game.currentHP) / \(maxHP)")
                 .foregroundColor(.white)
                 .font(.system(size: 18, weight: .heavy))
@@ -160,7 +158,6 @@ extension SpiritGameView {
         .clipShape(Capsule())
     }
 }
-
 
 // MARK: - HUD (Bottom)
 
@@ -256,4 +253,3 @@ extension SpiritGameView {
         .environmentObject(SpiritGameController())
         .environmentObject(MusicManager())
 }
-

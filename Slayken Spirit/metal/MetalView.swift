@@ -1,8 +1,8 @@
-import SwiftUI
 import MetalKit
+import SwiftUI
 
 struct MetalView: UIViewRepresentable {
-    
+
     func makeUIView(context: Context) -> MTKView {
         let view = MTKView()
         view.device = MTLCreateSystemDefaultDevice()
@@ -13,10 +13,10 @@ struct MetalView: UIViewRepresentable {
         // Renderer installieren
         context.coordinator.renderer = Renderer(metalKitView: view)
         view.delegate = context.coordinator.renderer
-        
+
         return view
     }
-    
+
     func updateUIView(_ uiView: MTKView, context: Context) {}
 
     func makeCoordinator() -> Coordinator {

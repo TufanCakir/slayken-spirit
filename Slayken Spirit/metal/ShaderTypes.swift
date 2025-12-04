@@ -8,14 +8,14 @@
 import simd
 
 enum BufferIndex: Int {
-    case meshPositions  = 0
-    case meshGenerics   = 1
-    case uniforms       = 2
+    case meshPositions = 0
+    case meshGenerics = 1
+    case uniforms = 2
 }
 
 enum VertexAttribute: Int {
-    case position  = 0
-    case texcoord  = 1
+    case position = 0
+    case texcoord = 1
 }
 
 enum TextureIndex: Int {

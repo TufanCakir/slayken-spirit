@@ -15,7 +15,9 @@ struct WelcomeView: View {
                 VStack(spacing: 50) {
 
                     Text("Willkommen zu Slayken Spirit")
-                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .font(
+                            .system(size: 48, weight: .bold, design: .rounded)
+                        )
                         .foregroundColor(.white)
                         .opacity(showText ? 1 : 0)
                         .scaleEffect(showText ? 1 : 0.8)
@@ -25,7 +27,13 @@ struct WelcomeView: View {
 
                     NavigationLink(destination: TutorialView()) {
                         Text("Start")
-                            .font(.system(size: 28, weight: .semibold, design: .rounded))
+                            .font(
+                                .system(
+                                    size: 28,
+                                    weight: .semibold,
+                                    design: .rounded
+                                )
+                            )
                             .foregroundColor(.black)
                             .padding(.horizontal, 50)
                             .padding(.vertical, 16)
@@ -53,9 +61,6 @@ struct WelcomeView: View {
         withAnimation(.easeInOut(duration: 0.3).delay(0.3)) { showText = true }
     }
 }
-
-
-
 
 #Preview {
     WelcomeView()
